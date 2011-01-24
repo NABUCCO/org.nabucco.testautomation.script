@@ -1,0 +1,28 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.testautomation.facade.datatype.base.Text;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	A log message
+public Datatype TextMessage extends TestScriptComponent {
+
+	@Mandatory
+	private Basetype Text[1] text;
+	
+	@Optional
+	private Basetype PropertyReference[0..1] propertyRef;
+	
+	@Redefined
+	@Default TEXT_MESSAGE
+	protected Enumeration TestScriptElementType[1] type;
+	
+}

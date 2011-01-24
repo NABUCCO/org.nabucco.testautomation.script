@@ -1,0 +1,31 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.framework.base.facade.datatype.Number;
+import org.nabucco.framework.base.facade.datatype.Duration;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-08
+@Description	A basic loop
+public Datatype Loop extends TestScriptComposite {
+
+	@Optional
+	private Basetype Number[0..1] maxIterations;
+	
+	@Optional
+	private Basetype Duration[0..1] maxDuration;
+
+	@Optional
+	private Basetype Duration[0..1] wait;
+	
+	@Redefined
+	@Default LOOP
+	protected Enumeration TestScriptElementType[1] type;
+	
+}

@@ -1,0 +1,49 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Enumeration for all possible script element types.
+public Enumeration TestScriptElementType {
+
+    @LiteralId	"A"
+    ACTION
+    
+    @LiteralId	"B"
+    BREAK_LOOP
+    
+    @LiteralId	"C"
+    CONDITION
+    
+    @LiteralId	"E"
+    EXECUTION
+    
+    @LiteralId	"F"
+    FOREACH
+    
+    @LiteralId	"G"
+    SCRIPT
+    
+    @LiteralId	"H"
+    LOOP
+    
+    @LiteralId	"I"
+    ASSERTION
+    
+    @LiteralId	"K"
+    LOCK
+    
+    @LiteralId	"L"
+    LOGGER
+    
+    @LiteralId  "M"
+    TEXT_MESSAGE
+
+    @LiteralId  "P"
+    PROPERTY_ACTION
+    
+}

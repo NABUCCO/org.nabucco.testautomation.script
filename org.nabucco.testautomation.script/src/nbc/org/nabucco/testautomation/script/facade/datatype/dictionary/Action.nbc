@@ -1,0 +1,39 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.Duration;
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	A test execution
+public Datatype Action extends TestScriptComponent {
+
+	private Basetype Identifier[1] actionId;
+	
+	private Basetype Flag[1] trace;
+	
+	private Basetype Duration[0..1] delay;
+
+	@Mandatory
+	@AssociationStrategy AGGREGATION
+	@FetchStrategy EAGER
+	private Datatype Metadata[0..1] metadata;
+	
+	@AssociationStrategy AGGREGATION
+	private Datatype SubEngineActionCode[0..1] action;
+	
+	@Redefined
+	@Default ACTION
+	protected Enumeration TestScriptElementType[1] type;
+	
+}

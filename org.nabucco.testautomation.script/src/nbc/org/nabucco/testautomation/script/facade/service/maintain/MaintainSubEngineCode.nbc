@@ -1,0 +1,23 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.service.maintain;
+
+import org.nabucco.framework.base.facade.exception.service.MaintainException;
+import org.nabucco.testautomation.script.facade.message.SubEngineCodeMsg;
+
+@Author				Steffen Schmidt
+@Company			PRODYNA AG
+@Date				2010-08-09
+@Version			1.0
+@Description		SubEngineCode maintenance service
+public Service MaintainSubEngineCode {
+	
+	@Inject
+	private EntityManager[1] em;
+
+	@ManualImplementation
+	public SubEngineCodeMsg maintainSubEngineCode(SubEngineCodeMsg msg) throws MaintainException;
+	
+}

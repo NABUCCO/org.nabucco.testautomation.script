@@ -1,0 +1,28 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.service.search;
+
+import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.testautomation.script.facade.message.TestScriptSearchMsg;
+import org.nabucco.testautomation.script.facade.message.TestScriptListMsg;
+import org.nabucco.testautomation.script.facade.message.TestScriptMsg;
+
+@Author				Steffen Schmidt
+@Company			PRODYNA AG
+@Date				2010-04-13
+@Version			1.0
+@Description		TestScript search service
+public Service SearchTestScript {
+	
+	@Inject
+	private EntityManager[1] em;
+
+	@ManualImplementation
+	public TestScriptListMsg searchTestScript(TestScriptSearchMsg testScriptSearchMsg) throws SearchException;
+
+	@ManualImplementation
+	public TestScriptMsg getTestScript(TestScriptSearchMsg testScriptSearchMsg) throws SearchException;
+	
+}

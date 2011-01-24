@@ -1,0 +1,42 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.metadata;
+
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
+import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	The Metadata-class
+public Datatype Metadata extends NabuccoDatatype {
+
+	private Basetype Name[1] name;
+	
+	private Basetype Description[0..1] description;
+	
+	@AssociationStrategy	AGGREGATION
+	@FetchStrategy EAGER
+	private Datatype SubEngineCode[0..1] subEngine;
+
+	@AssociationStrategy	AGGREGATION
+	@FetchStrategy EAGER
+	private Datatype SubEngineOperationCode[0..1] operation;
+
+	private Datatype MetadataLabel[0..*] labelList;
+	
+	private Datatype Metadata[0..*] children;
+
+	private transient Datatype PropertyList[0..1] propertyList;
+	
+	private transient Datatype Metadata[0..1] parent;
+
+}

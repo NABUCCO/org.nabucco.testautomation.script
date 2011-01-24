@@ -1,0 +1,24 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.message;
+
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-26
+@Version		1.0
+@Description	Message for producing any TestScriptElement
+public Message ProduceTestScriptElementMsg {
+
+	private Enumeration TestScriptElementType[1] testScriptElementType;
+	
+	private Datatype TestScriptElement[1] testScriptElement;
+
+	private Datatype TestScriptElementContainer[1] testScriptElementContainer;
+
+}

@@ -1,0 +1,28 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.code;
+
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Key;
+import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-10-07
+@Description	A SubEngineActionCode
+public Datatype SubEngineActionCode extends NabuccoDatatype {
+
+	private Basetype Name[1] name;
+	
+	private Basetype Key[1] code;
+	
+	private Basetype Description[0..1] description;
+	
+	@FetchStrategy EAGER
+	private Datatype CodeParameter[0..*] parameterList;
+	
+}

@@ -1,0 +1,28 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.list.script;
+
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+
+@Author			Stefan Huettenrauch
+@Company		PRODYNA AG
+@Date			2010-05-25
+@Description	ListView for TestScripts
+@Id				org.nabucco.testautomation.script.ui.list.script.TestScriptListView
+public ListView TestScriptListView {
+
+	private Datatype TestScript[1] testScript;
+	
+	@MappedField 			testScript.name
+	@ColumnLabelId			testScript.name 
+	@ColumnLabelDefault 	"TestScript Name"
+	private Column testScriptName;
+	
+	@MappedField 			testScript.description
+	@ColumnLabelId			testScript.description 
+	@ColumnLabelDefault 	"TestScript Description"
+	private Column testScriptDescription;
+	
+}

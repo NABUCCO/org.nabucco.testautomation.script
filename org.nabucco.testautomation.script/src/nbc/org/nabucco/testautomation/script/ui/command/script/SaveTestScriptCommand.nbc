@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.script;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-14
+@Description	This command should save a TestScript
+@Id				org.nabucco.testautomation.script.ui.command.script.SaveTestScriptCommand
+public Command SaveTestScriptCommand {
+
+	@ManualImplementation
+	public void saveTestScript();
+
+}

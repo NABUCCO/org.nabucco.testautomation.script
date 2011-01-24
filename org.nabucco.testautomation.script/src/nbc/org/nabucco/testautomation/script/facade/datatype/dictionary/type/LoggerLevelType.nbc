@@ -1,0 +1,33 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Enumeration for all possible logger levels.
+public Enumeration LoggerLevelType {
+
+    @LiteralId	"W"
+    @Description LoggerLevel warning
+    WARN
+    
+    @LiteralId	"I"
+    @Description LoggerLevel info
+    INFO
+    
+    @LiteralId	"F"
+    @Description LoggerLevel fatal
+    FATAL
+    
+    @LiteralId	"D"
+    @Description LoggerLevel debug
+    DEBUG
+    
+    @LiteralId	"E"
+    @Description LoggerLevel error
+    ERROR
+
+}

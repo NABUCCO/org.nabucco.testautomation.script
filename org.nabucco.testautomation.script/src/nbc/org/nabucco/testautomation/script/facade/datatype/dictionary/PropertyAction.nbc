@@ -1,0 +1,36 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.testautomation.facade.datatype.base.StringValue;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.type.PropertyActionType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-09-06
+@Description	An action performing operations on properties
+public Datatype PropertyAction extends TestScriptComponent {
+
+	@Description the reference to a property in the context (Needed for: COPY, CLEAR, DELETE, SET)
+	private Basetype PropertyReference[0..1] propertyRef;
+
+	@Description The value to set into the referenced Property (Needed for: SET)
+	private Basetype StringValue[0..1] value;
+
+	@Description the reference to the target property in the context (Needed for: COPY)
+	private Basetype PropertyReference[0..1] target;
+	
+	@Description The type of action to perform on a property
+	protected Enumeration PropertyActionType[1] action;
+	
+	@Redefined
+	@Default PROPERTY_ACTION
+	protected Enumeration TestScriptElementType[1] type;
+	
+	
+}

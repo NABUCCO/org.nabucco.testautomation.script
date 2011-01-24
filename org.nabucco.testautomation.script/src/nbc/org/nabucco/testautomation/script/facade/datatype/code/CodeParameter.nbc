@@ -1,0 +1,30 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.code;
+
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
+import org.nabucco.testautomation.facade.datatype.base.Value;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-12-15
+@Description	Parameter information for an Operation or Action
+public Datatype CodeParameter extends NabuccoDatatype {
+
+	private Basetype Name[1] name;
+
+	private Basetype Description[0..1] description;
+	
+	private Enumeration PropertyType[1] type;
+	
+	private Basetype Value[0..1] defaultValue;
+	
+	private Basetype Flag[1] mandatory;
+	
+}

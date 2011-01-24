@@ -1,0 +1,32 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.message;
+
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Flag;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-09
+@Version		1.0
+@Description	Message for searching TestScripts
+public Message TestScriptSearchMsg {
+
+	private Basetype Identifier[1] identifier;
+
+	private Basetype Name[1] name;
+	
+	private Basetype Name[0..1] testScriptKey;
+	
+	private Basetype Description[1] description;
+	
+	private Basetype Identifier[1] folderId;
+	
+	@Description leave as null if it doesn't matter if the script has a folder or not, true if it must belong to a folder, false if it must not belong to a folder
+	private Basetype Flag[0..1] hasFolder;
+
+}

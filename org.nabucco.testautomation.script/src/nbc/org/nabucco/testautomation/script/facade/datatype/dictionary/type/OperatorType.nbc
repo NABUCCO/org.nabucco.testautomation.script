@@ -1,0 +1,25 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Enumeration for all possible operator types.
+public Enumeration OperatorType {
+
+    @LiteralId	"A"
+    @Description logical and
+    AND
+    
+    @LiteralId	"O"
+    @Description logical or
+    OR
+    
+    @LiteralId	"N"
+    @Description no operator
+    NONE
+    
+}

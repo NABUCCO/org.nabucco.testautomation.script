@@ -1,0 +1,61 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Enumeration for all possible condition types.
+public Enumeration ConditionType {
+
+    @LiteralId	"T"
+    @Description true
+    TRUE
+    
+    @LiteralId	"F"
+    @Description false
+    FALSE
+    
+    @LiteralId	"G"
+    @Description greater than
+    GT
+    
+    @LiteralId	"L"
+    @Description lower than
+    LT
+    
+    @LiteralId	"A"
+    @Description lower than or equals
+    LTE
+    
+    @LiteralId	"B"
+    @Description greater than or equals
+    GTE
+    
+    @LiteralId	"E"
+    @Description equals
+    EQUALS
+    
+    @LiteralId	"N"
+    @Description not equals
+    NOT_EQUALS
+    
+    @LiteralId	"I"
+    @Description is null
+    IS_NULL
+    
+    @LiteralId	"O"
+    @Description not null
+    NOT_NULL
+    
+    @LiteralId	"P"
+    @Description is empty
+    IS_EMPTY
+    
+    @LiteralId	"Q"
+    @Description not empty
+    NOT_EMPTY
+    
+}

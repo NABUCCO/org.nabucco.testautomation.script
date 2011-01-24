@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.folder;
+
+@Author        	Markus Jorroch
+@Company        PRODYNA AG
+@Date           2010-10-15
+@Description    maintains the folder structure
+@Id             org.nabucco.testautomation.script.ui.command.folder.MaintainFolderStructureCommand
+public Command MaintainFolderStructureCommand {
+
+    @ManualImplementation
+    public void maintainFolderStructure();
+
+}

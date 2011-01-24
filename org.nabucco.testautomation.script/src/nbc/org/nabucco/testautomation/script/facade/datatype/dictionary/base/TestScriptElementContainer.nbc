@@ -1,0 +1,24 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.base; 
+
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.Order;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+
+@Author         sschmidt
+@Company        PRODYNA AG
+@Date           2010-10-03
+@Version        1.0
+@Description    Container holding a TestScriptElement and its order index
+public Datatype TestScriptElementContainer extends NabuccoDatatype {
+
+	@FetchStrategy			EAGER
+	@AssociationStrategy	AGGREGATION
+	private Datatype TestScriptElement[1] element;
+	
+	private Basetype Order[1] orderIndex;
+
+}

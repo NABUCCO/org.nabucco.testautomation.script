@@ -1,0 +1,31 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.metadata;
+
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.code.Code;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	A qualifier for a Metadata-instance
+public Datatype MetadataLabel extends NabuccoDatatype {
+
+	@Description		Environment of the TestConfiguration
+	@CodePath nabucco.testautomation.environment
+	private Datatype Code[0..1] environmentType;
+
+	@Description		Release of the TestConfiguration
+	@CodePath nabucco.testautomation.release
+	private Datatype Code[0..1] releaseType;
+	
+	@Description		Brand of the TestConfiguration
+	@CodePath nabucco.testautomation.brand
+	private Datatype Code[0..1] brandType;
+
+	private Datatype PropertyList[0..1] propertyList;
+	
+}

@@ -1,0 +1,18 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.message;
+
+import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-20
+@Version		1.0
+@Description	Message for transporting a MetadataLabel
+public Message MetadataLabelMsg {
+
+	private Datatype MetadataLabel[1] metadataLabel;
+
+}

@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.metadata;
+
+@Author			Marco Sussek
+@Company		PRODYNA AG
+@Date			2010-10-21
+@Description	This command should reload a Metadata
+@Id				org.nabucco.testautomation.script.ui.command.metadata.ReloadMetdadataCommand
+public Command ReloadMetadataCommand {
+
+	@ManualImplementation
+	public void reloadMetadata();
+
+}

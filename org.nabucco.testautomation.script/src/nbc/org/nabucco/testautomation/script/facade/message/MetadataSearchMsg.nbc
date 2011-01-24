@@ -1,0 +1,27 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.message;
+
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-20
+@Version		1.0
+@Description	Message for searching Metadata
+public Message MetadataSearchMsg {
+
+	private Basetype Identifier[1] identifier;
+
+	private Basetype Name[1] name;
+	
+	private Basetype Description[1] description;
+	
+	private Datatype SubEngineCode[1] subEngine;
+
+}

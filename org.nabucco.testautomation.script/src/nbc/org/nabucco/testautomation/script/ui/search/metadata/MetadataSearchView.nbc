@@ -1,0 +1,29 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.ui.search.metadata;
+
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+
+@Author			Markus Jorroch
+@Company		PRODYNA AG
+@Date			2010-10-15
+@Version		1.0
+@Description 	Search view for datatype Metadata
+@Id				org.nabucco.testautomation.script.ui.search.metadata.MetadataSearchView
+public SearchView MetadataSearchView {
+
+	private Datatype Metadata[1] metadata;
+	
+	@MappedField 		metadata.name
+	@FieldLabelId		metadata.name 
+	@FieldLabelDefault 	"Name"
+	private LabeledInputField metadataName;
+	
+	@MappedField 		metadata.description
+	@FieldLabelId		metadata.description
+	@FieldLabelDefault 	"Description"
+	private LabeledInputField metadataDescription;
+	
+}

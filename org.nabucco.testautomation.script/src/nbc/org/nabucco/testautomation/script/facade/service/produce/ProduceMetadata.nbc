@@ -1,0 +1,30 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.service.produce;
+
+import org.nabucco.framework.base.facade.exception.service.ProduceException;
+import org.nabucco.testautomation.script.facade.message.MetadataMsg;
+import org.nabucco.testautomation.script.facade.message.MetadataLabelMsg;
+
+@Author				Steffen Schmidt
+@Company			PRODYNA AG
+@Date				2010-08-20
+@Version			1.0
+@Description		Metadata produce service
+public Service ProduceMetadata {
+	
+	@ManualImplementation
+	public MetadataMsg produceMetadata() throws ProduceException;
+	
+	@ManualImplementation
+	public MetadataMsg produceMetadataClone(MetadataMsg msg) throws ProduceException;
+	
+	@ManualImplementation
+	public MetadataLabelMsg produceMetadataLabel() throws ProduceException;
+	
+	@ManualImplementation
+	public MetadataLabelMsg produceMetadataLabelClone(MetadataLabelMsg msg) throws ProduceException;
+	
+}

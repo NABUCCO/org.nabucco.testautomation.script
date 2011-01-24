@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.script;
+
+@Author			Marco Sussek
+@Company		PRODYNA AG
+@Date			2010-10-21
+@Description	This command should reload a TestScript
+@Id				org.nabucco.testautomation.script.ui.command.script.ReloadTestScriptCommand
+public Command ReloadTestScriptCommand {
+
+	@ManualImplementation
+	public void reloadTestScript();
+
+}

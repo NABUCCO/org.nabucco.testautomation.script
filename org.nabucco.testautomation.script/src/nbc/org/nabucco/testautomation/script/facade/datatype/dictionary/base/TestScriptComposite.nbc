@@ -1,0 +1,18 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
+
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Abstract superclass of all testscript composits
+public abstract Datatype TestScriptComposite extends TestScriptElement {
+
+	private Datatype TestScriptElementContainer[0..*] testScriptElementList;
+	
+}

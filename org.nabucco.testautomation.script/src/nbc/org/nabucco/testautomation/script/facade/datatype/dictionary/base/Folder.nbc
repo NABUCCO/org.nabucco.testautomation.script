@@ -1,0 +1,31 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
+
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-08-07
+@Description	A Folder containing TestScripts and/or other folders
+public Datatype Folder extends NabuccoDatatype {
+
+	@Mandatory
+	private Basetype Name[1] name;
+	
+	@Mandatory
+	private Basetype Flag[1] root;
+	
+	@Optional
+	private Datatype Folder[0..*] subFolderList;
+
+	@Optional
+	private transient Datatype TestScript[0..*] testScriptList;
+	
+}

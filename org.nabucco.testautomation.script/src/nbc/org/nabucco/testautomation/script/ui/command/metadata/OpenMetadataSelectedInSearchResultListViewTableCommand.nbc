@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.metadata;
+
+@Author         Markus Jorroch
+@Company        PRODYNA AG
+@Date           2010-27-09
+@Description    open Metadata from ListView
+@Id             org.nabucco.testautomation.script.ui.command.metadata.OpenMetadataSelectedInSearchResultListViewTableCommand
+public Command OpenMetadataSelectedInSearchResultListViewTableCommand {
+
+    @ManualImplementation
+    public void openMetadataSelectedInSearchResultListViewTable();
+
+}

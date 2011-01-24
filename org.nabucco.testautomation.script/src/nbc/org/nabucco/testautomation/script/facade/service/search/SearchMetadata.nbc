@@ -1,0 +1,33 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.service.search;
+
+import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.testautomation.script.facade.message.MetadataListMsg;
+import org.nabucco.testautomation.script.facade.message.MetadataMsg;
+import org.nabucco.testautomation.script.facade.message.MetadataSearchMsg;
+
+@Author				Steffen Schmidt
+@Company			PRODYNA AG
+@Date				2010-04-20
+@Version			1.0
+@Description		Metadata search service
+public Service SearchMetadata {
+	
+	@Inject
+	private EntityManager[1] em;
+
+	@ManualImplementation
+	public MetadataListMsg searchMetadata(MetadataSearchMsg metadataSearchMsg) throws SearchException;
+	
+	@ManualImplementation
+	public MetadataMsg getMetadata(MetadataSearchMsg metadataSearchMsg) throws SearchException;
+
+	@ManualImplementation
+	public MetadataMsg getChildren(MetadataMsg metadataMsg) throws SearchException;
+	
+	@ManualImplementation
+	public MetadataMsg getParents(MetadataMsg metadataMsg) throws SearchException;
+}

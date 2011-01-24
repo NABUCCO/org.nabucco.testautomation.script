@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.script;
+
+@Author         Stefan Huettenrauch
+@Company        PRODYNA AG
+@Date           2010-05-28
+@Description    open list view for TestScript
+@Id             org.nabucco.testautomation.script.ui.command.script.OpenCorrespondingTestScriptListViewCommand
+public Command OpenCorrespondingTestScriptListViewCommand {
+
+    @ManualImplementation
+    public void openCorrespondingTestScriptListView();
+
+}

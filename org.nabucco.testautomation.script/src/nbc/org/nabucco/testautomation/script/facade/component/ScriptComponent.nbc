@@ -1,0 +1,118 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.component;
+
+import org.nabucco.testautomation.facade.component.TestautomationComponent;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TextMessage;
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainTestScript;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceTestScriptElement;
+import org.nabucco.testautomation.script.facade.service.search.SearchTestScript;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceMetadata;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceFolder;
+import org.nabucco.testautomation.script.facade.service.search.SearchMetadata;
+import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
+import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
+import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-09
+@Version		1.0
+@Description	TestScript component
+@ComponentPrefix scpt
+public Component ScriptComponent {
+
+	public Component TestautomationComponent testautomation;
+
+	private persistent Datatype TestScriptElement[1] testScriptElement;
+
+	private persistent Datatype TestScriptComposite[1] testScriptComposite;
+
+	private persistent Datatype TestScriptElementContainer[1] testScriptElementContainer;
+
+	private persistent Datatype TestScript[1] script;
+	
+	private persistent Datatype Action[1] action;
+
+	private persistent Datatype Assertion[1] assertion;
+
+	private persistent Datatype BreakLoop[1] breakElement;
+
+	private persistent Datatype Condition[1] condition;
+
+	private persistent Datatype Execution[1] execution;
+
+	private persistent Datatype Foreach[1] foreach;
+
+	private persistent Datatype Lock[1] lock;
+
+	private persistent Datatype Logger[1] logger;
+
+	private persistent Datatype Loop[1] loop;
+	
+	private persistent Datatype PropertyAction[1] propertyAction;
+
+	private persistent Datatype TextMessage[1] textMessage;
+	
+	private persistent Datatype Metadata[1] metadata;
+	
+	private persistent Datatype MetadataLabel[1] metadataLabel;
+
+	private persistent Datatype Folder[1] folder;
+
+	private persistent Datatype SubEngineCode[1] subEngineCode;
+
+	private persistent Datatype SubEngineOperationCode[1] subEngineOperationCode;
+
+	private persistent Datatype SubEngineActionCode[1] subEngineActionCode;
+
+	private persistent Datatype CodeParameter[1] codeParameter;
+
+	public Service MaintainTestScript;
+	
+	public Service ProduceTestScriptElement;
+	
+	public Service SearchTestScript;
+	
+	public Service MaintainMetadata;
+	
+	public Service ProduceMetadata;
+	
+	public Service SearchMetadata;
+
+	public Service SearchFolder;
+	
+	public Service MaintainFolder;
+
+	public Service MaintainSubEngineCode;
+	
+	public Service SearchSubEngineCode;
+	
+	public Service ProduceFolder;
+
+}

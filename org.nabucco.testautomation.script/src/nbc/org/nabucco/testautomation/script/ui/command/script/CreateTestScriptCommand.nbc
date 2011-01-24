@@ -1,0 +1,17 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.command.script;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-14
+@Description	This command is for creating a TestScript
+@Id				org.nabucco.testautomation.script.ui.command.script.CreateTestScriptCommand
+public Command CreateTestScriptCommand {
+
+	@ManualImplementation
+	public void createTestScriptCommand();
+
+}

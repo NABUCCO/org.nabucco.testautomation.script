@@ -1,0 +1,18 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.facade.message;
+
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-13
+@Version		1.0
+@Description	Message containing a list of TestScripts
+public Message TestScriptListMsg {
+
+	private Datatype TestScript[0..*] testScriptList;
+
+}

@@ -1,0 +1,27 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-08
+@Description	A Foreach-loop
+public Datatype Foreach extends TestScriptComposite {
+
+	private Basetype PropertyReference[1] iterableRef;
+
+	private Basetype Name[1] elementName;
+	
+	@Redefined
+	@Default FOREACH
+	protected Enumeration TestScriptElementType[1] type;
+	
+	
+}

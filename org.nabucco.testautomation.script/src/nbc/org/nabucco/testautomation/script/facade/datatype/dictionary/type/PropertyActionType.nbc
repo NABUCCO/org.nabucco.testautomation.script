@@ -1,0 +1,29 @@
+/*
+ *  PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-09-06
+@Description	Enumeration for all possible property action types.
+public Enumeration PropertyActionType {
+
+    @LiteralId	"CO"
+    @Description Copies the value of a property into a existing or new property
+    COPY
+    
+    @LiteralId	"CL"
+    @Description Sets the value of a property to null
+    CLEAR
+    
+    @LiteralId	"DE"
+    @Description Deletes an existing property
+    DELETE
+    
+    @LiteralId	"SE"
+    @Description Sets or overrides the value of an existing property
+    SET
+    
+}

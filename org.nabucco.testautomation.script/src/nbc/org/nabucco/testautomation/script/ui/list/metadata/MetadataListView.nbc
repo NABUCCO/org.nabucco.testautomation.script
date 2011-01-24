@@ -1,0 +1,28 @@
+/*
+*  PRODYNA NABUCCO
+*  Copyright 2010, PRODYNA AG
+*/
+package org.nabucco.testautomation.script.ui.list.metadata;
+
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+
+@Author			Markus Jorroch
+@Company		PRODYNA AG
+@Date			2010-10-15
+@Description	ListView for Metadata objects
+@Id				org.nabucco.testautomation.script.ui.list.metadata.MetadataListView
+public ListView MetadataListView {
+
+	private Datatype Metadata[1] metadata;
+	
+	@MappedField 			metadata.name
+	@ColumnLabelId			metadata.name 
+	@ColumnLabelDefault 	"Metadata Name"
+	private Column metadataName;
+	
+	@MappedField 			metadata.description
+	@ColumnLabelId			metadata.description 
+	@ColumnLabelDefault 	"Metadata Description"
+	private Column metadataDescription;
+	
+}

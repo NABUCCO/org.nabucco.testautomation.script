@@ -1,0 +1,32 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.framework.base.facade.datatype.Key;
+import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	A TestScript
+public Datatype TestScript extends TestScriptComposite {
+
+	@MaxLength 16
+	private Basetype Key[0..1] testScriptKey;
+
+	private Basetype Description[0..1] description;
+	
+	@AssociationStrategy AGGREGATION
+	@FetchStrategy EAGER
+	private Datatype Folder[0..1] folder;
+	
+	@Redefined
+	@Default SCRIPT
+	protected Enumeration TestScriptElementType[1] type;
+	
+}

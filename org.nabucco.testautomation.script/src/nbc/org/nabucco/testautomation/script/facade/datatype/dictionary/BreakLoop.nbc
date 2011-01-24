@@ -1,0 +1,21 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary;
+
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	A condition to break a loop
+public Datatype BreakLoop extends TestScriptComposite {
+
+	@Redefined
+	@Default BREAK_LOOP
+	protected Enumeration TestScriptElementType[1] type;
+	
+
+}

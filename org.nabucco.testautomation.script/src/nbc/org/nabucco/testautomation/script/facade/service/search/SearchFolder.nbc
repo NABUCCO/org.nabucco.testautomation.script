@@ -1,0 +1,28 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.service.search;
+
+import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.testautomation.script.facade.message.FolderMsg;
+
+@Author				Steffen Schmidt
+@Company			PRODYNA AG
+@Date				2010-08-13
+@Version			1.0
+@Description		Folder search service
+public Service SearchFolder {
+	
+	@Inject
+	private EntityManager[1] em;
+
+	@ManualImplementation
+	@Description Returns the flat root folder
+	public FolderMsg getRootFolder() throws SearchException;
+	
+	@ManualImplementation
+	@Description Returns the root folder with loaded subfolders an flat loaded testscripts
+	public FolderMsg getFolderStructure() throws SearchException;
+	
+}

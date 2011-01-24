@@ -1,0 +1,27 @@
+/*
+ *	PRODYNA NABUCCO
+ *  Copyright 2010, PRODYNA AG
+ */
+package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
+
+import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+
+@Author			Steffen Schmidt
+@Company		PRODYNA AG
+@Date			2010-04-07
+@Description	Abstract superclass of all testscript elements
+public abstract Datatype TestScriptElement extends NabuccoDatatype {
+
+	@Mandatory
+	private Basetype Name[1] name;
+	
+	@Optional
+	private Datatype PropertyList[0..1] propertyList;
+
+	@Mandatory
+	protected Enumeration TestScriptElementType[1] type;
+	
+}
