@@ -3,11 +3,16 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.base.BooleanValue;
 import org.nabucco.testautomation.facade.datatype.base.Text;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
@@ -23,10 +28,16 @@ public class Assertion extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "propertyRef", "message", "fail", "className" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;",
-            "l0,n;m0,1;", "l0,n;m0,1;" };
+            "l0,n;m0,1;", "l0,255;m0,1;" };
+
+    public static final String PROPERTYREF = "propertyRef";
+
+    public static final String MESSAGE = "message";
+
+    public static final String FAIL = "fail";
+
+    public static final String CLASSNAME = "className";
 
     private PropertyReference propertyRef;
 
@@ -69,23 +80,64 @@ public class Assertion extends TestScriptComponent implements Datatype {
         clone.setType(this.getType());
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
+                .getPropertyMap());
+        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
+                PropertyReference.class, 7, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(MESSAGE, PropertyDescriptorSupport.createBasetype(MESSAGE, Text.class, 8,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(FAIL, PropertyDescriptorSupport.createBasetype(FAIL, BooleanValue.class, 9,
+                PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(CLASSNAME, PropertyDescriptorSupport.createBasetype(CLASSNAME, Name.class,
+                10, PROPERTY_CONSTRAINTS[3], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[0],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[0], this.propertyRef));
-        properties.add(new BasetypeProperty<Text>(PROPERTY_NAMES[1], Text.class,
-                PROPERTY_CONSTRAINTS[1], this.message));
-        properties.add(new BasetypeProperty<BooleanValue>(PROPERTY_NAMES[2], BooleanValue.class,
-                PROPERTY_CONSTRAINTS[2], this.fail));
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[3], Name.class,
-                PROPERTY_CONSTRAINTS[3], this.className));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(PROPERTYREF),
+                this.propertyRef, null));
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(MESSAGE), this.message,
+                null));
+        properties
+                .add(super.createProperty(Assertion.getPropertyDescriptor(FAIL), this.fail, null));
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(CLASSNAME),
+                this.className, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
+            this.setPropertyRef(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(MESSAGE) && (property.getType() == Text.class))) {
+            this.setMessage(((Text) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(FAIL) && (property.getType() == BooleanValue.class))) {
+            this.setFail(((BooleanValue) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(CLASSNAME) && (property.getType() == Name.class))) {
+            this.setClassName(((Name) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -138,19 +190,6 @@ public class Assertion extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Assertion>\n");
-        appendable.append(super.toString());
-        appendable.append((("<propertyRef>" + this.propertyRef) + "</propertyRef>\n"));
-        appendable.append((("<message>" + this.message) + "</message>\n"));
-        appendable.append((("<fail>" + this.fail) + "</fail>\n"));
-        appendable.append((("<className>" + this.className) + "</className>\n"));
-        appendable.append("</Assertion>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public Assertion cloneObject() {
         Assertion clone = new Assertion();
         this.cloneObject(clone);
@@ -182,6 +221,9 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     public void setPropertyRef(String propertyRef) {
         if ((this.propertyRef == null)) {
+            if ((propertyRef == null)) {
+                return;
+            }
             this.propertyRef = new PropertyReference();
         }
         this.propertyRef.setValue(propertyRef);
@@ -212,6 +254,9 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     public void setMessage(String message) {
         if ((this.message == null)) {
+            if ((message == null)) {
+                return;
+            }
             this.message = new Text();
         }
         this.message.setValue(message);
@@ -242,6 +287,9 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     public void setFail(Boolean fail) {
         if ((this.fail == null)) {
+            if ((fail == null)) {
+                return;
+            }
             this.fail = new BooleanValue();
         }
         this.fail.setValue(fail);
@@ -272,8 +320,30 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     public void setClassName(String className) {
         if ((this.className == null)) {
+            if ((className == null)) {
+                return;
+            }
             this.className = new Name();
         }
         this.className.setValue(className);
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Assertion.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Assertion.class).getAllProperties();
     }
 }

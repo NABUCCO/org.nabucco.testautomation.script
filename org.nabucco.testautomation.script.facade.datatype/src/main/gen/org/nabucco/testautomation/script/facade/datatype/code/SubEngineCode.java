@@ -3,7 +3,9 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.code;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Key;
@@ -11,9 +13,13 @@ import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.ListProperty;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoListImpl;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 
 /**
@@ -25,16 +31,22 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "name", "code", "operationList", "description" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,n;m1,1;", "m0,n;",
+            "l0,255;m0,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m1,1;", "m0,n;",
-            "l0,n;m0,1;" };
+    public static final String NAME = "name";
+
+    public static final String CODE = "code";
+
+    public static final String OPERATIONLIST = "operationList";
+
+    public static final String DESCRIPTION = "description";
 
     private Name name;
 
     private Key code;
 
-    private List<SubEngineOperationCode> operationList;
+    private NabuccoList<SubEngineOperationCode> operationList;
 
     private Description description;
 
@@ -61,9 +73,8 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
         if ((this.getCode() != null)) {
             clone.setCode(this.getCode().cloneObject());
         }
-        if ((this.operationList instanceof NabuccoList<?>)) {
-            clone.operationList = ((NabuccoList<SubEngineOperationCode>) this.operationList)
-                    .cloneCollection();
+        if ((this.operationList != null)) {
+            clone.operationList = this.operationList.cloneCollection();
         }
         if ((this.getDescription() != null)) {
             clone.setDescription(this.getDescription().cloneObject());
@@ -77,10 +88,10 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
      */
     List<SubEngineOperationCode> getOperationListJPA() {
         if ((this.operationList == null)) {
-            this.operationList = new NabuccoList<SubEngineOperationCode>(
+            this.operationList = new NabuccoListImpl<SubEngineOperationCode>(
                     NabuccoCollectionState.LAZY);
         }
-        return ((NabuccoList<SubEngineOperationCode>) this.operationList).getDelegate();
+        return ((NabuccoListImpl<SubEngineOperationCode>) this.operationList).getDelegate();
     }
 
     /**
@@ -90,10 +101,31 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
      */
     void setOperationListJPA(List<SubEngineOperationCode> operationList) {
         if ((this.operationList == null)) {
-            this.operationList = new NabuccoList<SubEngineOperationCode>(
+            this.operationList = new NabuccoListImpl<SubEngineOperationCode>(
                     NabuccoCollectionState.LAZY);
         }
-        ((NabuccoList<SubEngineOperationCode>) this.operationList).setDelegate(operationList);
+        ((NabuccoListImpl<SubEngineOperationCode>) this.operationList).setDelegate(operationList);
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class)
+                .getPropertyMap());
+        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 2,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(CODE, PropertyDescriptorSupport.createBasetype(CODE, Key.class, 3,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(OPERATIONLIST, PropertyDescriptorSupport.createCollection(OPERATIONLIST,
+                SubEngineOperationCode.class, 4, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
+                Description.class, 5, PROPERTY_CONSTRAINTS[3], false));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -102,17 +134,39 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[0], Name.class,
-                PROPERTY_CONSTRAINTS[0], this.name));
-        properties.add(new BasetypeProperty<Key>(PROPERTY_NAMES[1], Key.class,
-                PROPERTY_CONSTRAINTS[1], this.code));
-        properties.add(new ListProperty<SubEngineOperationCode>(PROPERTY_NAMES[2],
-                SubEngineOperationCode.class, PROPERTY_CONSTRAINTS[2], this.operationList));
-        properties.add(new BasetypeProperty<Description>(PROPERTY_NAMES[3], Description.class,
-                PROPERTY_CONSTRAINTS[3], this.description));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(SubEngineCode.getPropertyDescriptor(NAME), this.name,
+                null));
+        properties.add(super.createProperty(SubEngineCode.getPropertyDescriptor(CODE), this.code,
+                null));
+        properties.add(super.createProperty(SubEngineCode.getPropertyDescriptor(OPERATIONLIST),
+                this.operationList, null));
+        properties.add(super.createProperty(SubEngineCode.getPropertyDescriptor(DESCRIPTION),
+                this.description, null));
         return properties;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
+            this.setName(((Name) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(CODE) && (property.getType() == Key.class))) {
+            this.setCode(((Key) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(OPERATIONLIST) && (property.getType() == SubEngineOperationCode.class))) {
+            this.operationList = ((NabuccoList<SubEngineOperationCode>) property.getInstance());
+            return true;
+        } else if ((property.getName().equals(DESCRIPTION) && (property.getType() == Description.class))) {
+            this.setDescription(((Description) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -159,18 +213,6 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<SubEngineCode>\n");
-        appendable.append(super.toString());
-        appendable.append((("<name>" + this.name) + "</name>\n"));
-        appendable.append((("<code>" + this.code) + "</code>\n"));
-        appendable.append((("<description>" + this.description) + "</description>\n"));
-        appendable.append("</SubEngineCode>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public SubEngineCode cloneObject() {
         SubEngineCode clone = new SubEngineCode();
         this.cloneObject(clone);
@@ -202,6 +244,9 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
      */
     public void setName(String name) {
         if ((this.name == null)) {
+            if ((name == null)) {
+                return;
+            }
             this.name = new Name();
         }
         this.name.setValue(name);
@@ -232,6 +277,9 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
      */
     public void setCode(String code) {
         if ((this.code == null)) {
+            if ((code == null)) {
+                return;
+            }
             this.code = new Key();
         }
         this.code.setValue(code);
@@ -240,11 +288,11 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
     /**
      * Missing description at method getOperationList.
      *
-     * @return the List<SubEngineOperationCode>.
+     * @return the NabuccoList<SubEngineOperationCode>.
      */
-    public List<SubEngineOperationCode> getOperationList() {
+    public NabuccoList<SubEngineOperationCode> getOperationList() {
         if ((this.operationList == null)) {
-            this.operationList = new NabuccoList<SubEngineOperationCode>(
+            this.operationList = new NabuccoListImpl<SubEngineOperationCode>(
                     NabuccoCollectionState.INITIALIZED);
         }
         return this.operationList;
@@ -275,8 +323,30 @@ public class SubEngineCode extends NabuccoDatatype implements Datatype {
      */
     public void setDescription(String description) {
         if ((this.description == null)) {
+            if ((description == null)) {
+                return;
+            }
             this.description = new Description();
         }
         this.description.setValue(description);
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(SubEngineCode.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(SubEngineCode.class).getAllProperties();
     }
 }

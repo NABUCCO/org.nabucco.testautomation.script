@@ -3,7 +3,12 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
+import java.util.Collections;
+import java.util.List;
 import org.nabucco.framework.base.facade.datatype.Enumeration;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.visitor.Visitor;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 
 /**
  * TestScriptElementType<p/>Enumeration for all possible script element types.<p/>
@@ -22,7 +27,8 @@ public enum TestScriptElementType implements Enumeration {
     LOCK("K"),
     LOGGER("L"),
     TEXT_MESSAGE("M"),
-    PROPERTY_ACTION("P"), ;
+    PROPERTY_ACTION("P"),
+    EMBEDDED_SCRIPT("R"), ;
 
     private String id;
 
@@ -48,5 +54,14 @@ public enum TestScriptElementType implements Enumeration {
     @Override
     public Enumeration cloneObject() {
         return this;
+    }
+
+    @Override
+    public void accept(Visitor visitor) throws VisitorException {
+    }
+
+    @Override
+    public List<NabuccoProperty> getProperties() {
+        return Collections.emptyList();
     }
 }

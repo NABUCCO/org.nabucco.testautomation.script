@@ -11,6 +11,8 @@ import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.base.facade.exception.service.ServiceException;
 import org.nabucco.testautomation.script.facade.component.ScriptComponent;
 import org.nabucco.testautomation.script.facade.component.ScriptComponentLocator;
+import org.nabucco.testautomation.script.ui.web.communication.export.ExportScriptDelegate;
+import org.nabucco.testautomation.script.ui.web.communication.importing.ImportScriptDelegate;
 import org.nabucco.testautomation.script.ui.web.communication.maintain.MaintainFolderDelegate;
 import org.nabucco.testautomation.script.ui.web.communication.maintain.MaintainMetadataDelegate;
 import org.nabucco.testautomation.script.ui.web.communication.maintain.MaintainSubEngineCodeDelegate;
@@ -56,6 +58,10 @@ public class ScriptComponentServiceDelegateFactory {
     private SearchSubEngineCodeDelegate searchSubEngineCodeDelegate;
 
     private ProduceFolderDelegate produceFolderDelegate;
+
+    private ExportScriptDelegate exportScriptDelegate;
+
+    private ImportScriptDelegate importScriptDelegate;
 
     /** Constructs a new ScriptComponentServiceDelegateFactory instance. */
     private ScriptComponentServiceDelegateFactory() {
@@ -301,6 +307,46 @@ public class ScriptComponentServiceDelegateFactory {
             return this.produceFolderDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot locate service: ProduceFolder", e);
+        } catch (ServiceException e) {
+            throw new ClientException("Cannot locate service: ServiceDelegateTemplate", e);
+        }
+    }
+
+    /**
+     * Getter for the ExportScript.
+     *
+     * @return the ExportScriptDelegate.
+     * @throws ClientException
+     */
+    public ExportScriptDelegate getExportScript() throws ClientException {
+        try {
+            if ((this.exportScriptDelegate == null)) {
+                this.exportScriptDelegate = new ExportScriptDelegate(this.getComponent()
+                        .getExportScript());
+            }
+            return this.exportScriptDelegate;
+        } catch (ConnectionException e) {
+            throw new ClientException("Cannot locate service: ExportScript", e);
+        } catch (ServiceException e) {
+            throw new ClientException("Cannot locate service: ServiceDelegateTemplate", e);
+        }
+    }
+
+    /**
+     * Getter for the ImportScript.
+     *
+     * @return the ImportScriptDelegate.
+     * @throws ClientException
+     */
+    public ImportScriptDelegate getImportScript() throws ClientException {
+        try {
+            if ((this.importScriptDelegate == null)) {
+                this.importScriptDelegate = new ImportScriptDelegate(this.getComponent()
+                        .getImportScript());
+            }
+            return this.importScriptDelegate;
+        } catch (ConnectionException e) {
+            throw new ClientException("Cannot locate service: ImportScript", e);
         } catch (ServiceException e) {
             throw new ClientException("Cannot locate service: ServiceDelegateTemplate", e);
         }

@@ -183,14 +183,20 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
             if (datatypeToRemove instanceof Property) {
                 PropertyComposite propertyList = (PropertyComposite) parentDatatype;
                 List<PropertyContainer> propertyListProperyList = propertyList.getPropertyList();
+                PropertyContainer containerToBeDeleted = propertyListProperyList.get(indexOfNodeToDelete);
                 decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(
                         indexOfNodeToDelete, propertyListProperyList);
                 propertyListProperyList.remove(indexOfNodeToDelete);
                 removedFromBusinessModel = true;
+                DatatypeState datatypeState = containerToBeDeleted.getDatatypeState();
+				if(datatypeState == DatatypeState.PERSISTENT || datatypeState == DatatypeState.MODIFIED){
+            		containerToBeDeleted.setDatatypeState(DatatypeState.DELETED);
+            	}
             }
         }
         if (removedFromBusinessModel) {
-            if (datatypeToRemove.getDatatypeState() == DatatypeState.PERSISTENT) {
+            if (datatypeToRemove.getDatatypeState() == DatatypeState.PERSISTENT 
+            		|| datatypeToRemove.getDatatypeState() == DatatypeState.MODIFIED) {
                 datatypeToRemove.setDatatypeState(DatatypeState.DELETED);
             }
             if (parentDatatype.getDatatypeState() == DatatypeState.PERSISTENT) {

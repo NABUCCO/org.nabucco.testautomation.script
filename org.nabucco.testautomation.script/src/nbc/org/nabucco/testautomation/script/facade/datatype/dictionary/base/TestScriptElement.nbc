@@ -1,11 +1,23 @@
 /*
- *	PRODYNA NABUCCO
- *  Copyright 2010, PRODYNA AG
- */
+* Copyright 2010 PRODYNA AG
+*
+* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.opensource.org/licenses/eclipse-1.0.php or
+* http://www.nabucco-source.org/nabucco-license.html
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 
@@ -13,7 +25,10 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScr
 @Company		PRODYNA AG
 @Date			2010-04-07
 @Description	Abstract superclass of all testscript elements
-public abstract Datatype TestScriptElement extends NabuccoDatatype {
+public abstract Datatype TestScriptElement extends ExportDatatype {
+
+	@Mandatory
+	protected Enumeration TestScriptElementType[1] type;
 
 	@Mandatory
 	private Basetype Name[1] name;
@@ -21,7 +36,4 @@ public abstract Datatype TestScriptElement extends NabuccoDatatype {
 	@Optional
 	private Datatype PropertyList[0..1] propertyList;
 
-	@Mandatory
-	protected Enumeration TestScriptElementType[1] type;
-	
 }

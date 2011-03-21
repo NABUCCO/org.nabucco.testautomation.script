@@ -18,8 +18,12 @@ package org.nabucco.testautomation.script.impl.service.search;
 
 import javax.persistence.Query;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.validation.constraint.element.ConstraintFactory;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.framework.base.impl.service.maintain.PersistenceCleaner;
 import org.nabucco.testautomation.script.facade.datatype.comparator.MetadataSorter;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
@@ -29,7 +33,6 @@ import org.nabucco.testautomation.script.impl.service.DynamicCodeSupport;
 import org.nabucco.testautomation.script.impl.service.PropertySupport;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.search.GetMetadataServiceHandler;
 
 
 /**
@@ -52,27 +55,42 @@ public class GetMetadataServiceHandlerImpl extends
 			throw new SearchException("Mandatory Identifier is null");
 		}
 		
-		Metadata result = getMetadata(msg.getIdentifier().getValue());
-		MetadataMsg rs = new MetadataMsg();
+		Metadata metadata = getMetadata(msg.getIdentifier().getValue());
 
-		if (result == null) {
+		if (metadata == null) {
 			throw new SearchException("Metadata with id '" + msg.getIdentifier().getValue() + "' not found");
 		}
 		
-		resolveMetadata(result);
+		resolveMetadata(metadata);
 		
 		// Detach Entity
 		this.getEntityManager().clear();
+		try {
+			metadata.accept(new PersistenceCleaner());
+		} catch (VisitorException e) {
+			throw new SearchException(e);
+		}
 		
 		// Sort
-		metadataSorter.sort(result);
+		metadataSorter.sort(metadata);
 		
 		if (!SubEngineCodeCache.getInstance().isInitialized()) {
-			SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+			SubEngineCodeSupport.getInstance().initCache(this.getContext());
 		}
-		SubEngineCodeSupport.getInstance().resolveSubEngineCodeDeep(result);
+		SubEngineCodeSupport.getInstance().resolveSubEngineCodeDeep(metadata);
+
+		// Check owner and set Editable-Constraint
+		if (!metadata.getOwner().equals(NabuccoInstance.getInstance().getOwner())) {
+			try {
+				metadata.addConstraint(ConstraintFactory.getInstance()
+						.createEditableConstraint(false), true);
+			} catch (VisitorException ex) {
+				throw new SearchException(ex);
+			}
+		}
 		
-		rs.setMetadata(result);
+		MetadataMsg rs = new MetadataMsg();
+		rs.setMetadata(metadata);
 		return rs;
 	}
 	

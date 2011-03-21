@@ -23,7 +23,11 @@ import org.nabucco.testautomation.script.ui.rcp.command.script.SaveTestScriptHan
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintenanceEditViewBusinessModel;
 
-
+/**
+ * SaveTestScriptHandlerImpl
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class SaveTestScriptHandlerImpl
         extends
         NabuccoAbstractSaveCommandHandlerImpl<ScriptMaintenanceEditViewBusinessModel, ScriptMaintainanceMultiplePageEditViewModel>

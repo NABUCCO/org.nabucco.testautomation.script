@@ -55,9 +55,6 @@ public class MetadataVisitor extends DatatypeVisitor {
      *            the element to visit
      */
     protected void visit(Metadata metadata) {
-    	for (MetadataLabel label : metadata.getLabelList()) {
-    		this.visit(label);
-    	}
     }
     
     /**

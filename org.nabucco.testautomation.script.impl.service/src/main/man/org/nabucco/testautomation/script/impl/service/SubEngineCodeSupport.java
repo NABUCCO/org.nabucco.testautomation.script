@@ -18,15 +18,17 @@ package org.nabucco.testautomation.script.impl.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.logger.NabuccoLoggingFactory;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
+import org.nabucco.framework.base.facade.message.ServiceRequest;
+import org.nabucco.framework.base.facade.message.context.ServiceMessageContext;
+import org.nabucco.testautomation.script.facade.component.ScriptComponentLocator;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+import org.nabucco.testautomation.script.facade.message.SubEngineCodeListMsg;
+import org.nabucco.testautomation.script.facade.message.SubEngineCodeSearchMsg;
+import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
 
 
@@ -61,11 +63,7 @@ public class SubEngineCodeSupport {
 		
 		if (operation != null) {
 			operation = SubEngineCodeCache.getInstance().getOperationCode(operation.getId());
-			List<SubEngineActionCode> actionList = operation.getActionList();
-			
-			for (SubEngineActionCode subEngineActionCode : actionList) {
-				subEngineActionCode.setDatatypeState(DatatypeState.PERSISTENT);
-			}
+			operation.getActionList().size();
 			metadata.setOperation(operation);
 		}
 	}
@@ -79,15 +77,25 @@ public class SubEngineCodeSupport {
 		}
 	}
 	
-	public void initCache(EntityManager em) {
+	public void initCache(ServiceMessageContext ctx) {
 		
-		Query query = em.createQuery("SELECT c FROM SubEngineCode c");
-		
-		@SuppressWarnings("unchecked")
-		List<SubEngineCode> resultList = query.getResultList();
-		
-		// Init Cache
-		SubEngineCodeCache.getInstance().init(resultList);
+		try {
+			SearchSubEngineCode search = ScriptComponentLocator.getInstance()
+					.getComponent().getSearchSubEngineCode();
+			ServiceRequest<SubEngineCodeSearchMsg> rq = new ServiceRequest<SubEngineCodeSearchMsg>(
+					ctx);
+			rq.setRequestMessage(new SubEngineCodeSearchMsg());
+			SubEngineCodeListMsg rs = search.searchSubEngineCode(rq)
+					.getResponseMessage();
+			List<SubEngineCode> subEngineCodes = rs.getSubEngineCodeList();
+
+			// Init Cache
+			SubEngineCodeCache.getInstance().init(subEngineCodes);
+		} catch (Exception ex) {
+			NabuccoLoggingFactory.getInstance()
+					.getLogger(SubEngineCodeSupport.class)
+					.error(ex, "Could not initialize SubEngineCode");
+		}
 	}
 	
 }

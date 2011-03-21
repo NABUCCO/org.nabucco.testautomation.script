@@ -3,11 +3,15 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.EnumProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.base.StringValue;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
@@ -23,10 +27,16 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "propertyRef", "value", "target", "action" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;",
             "l0,n;m0,1;", "m1,1;" };
+
+    public static final String PROPERTYREF = "propertyRef";
+
+    public static final String VALUE = "value";
+
+    public static final String TARGET = "target";
+
+    public static final String ACTION = "action";
 
     /** the reference to a property in the context (Needed for: COPY, CLEAR, DELETE, SET) */
     private PropertyReference propertyRef;
@@ -71,23 +81,64 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
         clone.setType(this.getType());
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
+                .getPropertyMap());
+        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
+                PropertyReference.class, 7, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(VALUE, PropertyDescriptorSupport.createBasetype(VALUE, StringValue.class,
+                8, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(TARGET, PropertyDescriptorSupport.createBasetype(TARGET,
+                PropertyReference.class, 9, PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(ACTION, PropertyDescriptorSupport.createEnumeration(ACTION,
+                PropertyActionType.class, 10, PROPERTY_CONSTRAINTS[3], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[0],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[0], this.propertyRef));
-        properties.add(new BasetypeProperty<StringValue>(PROPERTY_NAMES[1], StringValue.class,
-                PROPERTY_CONSTRAINTS[1], this.value));
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[2],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[2], this.target));
-        properties.add(new EnumProperty<PropertyActionType>(PROPERTY_NAMES[3],
-                PropertyActionType.class, PROPERTY_CONSTRAINTS[3], this.action));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(PROPERTYREF),
+                this.propertyRef, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(VALUE),
+                this.value, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(TARGET),
+                this.target, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(ACTION),
+                this.action, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
+            this.setPropertyRef(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(VALUE) && (property.getType() == StringValue.class))) {
+            this.setValue(((StringValue) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(TARGET) && (property.getType() == PropertyReference.class))) {
+            this.setTarget(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(ACTION) && (property.getType() == PropertyActionType.class))) {
+            this.setAction(((PropertyActionType) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -140,19 +191,6 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<PropertyAction>\n");
-        appendable.append(super.toString());
-        appendable.append((("<propertyRef>" + this.propertyRef) + "</propertyRef>\n"));
-        appendable.append((("<value>" + this.value) + "</value>\n"));
-        appendable.append((("<target>" + this.target) + "</target>\n"));
-        appendable.append((("<action>" + this.action) + "</action>\n"));
-        appendable.append("</PropertyAction>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public PropertyAction cloneObject() {
         PropertyAction clone = new PropertyAction();
         this.cloneObject(clone);
@@ -184,6 +222,9 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
      */
     public void setPropertyRef(String propertyRef) {
         if ((this.propertyRef == null)) {
+            if ((propertyRef == null)) {
+                return;
+            }
             this.propertyRef = new PropertyReference();
         }
         this.propertyRef.setValue(propertyRef);
@@ -214,6 +255,9 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
      */
     public void setValue(String value) {
         if ((this.value == null)) {
+            if ((value == null)) {
+                return;
+            }
             this.value = new StringValue();
         }
         this.value.setValue(value);
@@ -244,6 +288,9 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
      */
     public void setTarget(String target) {
         if ((this.target == null)) {
+            if ((target == null)) {
+                return;
+            }
             this.target = new PropertyReference();
         }
         this.target.setValue(target);
@@ -278,5 +325,24 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
         } else {
             this.action = PropertyActionType.valueOf(action);
         }
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(PropertyAction.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(PropertyAction.class).getAllProperties();
     }
 }

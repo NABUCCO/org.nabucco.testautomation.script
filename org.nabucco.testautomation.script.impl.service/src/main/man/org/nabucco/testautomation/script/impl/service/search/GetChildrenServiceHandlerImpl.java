@@ -18,14 +18,14 @@ package org.nabucco.testautomation.script.impl.service.search;
 
 import java.util.List;
 
-import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.framework.base.impl.service.maintain.PersistenceCleaner;
 import org.nabucco.testautomation.script.facade.datatype.comparator.MetadataSorter;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.message.MetadataMsg;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.search.GetChildrenServiceHandler;
 
 
 /**
@@ -49,13 +49,21 @@ public class GetChildrenServiceHandlerImpl extends
 			throw new SearchException("Invalid Metadata in getChildren()");
 		}
 		
+		Metadata parent = metadata.getParent();
 		metadata = resolveChildren(metadata);
+		metadata.setParent(parent);
 
 		this.getEntityManager().clear();
+		try {
+			metadata.accept(new PersistenceCleaner());
+		} catch (VisitorException e) {
+			throw new SearchException(e);
+		}
+		
 		metadataSorter.sort(metadata.getChildren());
 		
 		if (!SubEngineCodeCache.getInstance().isInitialized()) {
-			SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+			SubEngineCodeSupport.getInstance().initCache(this.getContext());
 		}
 		
 		SubEngineCodeSupport.getInstance().resolveSubEngineCodeShallow(metadata);
@@ -71,11 +79,10 @@ public class GetChildrenServiceHandlerImpl extends
 	
 	private Metadata resolveChildren(Metadata metadata) throws SearchException {
 		metadata = super.getEntityManager().find(Metadata.class, metadata.getId());
-		metadata.setDatatypeState(DatatypeState.PERSISTENT);
 		List<Metadata> children = metadata.getChildren();
 
 		for (Metadata child : children) {
-			child.setDatatypeState(DatatypeState.PERSISTENT);
+			child.setParent(metadata);
 		}
 		return metadata;
 	}

@@ -28,7 +28,7 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.Scr
 import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageView;
 
 /**
- * TestScriptDetailPageView
+ * ActionDetailPageView
  * 
  * @author Nicolas Moser, PRODYNA AG
  */

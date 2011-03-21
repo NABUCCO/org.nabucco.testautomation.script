@@ -26,9 +26,10 @@ import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
+import org.nabucco.testautomation.script.facade.datatype.comparator.SubEngineActionSorter;
+import org.nabucco.testautomation.script.facade.datatype.comparator.SubEngineOperationSorter;
 import org.nabucco.testautomation.script.facade.message.SubEngineCodeListMsg;
 import org.nabucco.testautomation.script.facade.message.SubEngineCodeSearchMsg;
-import org.nabucco.testautomation.script.impl.service.search.SearchSubEngineCodeServiceHandler;
 
 
 /**
@@ -39,6 +40,11 @@ import org.nabucco.testautomation.script.impl.service.search.SearchSubEngineCode
 public class SearchSubEngineCodeServiceHandlerImpl extends SearchSubEngineCodeServiceHandler {
 
 	private static final long serialVersionUID = 1L;
+
+	private SubEngineOperationSorter operationSorter = new SubEngineOperationSorter();
+	
+	private SubEngineActionSorter actionSorter = new SubEngineActionSorter();
+
 	
 	@Override
 	public SubEngineCodeListMsg searchSubEngineCode(SubEngineCodeSearchMsg msg)
@@ -87,9 +93,21 @@ public class SearchSubEngineCodeServiceHandlerImpl extends SearchSubEngineCodeSe
         
 		@SuppressWarnings("unchecked")
 		List<SubEngineCode> resultList = query.getResultList();
-		
+
+		// Load deep
 		for (SubEngineCode subEngineCode : resultList) {
 			load(subEngineCode);
+		}
+		
+		this.getEntityManager().clear();
+		
+		// Sort
+		for (SubEngineCode subEngineCode : resultList) {
+			operationSorter.sort(subEngineCode.getOperationList());
+			
+			for (SubEngineOperationCode operation : subEngineCode.getOperationList()) {
+				actionSorter.sort(operation.getActionList());
+			}
 		}
 		
 		SubEngineCodeListMsg rs = new SubEngineCodeListMsg();

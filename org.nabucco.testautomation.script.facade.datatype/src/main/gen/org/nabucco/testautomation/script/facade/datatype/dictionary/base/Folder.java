@@ -3,16 +3,22 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.ListProperty;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoListImpl;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
+import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 
@@ -21,23 +27,28 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-08-07
  */
-public class Folder extends NabuccoDatatype implements Datatype {
+public class Folder extends ExportDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "name", "root", "subFolderList",
-            "testScriptList" };
-
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m1,1;", "m0,n;",
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,n;m1,1;", "m0,n;",
             "m0,n;" };
+
+    public static final String NAME = "name";
+
+    public static final String ROOT = "root";
+
+    public static final String SUBFOLDERLIST = "subFolderList";
+
+    public static final String TESTSCRIPTLIST = "testScriptList";
 
     private Name name;
 
     private Flag root;
 
-    private List<Folder> subFolderList;
+    private NabuccoList<Folder> subFolderList;
 
-    private List<TestScript> testScriptList;
+    private NabuccoList<TestScript> testScriptList;
 
     /** Constructs a new Folder instance. */
     public Folder() {
@@ -62,12 +73,11 @@ public class Folder extends NabuccoDatatype implements Datatype {
         if ((this.getRoot() != null)) {
             clone.setRoot(this.getRoot().cloneObject());
         }
-        if ((this.subFolderList instanceof NabuccoList<?>)) {
-            clone.subFolderList = ((NabuccoList<Folder>) this.subFolderList).cloneCollection();
+        if ((this.subFolderList != null)) {
+            clone.subFolderList = this.subFolderList.cloneCollection();
         }
-        if ((this.testScriptList instanceof NabuccoList<?>)) {
-            clone.testScriptList = ((NabuccoList<TestScript>) this.testScriptList)
-                    .cloneCollection();
+        if ((this.testScriptList != null)) {
+            clone.testScriptList = this.testScriptList.cloneCollection();
         }
     }
 
@@ -78,9 +88,9 @@ public class Folder extends NabuccoDatatype implements Datatype {
      */
     List<Folder> getSubFolderListJPA() {
         if ((this.subFolderList == null)) {
-            this.subFolderList = new NabuccoList<Folder>(NabuccoCollectionState.LAZY);
+            this.subFolderList = new NabuccoListImpl<Folder>(NabuccoCollectionState.LAZY);
         }
-        return ((NabuccoList<Folder>) this.subFolderList).getDelegate();
+        return ((NabuccoListImpl<Folder>) this.subFolderList).getDelegate();
     }
 
     /**
@@ -90,9 +100,31 @@ public class Folder extends NabuccoDatatype implements Datatype {
      */
     void setSubFolderListJPA(List<Folder> subFolderList) {
         if ((this.subFolderList == null)) {
-            this.subFolderList = new NabuccoList<Folder>(NabuccoCollectionState.LAZY);
+            this.subFolderList = new NabuccoListImpl<Folder>(NabuccoCollectionState.LAZY);
         }
-        ((NabuccoList<Folder>) this.subFolderList).setDelegate(subFolderList);
+        ((NabuccoListImpl<Folder>) this.subFolderList).setDelegate(subFolderList);
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(ExportDatatype.class)
+                .getPropertyMap());
+        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(ROOT, PropertyDescriptorSupport.createBasetype(ROOT, Flag.class, 5,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(SUBFOLDERLIST, PropertyDescriptorSupport.createCollection(SUBFOLDERLIST,
+                Folder.class, 6, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(TESTSCRIPTLIST, PropertyDescriptorSupport.createCollection(TESTSCRIPTLIST,
+                TestScript.class, 7, PROPERTY_CONSTRAINTS[3], false,
+                PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -101,17 +133,37 @@ public class Folder extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[0], Name.class,
-                PROPERTY_CONSTRAINTS[0], this.name));
-        properties.add(new BasetypeProperty<Flag>(PROPERTY_NAMES[1], Flag.class,
-                PROPERTY_CONSTRAINTS[1], this.root));
-        properties.add(new ListProperty<Folder>(PROPERTY_NAMES[2], Folder.class,
-                PROPERTY_CONSTRAINTS[2], this.subFolderList));
-        properties.add(new ListProperty<TestScript>(PROPERTY_NAMES[3], TestScript.class,
-                PROPERTY_CONSTRAINTS[3], this.testScriptList));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(NAME), this.name, null));
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(ROOT), this.root, null));
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(SUBFOLDERLIST),
+                this.subFolderList, null));
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(TESTSCRIPTLIST),
+                this.testScriptList, null));
         return properties;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
+            this.setName(((Name) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(ROOT) && (property.getType() == Flag.class))) {
+            this.setRoot(((Flag) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(SUBFOLDERLIST) && (property.getType() == Folder.class))) {
+            this.subFolderList = ((NabuccoList<Folder>) property.getInstance());
+            return true;
+        } else if ((property.getName().equals(TESTSCRIPTLIST) && (property.getType() == TestScript.class))) {
+            this.testScriptList = ((NabuccoList<TestScript>) property.getInstance());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -152,17 +204,6 @@ public class Folder extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Folder>\n");
-        appendable.append(super.toString());
-        appendable.append((("<name>" + this.name) + "</name>\n"));
-        appendable.append((("<root>" + this.root) + "</root>\n"));
-        appendable.append("</Folder>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public Folder cloneObject() {
         Folder clone = new Folder();
         this.cloneObject(clone);
@@ -194,6 +235,9 @@ public class Folder extends NabuccoDatatype implements Datatype {
      */
     public void setName(String name) {
         if ((this.name == null)) {
+            if ((name == null)) {
+                return;
+            }
             this.name = new Name();
         }
         this.name.setValue(name);
@@ -224,6 +268,9 @@ public class Folder extends NabuccoDatatype implements Datatype {
      */
     public void setRoot(Boolean root) {
         if ((this.root == null)) {
+            if ((root == null)) {
+                return;
+            }
             this.root = new Flag();
         }
         this.root.setValue(root);
@@ -232,11 +279,11 @@ public class Folder extends NabuccoDatatype implements Datatype {
     /**
      * Missing description at method getSubFolderList.
      *
-     * @return the List<Folder>.
+     * @return the NabuccoList<Folder>.
      */
-    public List<Folder> getSubFolderList() {
+    public NabuccoList<Folder> getSubFolderList() {
         if ((this.subFolderList == null)) {
-            this.subFolderList = new NabuccoList<Folder>(NabuccoCollectionState.INITIALIZED);
+            this.subFolderList = new NabuccoListImpl<Folder>(NabuccoCollectionState.INITIALIZED);
         }
         return this.subFolderList;
     }
@@ -244,12 +291,32 @@ public class Folder extends NabuccoDatatype implements Datatype {
     /**
      * Missing description at method getTestScriptList.
      *
-     * @return the List<TestScript>.
+     * @return the NabuccoList<TestScript>.
      */
-    public List<TestScript> getTestScriptList() {
+    public NabuccoList<TestScript> getTestScriptList() {
         if ((this.testScriptList == null)) {
-            this.testScriptList = new NabuccoList<TestScript>(NabuccoCollectionState.INITIALIZED);
+            this.testScriptList = new NabuccoListImpl<TestScript>(
+                    NabuccoCollectionState.INITIALIZED);
         }
         return this.testScriptList;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Folder.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Folder.class).getAllProperties();
     }
 }

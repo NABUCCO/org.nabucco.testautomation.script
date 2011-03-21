@@ -16,12 +16,10 @@
 */
 package org.nabucco.testautomation.script.impl.service.produce;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
 
 /**
  * MetadataFactory
@@ -47,6 +45,7 @@ public class MetadataFactory {
 		Metadata metadata = new Metadata();
 		metadata.setDatatypeState(DatatypeState.INITIALIZED);
 		metadata.setName("Enter Name ...");
+		metadata.setOwner(NabuccoInstance.getInstance().getOwner());
 		metadata.getLabelList().add(createMetadataLabel());
 		return metadata;
 	}
@@ -55,13 +54,6 @@ public class MetadataFactory {
 		
 		MetadataLabel label = new MetadataLabel();
 		label.setDatatypeState(DatatypeState.INITIALIZED);
-		
-		PropertyList propertyList = new PropertyList();
-		propertyList.setDatatypeState(DatatypeState.INITIALIZED);
-		propertyList.setName("MetadataProperties");
-		propertyList.setUsageType(PropertyUsageType.METADTA_PARAM);
-		propertyList.setReused(Boolean.FALSE);
-		label.setPropertyList(propertyList);
 		return label;
 	}
 	

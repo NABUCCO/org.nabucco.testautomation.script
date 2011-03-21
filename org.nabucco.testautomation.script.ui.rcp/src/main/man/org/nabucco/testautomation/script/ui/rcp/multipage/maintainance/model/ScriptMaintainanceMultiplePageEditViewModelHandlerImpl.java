@@ -40,18 +40,19 @@ import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerDe
 import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerParameter;
 import org.nabucco.framework.plugin.base.component.picker.dialog.LabelForDialog;
 import org.nabucco.framework.plugin.base.logging.NabuccoLogMessage;
-import org.nabucco.testautomation.script.facade.datatype.comparator.TestScriptElementSorter;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
-
 import org.nabucco.testautomation.facade.datatype.comparator.PropertySorter;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
+import org.nabucco.testautomation.script.facade.datatype.comparator.TestScriptElementSorter;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptToEmbeddedTestScriptMapper;
 
 /**
  * ScriptMaintainanceMultiplePageEditViewModelHandlerImpl
@@ -102,6 +103,13 @@ public class ScriptMaintainanceMultiplePageEditViewModelHandlerImpl implements
         } else if (newChild instanceof TestScriptElementContainer) {
             TestScriptElementContainer testScriptElementContainer = (TestScriptElementContainer) newChild;
 
+            // Special Case EmbeddedScript
+            if(testScriptElementContainer.getElement() instanceof EmbeddedTestScript){
+            	EmbeddedTestScript embeddedTestScript = (EmbeddedTestScript) testScriptElementContainer.getElement();
+            	TestScript testScript = embeddedTestScript.getTestScript();
+            	TestScriptToEmbeddedTestScriptMapper.map(testScript, embeddedTestScript);
+            }
+            
             if (parentDatatype instanceof TestScriptComposite) {
                 TestScriptComposite parentTestScriptComposite = (TestScriptComposite) parentDatatype;
                 // New Datatypes have to get an order
@@ -202,11 +210,16 @@ public class ScriptMaintainanceMultiplePageEditViewModelHandlerImpl implements
             if (parentDatatype instanceof PropertyList) {
                 PropertyList propertyList = (PropertyList) parentDatatype;
                 List<PropertyContainer> propertyListProperyList = propertyList.getPropertyList();
+                PropertyContainer containerToBeDeleted = propertyListProperyList.get(indexOfNodeToDelete);
                 decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(
                         indexOfNodeToDelete, propertyListProperyList);
                 propertyListProperyList.remove(indexOfNodeToDelete);
                 org.nabucco.testautomation.ui.rcp.model.property.DataModelManager.normalizeOrderIndicies(propertyList, false);
                 removedFromDataModel = true;
+                DatatypeState datatypeState = containerToBeDeleted.getDatatypeState();
+				if(datatypeState == DatatypeState.PERSISTENT || datatypeState == DatatypeState.MODIFIED){
+            		containerToBeDeleted.setDatatypeState(DatatypeState.DELETED);
+            	}
             } else if (parentDatatype instanceof TestScriptElement) {
                 TestScriptElement testScriptElement = (TestScriptElement) parentDatatype;
                 testScriptElement.setPropertyList(null);
@@ -223,9 +236,7 @@ public class ScriptMaintainanceMultiplePageEditViewModelHandlerImpl implements
                     || datatypeState == DatatypeState.MODIFIED) {
                 datatypeToRemove.setDatatypeState(DatatypeState.DELETED);
             }
-            if (parentNode.getChildren().remove(nodeToRemove))
-                ;
-            {
+            if (parentNode.getChildren().remove(nodeToRemove)) {
                 Activator.getDefault().logError(
                         new NabuccoLogMessage(
                                 ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.class,

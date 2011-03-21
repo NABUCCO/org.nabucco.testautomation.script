@@ -55,6 +55,11 @@ import org.nabucco.testautomation.facade.message.PropertyMsg;
 import org.nabucco.testautomation.ui.rcp.communication.TestautomationComponentServiceDelegateFactory;
 import org.nabucco.testautomation.ui.rcp.communication.produce.ProducePropertyDelegate;
 
+/**
+ * MetadataElementFactory
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataElementFactory {
 
     private static List<SubEngineCode> subEngineCodeList = new ArrayList<SubEngineCode>();

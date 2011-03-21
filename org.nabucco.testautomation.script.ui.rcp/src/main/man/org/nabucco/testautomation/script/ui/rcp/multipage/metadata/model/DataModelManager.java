@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.utils.I18N;
 import org.nabucco.framework.plugin.base.Activator;
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailHelper;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.contextmenu.NewDatatypeMenuItem;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.contextmenu.RemoveDatatypeMenuItem;
@@ -52,6 +53,11 @@ import org.nabucco.testautomation.facade.datatype.property.XPathProperty;
 import org.nabucco.testautomation.facade.datatype.property.XmlProperty;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 
+/**
+ * DataModelManager
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class DataModelManager {
 
     private static final String NEW_ELEMENT = ".NewElement";
@@ -124,6 +130,10 @@ public class DataModelManager {
             MasterDetailTreeNode treeNode = (MasterDetailTreeNode) firstElement;
             Datatype datatype = treeNode.getDatatype();
 
+            if(!MasterDetailHelper.isDatatypeEditable(datatype)){
+				return null;
+			}
+            
             Menu newElementMenu = createMenu(result,
                     MetadataMaintenanceMultiPageEditViewModelHandlerImpl.ID + NEW_ELEMENT, "icons/add.png");
 

@@ -3,10 +3,15 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.base.Text;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
@@ -21,9 +26,11 @@ public class TextMessage extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "text", "propertyRef" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m0,1;" };
+    public static final String TEXT = "text";
+
+    public static final String PROPERTYREF = "propertyRef";
 
     private Text text;
 
@@ -56,19 +63,50 @@ public class TextMessage extends TestScriptComponent implements Datatype {
         clone.setType(this.getType());
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
+                .getPropertyMap());
+        propertyMap.put(TEXT, PropertyDescriptorSupport.createBasetype(TEXT, Text.class, 7,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
+                PropertyReference.class, 8, PROPERTY_CONSTRAINTS[1], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Text>(PROPERTY_NAMES[0], Text.class,
-                PROPERTY_CONSTRAINTS[0], this.text));
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[1],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[1], this.propertyRef));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TextMessage.getPropertyDescriptor(TEXT), this.text,
+                null));
+        properties.add(super.createProperty(TextMessage.getPropertyDescriptor(PROPERTYREF),
+                this.propertyRef, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(TEXT) && (property.getType() == Text.class))) {
+            this.setText(((Text) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
+            this.setPropertyRef(((PropertyReference) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -109,17 +147,6 @@ public class TextMessage extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<TextMessage>\n");
-        appendable.append(super.toString());
-        appendable.append((("<text>" + this.text) + "</text>\n"));
-        appendable.append((("<propertyRef>" + this.propertyRef) + "</propertyRef>\n"));
-        appendable.append("</TextMessage>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public TextMessage cloneObject() {
         TextMessage clone = new TextMessage();
         this.cloneObject(clone);
@@ -151,6 +178,9 @@ public class TextMessage extends TestScriptComponent implements Datatype {
      */
     public void setText(String text) {
         if ((this.text == null)) {
+            if ((text == null)) {
+                return;
+            }
             this.text = new Text();
         }
         this.text.setValue(text);
@@ -181,8 +211,30 @@ public class TextMessage extends TestScriptComponent implements Datatype {
      */
     public void setPropertyRef(String propertyRef) {
         if ((this.propertyRef == null)) {
+            if ((propertyRef == null)) {
+                return;
+            }
             this.propertyRef = new PropertyReference();
         }
         this.propertyRef.setValue(propertyRef);
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(TextMessage.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(TextMessage.class).getAllProperties();
     }
 }

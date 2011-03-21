@@ -3,9 +3,15 @@
  */
 package org.nabucco.testautomation.script.facade.message;
 
+import java.util.HashMap;
 import java.util.List;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.framework.base.facade.message.ServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceMessageSupport;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
@@ -20,9 +26,9 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "metadataLabel" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;" };
+
+    public static final String METADATALABEL = "metadataLabel";
 
     private MetadataLabel metadataLabel;
 
@@ -31,12 +37,37 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
         super();
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.put(METADATALABEL, PropertyDescriptorSupport.createDatatype(METADATALABEL,
+                MetadataLabel.class, 0, PROPERTY_CONSTRAINTS[0], false,
+                PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new DatatypeProperty<MetadataLabel>(PROPERTY_NAMES[0], MetadataLabel.class,
-                PROPERTY_CONSTRAINTS[0], this.metadataLabel));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(MetadataLabelMsg.getPropertyDescriptor(METADATALABEL),
+                this.metadataLabel));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(METADATALABEL) && (property.getType() == MetadataLabel.class))) {
+            this.setMetadataLabel(((MetadataLabel) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -72,16 +103,6 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<MetadataLabelMsg>\n");
-        appendable.append(super.toString());
-        appendable.append((("<metadataLabel>" + this.metadataLabel) + "</metadataLabel>\n"));
-        appendable.append("</MetadataLabelMsg>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public ServiceMessage cloneObject() {
         return this;
     }
@@ -102,5 +123,25 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
      */
     public void setMetadataLabel(MetadataLabel metadataLabel) {
         this.metadataLabel = metadataLabel;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(MetadataLabelMsg.class)
+                .getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(MetadataLabelMsg.class).getAllProperties();
     }
 }

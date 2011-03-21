@@ -19,11 +19,10 @@ package org.nabucco.testautomation.script.ui.rcp.browser.script;
 import org.nabucco.framework.plugin.base.command.CommandHandler;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
 
-
 /**
  * TestScriptEditViewBrowserElementHandler
  * 
- * @author Undefined
+ * @author Markus Jorroch, PRODYNA AG
  */
 public interface TestScriptEditViewBrowserElementHandler extends CommandHandler {
 

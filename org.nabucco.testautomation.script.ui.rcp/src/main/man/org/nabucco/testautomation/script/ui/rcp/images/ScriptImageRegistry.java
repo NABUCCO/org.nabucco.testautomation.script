@@ -49,12 +49,13 @@ public enum ScriptImageRegistry {
 	ICON_METADATA("icons/script/metadata.png", "/icons/metadata.png"),
 	
 	ICON_SCRIPT("icons/script/script.png", "/icons/script.png"),
-	
-	ICON_SQL("icons/script/sql.png", "/icons/sql.png"),
-	
-	ICON_FILE("icons/script/file.png", "/icons/file.png");
-	
 
+	ICON_EMBEDDED("icons/script/embedded_script.png", "/icons/embedded_script.png"),
+	
+	ICON_PROPERTY_ACTION("icons/script/property_action.png", "/icons/property_action.png"),
+	
+	ICON_FOLDER("icons/script/folder.png", "icons/folder.png");
+	
 	/**
 	 * The unique symbolic name of the image used to identify the image in the
 	 * <code>ImageProvider</code>.

@@ -26,6 +26,9 @@ import org.nabucco.framework.base.facade.exception.persistence.PersistenceExcept
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.impl.service.maintain.PersistenceHelper;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
+import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 import org.nabucco.testautomation.script.facade.datatype.comparator.MetadataSorter;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
@@ -34,11 +37,7 @@ import org.nabucco.testautomation.script.impl.service.DynamicCodeSupport;
 import org.nabucco.testautomation.script.impl.service.PropertySupport;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.maintain.MaintainMetadataServiceHandler;
 import org.nabucco.testautomation.script.impl.service.maintain.visitor.MetadataModificationVisitor;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
 
 /**
  * MaintainMetadataServiceHandlerImpl
@@ -48,6 +47,8 @@ import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageTyp
 public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceHandler {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final String PREFIX = "META-";
 	
 	private static final MetadataSorter metadataSorter = new MetadataSorter();
 	
@@ -111,7 +112,7 @@ public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceH
 			
 			try {
 				if (!SubEngineCodeCache.getInstance().isInitialized()) {
-					SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+					SubEngineCodeSupport.getInstance().initCache(this.getContext());
 				}
 				SubEngineCodeSupport.getInstance().resolveSubEngineCodeDeep(metadata);
 			} catch (SearchException e) {
@@ -177,6 +178,9 @@ public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceH
 		
 		// Create Metadata
 		entity = this.persistenceHelper.persist(entity);
+		entity.setIdentificationKey(PREFIX + entity.getId());
+		entity.setDatatypeState(DatatypeState.MODIFIED);
+		entity = this.persistenceHelper.persist(entity);
 		return entity;
 	}
 	
@@ -229,6 +233,13 @@ public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceH
 			delete(label);
 		}
 		
+		// Generate MetadataKey
+		if (entity.getDatatypeState() == DatatypeState.INITIALIZED) {
+			entity = this.persistenceHelper.persist(entity);
+			entity.setIdentificationKey(PREFIX + entity.getId());
+			entity.setDatatypeState(DatatypeState.MODIFIED);
+		}
+		
 		// Update Metadata
 		entity = this.persistenceHelper.persist(entity);
 		return entity;
@@ -236,20 +247,33 @@ public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceH
 	
 	private MetadataLabel update(MetadataLabel entity) throws PersistenceException {
 		
-		PropertyList propertyList = entity.getPropertyList();
+		// Update Properties
+		PropertyList propertyList = update(entity.getPropertyList());	
+		entity.setPropertyList(propertyList);
 		
-		if (propertyList != null) {
+		// Update MetadataLabel
+		entity = this.persistenceHelper.persist(entity);
+		return entity;
+	}
+	
+	private PropertyList update(PropertyList entity) throws PersistenceException {
+		
+		if (entity != null) {
+			
 			try {
-				propertyList.setUsageType(PropertyUsageType.METADTA_PARAM);
-				propertyList = PropertySupport.getInstance().maintainPropertyList(propertyList, getContext());
-				entity.setPropertyList(propertyList);
+				if (entity.getDatatypeState() == DatatypeState.PERSISTENT) {
+					PropertyModificationVisitor visitor = new PropertyModificationVisitor(entity);
+					entity.accept(visitor);
+				}
+			
+				if (entity.getDatatypeState() != DatatypeState.PERSISTENT) {
+					entity.setUsageType(PropertyUsageType.METADTA_PARAM);
+					entity = PropertySupport.getInstance().maintainPropertyList(entity, getContext());
+				}
 			} catch (Exception e) {
 				throw new PersistenceException("Could not maintain PropertyList");
 			}
 		}
-		
-		// Update MetadataLabel
-		entity = this.persistenceHelper.persist(entity);
 		return entity;
 	}
 
@@ -288,6 +312,17 @@ public class MaintainMetadataServiceHandlerImpl extends MaintainMetadataServiceH
 		
 		if (entity.getDatatypeState() != DatatypeState.DELETED) {
 			return;
+		}
+		
+		PropertyList propertyList = entity.getPropertyList();
+		
+		if (propertyList != null) {
+			propertyList.setDatatypeState(DatatypeState.DELETED);
+			try {
+				PropertySupport.getInstance().maintainPropertyList(propertyList, getContext());
+			} catch (Exception e) {
+				throw new PersistenceException("Could not delete PropertyList");
+			}
 		}
 		
 		// Delete MetadataLabel

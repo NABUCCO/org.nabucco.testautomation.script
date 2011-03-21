@@ -18,6 +18,11 @@ package org.nabucco.testautomation.script.ui.rcp.browser.metadata;
 
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model.MetadataMaintenanceMultiPageEditViewModel;
 
+/**
+ * MetadataEditViewBrowserElementHandlerImpl
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataEditViewBrowserElementHandlerImpl implements
         MetadataEditViewBrowserElementHandler {
 

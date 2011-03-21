@@ -22,6 +22,7 @@ import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.message.MetadataMsg;
 import org.nabucco.testautomation.script.impl.service.produce.ProduceMetadataCloneServiceHandler;
 import org.nabucco.testautomation.script.impl.service.produce.clone.MetadataCloneVisitor;
+import org.nabucco.testautomation.script.impl.service.produce.clone.PrepareMetadataCloneVisitor;
 
 
 /**
@@ -42,18 +43,23 @@ public class ProduceMetadataCloneServiceHandlerImpl extends ProduceMetadataClone
 		if (orgMetadata == null) {
 			throw new ProduceException("No Metadata to clone");
 		}
-		
-		Metadata clone = orgMetadata.cloneObject();
-		
+
 		try {
+			// the parent must not be cloned !
+			PrepareMetadataCloneVisitor clearParentsVisitor = new PrepareMetadataCloneVisitor();
+			orgMetadata.accept(clearParentsVisitor);
+			
+			// Clone Metadata
+			Metadata clone = orgMetadata.cloneObject();
+		
+			// Reset id and version
 			MetadataCloneVisitor visitor = new MetadataCloneVisitor();
 			clone.accept(visitor);
+			msg.setMetadata(clone);
+			return msg;
 		} catch (VisitorException e) {
 			throw new ProduceException("Could not clone Metadata: " + e.getMessage());
 		}
-		
-		msg.setMetadata(clone);
-		return msg;
 	}
 
 }

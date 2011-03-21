@@ -23,6 +23,7 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
@@ -67,7 +68,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(TestScript element) {
+    protected void visit(TestScript element) throws VisitorException {
     }
 
     /**
@@ -76,7 +77,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(TestScriptElement element) {
+    protected void visit(TestScriptElement element) throws VisitorException {
     	
     	switch (element.getType()) {
     	case ACTION:
@@ -115,6 +116,9 @@ public class TestScriptVisitor extends DatatypeVisitor {
     	case TEXT_MESSAGE:
     		this.visit((TextMessage) element);
     		break;
+    	case EMBEDDED_SCRIPT:
+    		this.visit((EmbeddedTestScript) element);
+    		break;
     	}
     }
 
@@ -124,7 +128,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(TestScriptElementContainer element) {
+    protected void visit(TestScriptElementContainer element) throws VisitorException {
     }
     
     /**
@@ -133,7 +137,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Action element) {
+    protected void visit(Action element) throws VisitorException {
     }
     
     /**
@@ -142,7 +146,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Assertion element) {
+    protected void visit(Assertion element) throws VisitorException {
     }
     
     /**
@@ -151,7 +155,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(BreakLoop element) {
+    protected void visit(BreakLoop element) throws VisitorException {
     }
     
     /**
@@ -160,7 +164,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Condition element) {
+    protected void visit(Condition element) throws VisitorException {
     }
     
     /**
@@ -169,7 +173,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Execution element) {
+    protected void visit(Execution element) throws VisitorException {
     }
     
     /**
@@ -178,7 +182,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Foreach element) {
+    protected void visit(Foreach element) throws VisitorException {
     }
     
     /**
@@ -187,7 +191,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Lock element) {
+    protected void visit(Lock element) throws VisitorException {
     }
     
     /**
@@ -196,7 +200,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Logger element) {
+    protected void visit(Logger element) throws VisitorException {
     }
     
     /**
@@ -205,7 +209,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Loop element) {
+    protected void visit(Loop element) throws VisitorException {
     }
     
     /**
@@ -214,7 +218,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(PropertyAction element) {
+    protected void visit(PropertyAction element) throws VisitorException {
     }
     
     /**
@@ -223,7 +227,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(TextMessage element) {
+    protected void visit(TextMessage element) throws VisitorException {
     }
     
     /**
@@ -232,7 +236,7 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(Property element) {
+    protected void visit(Property element) throws VisitorException {
     }
     
     /**
@@ -241,7 +245,16 @@ public class TestScriptVisitor extends DatatypeVisitor {
      * @param element
      *            the element to visit
      */
-    protected void visit(PropertyContainer element) {
+    protected void visit(PropertyContainer element) throws VisitorException {
+    }
+
+    /**
+     * Visit {@link EmbeddedTestScript} instances.
+     * 
+     * @param element
+     *            the element to visit
+     */
+    protected void visit(EmbeddedTestScript element) throws VisitorException {
     }
     
 }

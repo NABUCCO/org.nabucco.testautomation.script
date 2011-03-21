@@ -44,10 +44,14 @@ public class SearchTestScriptServiceHandlerImpl extends SearchTestScriptServiceH
 			throws SearchException {
 
 		StringBuilder queryString = new StringBuilder();
-		queryString.append("select s from TestScript s");
+		queryString.append("FROM TestScript s");
 
 		List<String> filter = new ArrayList<String>();
-
+		
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			filter.add("s.owner = :owner");
+		}
+		
 		if (msg.getIdentifier() != null && msg.getIdentifier().getValue() != null) {
 			filter.add("s.id = :id");
 		} else {
@@ -96,6 +100,10 @@ public class SearchTestScriptServiceHandlerImpl extends SearchTestScriptServiceH
 		Query query = super.getEntityManager().createQuery(
 				queryString.toString());
 
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			query.setParameter("owner", msg.getOwner());
+		}
+		
 		if (msg.getIdentifier() != null && msg.getIdentifier().getValue() != null) {
 			query.setParameter("id", msg.getIdentifier().getValue());
 		} 

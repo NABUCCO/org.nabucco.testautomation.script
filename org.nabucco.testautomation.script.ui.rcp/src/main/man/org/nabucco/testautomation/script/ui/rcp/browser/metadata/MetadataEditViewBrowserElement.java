@@ -25,7 +25,11 @@ import org.nabucco.framework.plugin.base.model.browser.DatatypeBrowserElement;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model.MetadataMaintenanceMultiPageEditViewModel;
 
-
+/**
+ * MetadataEditViewBrowserElement
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataEditViewBrowserElement extends DatatypeBrowserElement implements
         NabuccoInjectionReciever {
 

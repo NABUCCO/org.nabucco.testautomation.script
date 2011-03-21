@@ -58,6 +58,8 @@ public class FolderPickerActionComboWidgetCreator extends
 
 	private static final String TREE_TITLE = ID + ".treeTitle";
 
+	private boolean readOnly;
+
 	/**
 	 * Creates a new {@link FolderPickerActionComboWidgetCreator} instance.
 	 * 
@@ -74,6 +76,7 @@ public class FolderPickerActionComboWidgetCreator extends
 			String propertyName, GridData data, String masterBlockId) {
 
 		Control result = null;
+		this.readOnly = readOnly;
 
 		if (dataObject instanceof TestScript) {
 			TestScript testScript = (TestScript) dataObject;
@@ -149,7 +152,7 @@ public class FolderPickerActionComboWidgetCreator extends
 				new FolderPickerDialogListener(model));
 
 		return new ElementPickerComposite<TreePickerDialog>(parent, SWT.NONE,
-				dialog);
+				dialog, this.readOnly);
 	}
 
 	@Override

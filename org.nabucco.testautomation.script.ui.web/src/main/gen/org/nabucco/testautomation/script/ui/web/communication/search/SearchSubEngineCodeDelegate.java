@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.search;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -35,37 +35,15 @@ public class SearchSubEngineCodeDelegate extends ServiceDelegateSupport {
     /**
      * SearchSubEngineCode.
      *
+     * @param session the NabuccoSession.
      * @param rq the SubEngineCodeSearchMsg.
      * @return the SubEngineCodeListMsg.
      * @throws SearchException
      */
-    public SubEngineCodeListMsg searchSubEngineCode(SubEngineCodeSearchMsg rq)
-            throws SearchException {
+    public SubEngineCodeListMsg searchSubEngineCode(SubEngineCodeSearchMsg rq,
+            NabuccoSession session) throws SearchException {
         ServiceRequest<SubEngineCodeSearchMsg> request = new ServiceRequest<SubEngineCodeSearchMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<SubEngineCodeListMsg> rs;
-        if ((service != null)) {
-            rs = service.searchSubEngineCode(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchSubEngineCode.searchSubEngineCode");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * SearchSubEngineCode.
-     *
-     * @param subject the Subject.
-     * @param rq the SubEngineCodeSearchMsg.
-     * @return the SubEngineCodeListMsg.
-     * @throws SearchException
-     */
-    public SubEngineCodeListMsg searchSubEngineCode(SubEngineCodeSearchMsg rq, Subject subject)
-            throws SearchException {
-        ServiceRequest<SubEngineCodeSearchMsg> request = new ServiceRequest<SubEngineCodeSearchMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<SubEngineCodeListMsg> rs;
         if ((service != null)) {

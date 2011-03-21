@@ -16,12 +16,17 @@
 */
 package org.nabucco.testautomation.script.impl.service.produce.clone;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
+import org.nabucco.framework.base.facade.datatype.Version;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
 import org.nabucco.testautomation.script.facade.datatype.visitor.MetadataVisitor;
 
+import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
 
@@ -57,9 +62,15 @@ public class MetadataCloneVisitor extends MetadataVisitor {
     }
     
     private void resetDatatype(NabuccoDatatype datatype) {
-        datatype.setDatatypeState(DatatypeState.INITIALIZED);
-        datatype.setVersion(null);
-        datatype.setId(null);
+    	datatype.setDatatypeState(DatatypeState.INITIALIZED);
+        datatype.setVersion((Version) null);
+        datatype.setId((Identifier) null);
+        
+        if (datatype instanceof ExportDatatype) {
+        	ExportDatatype exportDatatype = (ExportDatatype) datatype;
+			exportDatatype.setIdentificationKey(new Key());
+			exportDatatype.setOwner(NabuccoInstance.getInstance().getOwner());
+        }
     }
 
 }

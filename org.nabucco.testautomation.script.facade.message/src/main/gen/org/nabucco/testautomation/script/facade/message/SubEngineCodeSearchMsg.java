@@ -3,12 +3,17 @@
  */
 package org.nabucco.testautomation.script.facade.message;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Identifier;
 import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.framework.base.facade.message.ServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceMessageSupport;
 
@@ -22,9 +27,14 @@ public class SubEngineCodeSearchMsg extends ServiceMessageSupport implements Ser
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "identifier", "name", "code" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,255;m1,1;",
+            "l0,n;m1,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m1,1;", "l0,n;m1,1;" };
+    public static final String IDENTIFIER = "identifier";
+
+    public static final String NAME = "name";
+
+    public static final String CODE = "code";
 
     private Identifier identifier;
 
@@ -37,16 +47,50 @@ public class SubEngineCodeSearchMsg extends ServiceMessageSupport implements Ser
         super();
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.put(IDENTIFIER, PropertyDescriptorSupport.createBasetype(IDENTIFIER,
+                Identifier.class, 0, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 1,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(CODE, PropertyDescriptorSupport.createBasetype(CODE, Key.class, 2,
+                PROPERTY_CONSTRAINTS[2], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Identifier>(PROPERTY_NAMES[0], Identifier.class,
-                PROPERTY_CONSTRAINTS[0], this.identifier));
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[1], Name.class,
-                PROPERTY_CONSTRAINTS[1], this.name));
-        properties.add(new BasetypeProperty<Key>(PROPERTY_NAMES[2], Key.class,
-                PROPERTY_CONSTRAINTS[2], this.code));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(
+                SubEngineCodeSearchMsg.getPropertyDescriptor(IDENTIFIER), this.identifier));
+        properties.add(super.createProperty(SubEngineCodeSearchMsg.getPropertyDescriptor(NAME),
+                this.name));
+        properties.add(super.createProperty(SubEngineCodeSearchMsg.getPropertyDescriptor(CODE),
+                this.code));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(IDENTIFIER) && (property.getType() == Identifier.class))) {
+            this.setIdentifier(((Identifier) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
+            this.setName(((Name) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(CODE) && (property.getType() == Key.class))) {
+            this.setCode(((Key) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -90,18 +134,6 @@ public class SubEngineCodeSearchMsg extends ServiceMessageSupport implements Ser
         result = ((PRIME * result) + ((this.name == null) ? 0 : this.name.hashCode()));
         result = ((PRIME * result) + ((this.code == null) ? 0 : this.code.hashCode()));
         return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<SubEngineCodeSearchMsg>\n");
-        appendable.append(super.toString());
-        appendable.append((("<identifier>" + this.identifier) + "</identifier>\n"));
-        appendable.append((("<name>" + this.name) + "</name>\n"));
-        appendable.append((("<code>" + this.code) + "</code>\n"));
-        appendable.append("</SubEngineCodeSearchMsg>\n");
-        return appendable.toString();
     }
 
     @Override
@@ -161,5 +193,26 @@ public class SubEngineCodeSearchMsg extends ServiceMessageSupport implements Ser
      */
     public void setCode(Key code) {
         this.code = code;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeSearchMsg.class)
+                .getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeSearchMsg.class)
+                .getAllProperties();
     }
 }

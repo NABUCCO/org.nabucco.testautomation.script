@@ -3,13 +3,17 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
-import org.nabucco.framework.base.facade.datatype.Key;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
@@ -23,11 +27,11 @@ public class TestScript extends TestScriptComposite implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "testScriptKey", "description", "folder" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m0,1;", "m0,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,16;m0,1;", "l0,n;m0,1;", "m0,1;" };
+    public static final String DESCRIPTION = "description";
 
-    private Key testScriptKey;
+    public static final String FOLDER = "folder";
 
     private Description description;
 
@@ -51,9 +55,6 @@ public class TestScript extends TestScriptComposite implements Datatype {
      */
     protected void cloneObject(TestScript clone) {
         super.cloneObject(clone);
-        if ((this.getTestScriptKey() != null)) {
-            clone.setTestScriptKey(this.getTestScriptKey().cloneObject());
-        }
         if ((this.getDescription() != null)) {
             clone.setDescription(this.getDescription().cloneObject());
         }
@@ -63,21 +64,50 @@ public class TestScript extends TestScriptComposite implements Datatype {
         clone.setType(this.getType());
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class)
+                .getPropertyMap());
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
+                Description.class, 8, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(FOLDER, PropertyDescriptorSupport.createDatatype(FOLDER, Folder.class, 9,
+                PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.AGGREGATION));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Key>(PROPERTY_NAMES[0], Key.class,
-                PROPERTY_CONSTRAINTS[0], this.testScriptKey));
-        properties.add(new BasetypeProperty<Description>(PROPERTY_NAMES[1], Description.class,
-                PROPERTY_CONSTRAINTS[1], this.description));
-        properties.add(new DatatypeProperty<Folder>(PROPERTY_NAMES[2], Folder.class,
-                PROPERTY_CONSTRAINTS[2], this.folder));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TestScript.getPropertyDescriptor(DESCRIPTION),
+                this.description, null));
+        properties.add(super.createProperty(TestScript.getPropertyDescriptor(FOLDER), this.folder,
+                null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(DESCRIPTION) && (property.getType() == Description.class))) {
+            this.setDescription(((Description) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(FOLDER) && (property.getType() == Folder.class))) {
+            this.setFolder(((Folder) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -95,11 +125,6 @@ public class TestScript extends TestScriptComposite implements Datatype {
             return false;
         }
         final TestScript other = ((TestScript) obj);
-        if ((this.testScriptKey == null)) {
-            if ((other.testScriptKey != null))
-                return false;
-        } else if ((!this.testScriptKey.equals(other.testScriptKey)))
-            return false;
         if ((this.description == null)) {
             if ((other.description != null))
                 return false;
@@ -117,23 +142,9 @@ public class TestScript extends TestScriptComposite implements Datatype {
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.testScriptKey == null) ? 0 : this.testScriptKey
-                .hashCode()));
         result = ((PRIME * result) + ((this.description == null) ? 0 : this.description.hashCode()));
         result = ((PRIME * result) + ((this.folder == null) ? 0 : this.folder.hashCode()));
         return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<TestScript>\n");
-        appendable.append(super.toString());
-        appendable.append((("<testScriptKey>" + this.testScriptKey) + "</testScriptKey>\n"));
-        appendable.append((("<description>" + this.description) + "</description>\n"));
-        appendable.append((("<folder>" + this.folder) + "</folder>\n"));
-        appendable.append("</TestScript>\n");
-        return appendable.toString();
     }
 
     @Override
@@ -141,36 +152,6 @@ public class TestScript extends TestScriptComposite implements Datatype {
         TestScript clone = new TestScript();
         this.cloneObject(clone);
         return clone;
-    }
-
-    /**
-     * Missing description at method getTestScriptKey.
-     *
-     * @return the Key.
-     */
-    public Key getTestScriptKey() {
-        return this.testScriptKey;
-    }
-
-    /**
-     * Missing description at method setTestScriptKey.
-     *
-     * @param testScriptKey the Key.
-     */
-    public void setTestScriptKey(Key testScriptKey) {
-        this.testScriptKey = testScriptKey;
-    }
-
-    /**
-     * Missing description at method setTestScriptKey.
-     *
-     * @param testScriptKey the String.
-     */
-    public void setTestScriptKey(String testScriptKey) {
-        if ((this.testScriptKey == null)) {
-            this.testScriptKey = new Key();
-        }
-        this.testScriptKey.setValue(testScriptKey);
     }
 
     /**
@@ -198,6 +179,9 @@ public class TestScript extends TestScriptComposite implements Datatype {
      */
     public void setDescription(String description) {
         if ((this.description == null)) {
+            if ((description == null)) {
+                return;
+            }
             this.description = new Description();
         }
         this.description.setValue(description);
@@ -219,5 +203,24 @@ public class TestScript extends TestScriptComposite implements Datatype {
      */
     public Folder getFolder() {
         return this.folder;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(TestScript.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(TestScript.class).getAllProperties();
     }
 }

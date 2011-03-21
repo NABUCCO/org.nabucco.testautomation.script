@@ -17,6 +17,7 @@
 package org.nabucco.testautomation.script.ui.rcp.multipage.folder.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nabucco.framework.base.facade.datatype.Datatype;
@@ -24,11 +25,17 @@ import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentServiceDelegateFactory;
 import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceFolderDelegate;
 
-
+/**
+ * FolderElementFactory
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class FolderElementFactory {
 
     private static ScriptComponentServiceDelegateFactory scriptComponentServiceDelegateFactory = ScriptComponentServiceDelegateFactory
@@ -61,16 +68,19 @@ public class FolderElementFactory {
         return result;
     }
 
-	public static Folder getFolderStructure() {
+	public static List<Folder> getFolderStructure() {
 		try {
-			FolderMsg response = scriptComponentServiceDelegateFactory.getSearchFolder().getFolderStructure(new EmptyServiceMessage());
-			Folder folder = response.getFolder();
-			if(folder == null){
+			FolderSearchMsg msg = new FolderSearchMsg();
+			// FIXME msg.setOwner(NabuccoInstance.getInstance().getOwner());		
+			FolderListMsg response = scriptComponentServiceDelegateFactory.getSearchFolder().getFolderStructure(msg);
+			List<Folder> folderList = response.getFolderList();
+			
+			if(folderList.isEmpty()){
 				Activator.getDefault().logError("Fatal error. No root folder found!");
 			} else {
 //				List<TestScript> rootScripts = loadRootScripts();
 //				folder.getTestScriptList().addAll(rootScripts);
-				return folder;
+				return folderList;
 			}
 		} catch (ClientException e) {
 			Activator.getDefault().logError(e);

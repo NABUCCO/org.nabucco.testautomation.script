@@ -61,7 +61,7 @@ public abstract class MaintainSubEngineCodeServiceHandler extends ServiceHandler
             throw wrappedException;
         } catch (Exception e) {
             super.getLogger().error(e);
-            throw new MaintainException(e.getMessage());
+            throw new MaintainException("Error during service invocation.", e);
         }
     }
 

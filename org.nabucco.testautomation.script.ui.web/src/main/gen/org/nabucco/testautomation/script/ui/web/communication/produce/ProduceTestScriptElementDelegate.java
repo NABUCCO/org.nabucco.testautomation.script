@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.produce;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.ProduceException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -34,37 +34,15 @@ public class ProduceTestScriptElementDelegate extends ServiceDelegateSupport {
     /**
      * ProduceTestScriptElement.
      *
-     * @param rq the ProduceTestScriptElementMsg.
-     * @return the ProduceTestScriptElementMsg.
-     * @throws ProduceException
-     */
-    public ProduceTestScriptElementMsg produceTestScriptElement(ProduceTestScriptElementMsg rq)
-            throws ProduceException {
-        ServiceRequest<ProduceTestScriptElementMsg> request = new ServiceRequest<ProduceTestScriptElementMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<ProduceTestScriptElementMsg> rs;
-        if ((service != null)) {
-            rs = service.produceTestScriptElement(request);
-        } else {
-            throw new ProduceException(
-                    "Cannot execute service operation: ProduceTestScriptElement.produceTestScriptElement");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * ProduceTestScriptElement.
-     *
-     * @param subject the Subject.
+     * @param session the NabuccoSession.
      * @param rq the ProduceTestScriptElementMsg.
      * @return the ProduceTestScriptElementMsg.
      * @throws ProduceException
      */
     public ProduceTestScriptElementMsg produceTestScriptElement(ProduceTestScriptElementMsg rq,
-            Subject subject) throws ProduceException {
+            NabuccoSession session) throws ProduceException {
         ServiceRequest<ProduceTestScriptElementMsg> request = new ServiceRequest<ProduceTestScriptElementMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<ProduceTestScriptElementMsg> rs;
         if ((service != null)) {
@@ -79,37 +57,15 @@ public class ProduceTestScriptElementDelegate extends ServiceDelegateSupport {
     /**
      * ProduceTestScriptElementClone.
      *
-     * @param rq the ProduceTestScriptElementMsg.
-     * @return the ProduceTestScriptElementMsg.
-     * @throws ProduceException
-     */
-    public ProduceTestScriptElementMsg produceTestScriptElementClone(ProduceTestScriptElementMsg rq)
-            throws ProduceException {
-        ServiceRequest<ProduceTestScriptElementMsg> request = new ServiceRequest<ProduceTestScriptElementMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<ProduceTestScriptElementMsg> rs;
-        if ((service != null)) {
-            rs = service.produceTestScriptElementClone(request);
-        } else {
-            throw new ProduceException(
-                    "Cannot execute service operation: ProduceTestScriptElement.produceTestScriptElementClone");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * ProduceTestScriptElementClone.
-     *
-     * @param subject the Subject.
+     * @param session the NabuccoSession.
      * @param rq the ProduceTestScriptElementMsg.
      * @return the ProduceTestScriptElementMsg.
      * @throws ProduceException
      */
     public ProduceTestScriptElementMsg produceTestScriptElementClone(
-            ProduceTestScriptElementMsg rq, Subject subject) throws ProduceException {
+            ProduceTestScriptElementMsg rq, NabuccoSession session) throws ProduceException {
         ServiceRequest<ProduceTestScriptElementMsg> request = new ServiceRequest<ProduceTestScriptElementMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<ProduceTestScriptElementMsg> rs;
         if ((service != null)) {

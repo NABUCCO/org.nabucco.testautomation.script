@@ -59,13 +59,17 @@ public class MetadataPickerDialogLabelProvider implements ILabelProvider {
 
 	@Override
 	public String getText(Object element) {
+		String result = null;
 		if (element instanceof Metadata) {
 			Metadata metadata = (Metadata) element;
 			if (metadata.getName() != null) {
-				return metadata.getName().getValue();
+				result = metadata.getName().getValue();
+			}
+			if(metadata.getOwner() != null){
+				result = result  + " (" + metadata.getOwner().getValue() + ")";
 			}
 		}
-		return null;
+		return result;
 	}
 
 }

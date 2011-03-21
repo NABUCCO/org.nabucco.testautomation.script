@@ -18,6 +18,11 @@ package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model;
 
 import org.nabucco.framework.plugin.base.component.list.view.NabuccoTableSorter;
 
+/**
+ * MetadataSingleColumnTableSorter
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataSingleColumnTableSorter extends NabuccoTableSorter {
 
 	@Override

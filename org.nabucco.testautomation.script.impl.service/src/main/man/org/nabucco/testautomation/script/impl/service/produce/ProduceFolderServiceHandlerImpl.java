@@ -16,12 +16,13 @@
 */
 package org.nabucco.testautomation.script.impl.service.produce;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.exception.service.ProduceException;
 import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
-import org.nabucco.testautomation.script.impl.service.produce.ProduceFolderServiceHandler;
 
 
 /**
@@ -42,6 +43,8 @@ public class ProduceFolderServiceHandlerImpl extends ProduceFolderServiceHandler
 		folder.setDatatypeState(DatatypeState.INITIALIZED);
 		folder.setRoot(Boolean.FALSE);
 		folder.setName("Enter name ...");
+		folder.setOwner(NabuccoInstance.getInstance().getOwner());
+		folder.setIdentificationKey(new Key());
 		rs.setFolder(folder);
 		return rs;
 	}

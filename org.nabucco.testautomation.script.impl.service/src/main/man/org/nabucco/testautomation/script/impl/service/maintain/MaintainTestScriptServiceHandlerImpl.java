@@ -27,6 +27,9 @@ import org.nabucco.framework.base.facade.exception.persistence.PersistenceExcept
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.impl.service.maintain.PersistenceHelper;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
+import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 import org.nabucco.testautomation.script.facade.datatype.comparator.TestScriptElementSorter;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
@@ -39,12 +42,7 @@ import org.nabucco.testautomation.script.impl.service.FolderSupport;
 import org.nabucco.testautomation.script.impl.service.PropertySupport;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.maintain.MaintainTestScriptServiceHandler;
 import org.nabucco.testautomation.script.impl.service.maintain.visitor.TestScriptModificationVisitor;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
-import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 
 /**
  * MaintainTestScriptServiceHandlerImpl
@@ -56,6 +54,8 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 	private static final long serialVersionUID = 1L;
 
 	private static final String PREFIX = "TSC-";
+
+	private static final String ACTION_PREFIX = "ACT-";
 	
 	private static final TestScriptElementSorter elementSorter = new TestScriptElementSorter();
 
@@ -65,31 +65,31 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 	public TestScriptMsg maintainTestScript(TestScriptMsg msg)
 			throws MaintainException {
 		
-		TestScript script = msg.getTestScript();
+		TestScript testScript = msg.getTestScript();
 
 		try {
 			// initialize PersistenceHelper
 			this.persistenceHelper = new PersistenceHelper(super.getEntityManager());
 			
-			if (script.getDatatypeState() == DatatypeState.PERSISTENT) {
+			if (testScript.getDatatypeState() == DatatypeState.PERSISTENT) {
 	            DatatypeVisitor visitor = new TestScriptModificationVisitor(
-	            		script);
-	            script.accept(visitor);
+	            		testScript);
+	            testScript.accept(visitor);
 	        }
 		
-            switch (script.getDatatypeState()) {
+            switch (testScript.getDatatypeState()) {
 
             case CONSTRUCTED:
                 throw new MaintainException("TestScript is not initialized.");
             case INITIALIZED:
-                script = this.create(script);
+                testScript = this.create(testScript);
                 break;
             case MODIFIED:
-                script = this.update(script);
+                testScript = this.update(testScript);
                 break;
             case DELETED:
-                this.delete(script);
-                script = null;
+                this.delete(testScript);
+                testScript = null;
                 break;
             case TRANSIENT:
                 break;
@@ -97,7 +97,7 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
                 break;
             default:
                 throw new MaintainException("Datatype state '"
-                        + script.getDatatypeState()
+                        + testScript.getDatatypeState()
                         + "' is not valid for TestScript.");
             }
         } catch (VisitorException e) {
@@ -108,28 +108,28 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 			throw new MaintainException("Error maintaining TestScript",
 					PersistenceExceptionMapper.resolve(ex,
 							TestScript.class.getName(),
-							script.getId()));
+							testScript.getId()));
         }
 		
 		this.persistenceHelper.flush();
         this.persistenceHelper = null;
 		
-        if (script != null) {
+        if (testScript != null) {
         	
         	if (!SubEngineCodeCache.getInstance().isInitialized()) {
-				SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+				SubEngineCodeSupport.getInstance().initCache(this.getContext());
 			}
         	
-        	load(script);
+        	load(testScript);
         	
         	// Detach Entity
 			this.getEntityManager().clear();
 			
 			// Sort
-			elementSorter.sort(script);
+			elementSorter.sort(testScript);
         }
         
-        msg.setTestScript(script);
+        msg.setTestScript(testScript);
 		return msg;
 	}
 	
@@ -139,7 +139,7 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 			PropertySupport.getInstance().resolveProperties(testScriptElement, super.getContext());
 		} catch (Exception e) {
 			super.getLogger().error(e, "Could not resolve Properties for TestScriptElement '" 
-					+ testScriptElement.getId() + "'");
+					+ testScriptElement.getIdentificationKey().getValue() + "'");
 		}
 		
 		if (testScriptElement instanceof TestScriptComposite) {
@@ -160,12 +160,12 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 					SubEngineCodeSupport.getInstance().resolveSubEngineCodeShallow(action.getMetadata());
 				} catch (SearchException e) {
 					super.getLogger().error(e, "Could not resolve SubEngineCodes for Metadata of Action '" 
-							+ testScriptElement.getId() + "'");
+							+ testScriptElement.getIdentificationKey().getValue() + "'");
 				}
 			}
-			if (action.getAction() != null) {
-				action.setAction(SubEngineCodeCache.getInstance()
-						.getActionCode(action.getAction().getId()));
+			if (action.getActionCode() != null) {
+				action.setActionCode(SubEngineCodeCache.getInstance()
+						.getActionCode(action.getActionCode().getId()));
 			}
 		}
 	}
@@ -175,10 +175,10 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 		// if no folder selected, add script to root folder
 		if (testScript.getFolder() == null){
 			try {
-				testScript.setFolder(FolderSupport.getInstance().getRootFolder(super.getContext()));
+				testScript.setFolder(FolderSupport.getInstance().getRootFolder(super.getContext(), testScript.getOwner()));
 			} catch (Exception e) {
 				super.getLogger().error(e,
-						"Could not set Rootfolder for TestScript '", testScript.getName().getValue(), "'");
+						"Could not set Root-Folder for TestScript '", testScript.getIdentificationKey().getValue(), "'");
 			}
 		}
 		
@@ -190,7 +190,7 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
 		}
 		
 		testScript = (TestScript) create((TestScriptElement) testScript);
-		testScript.setTestScriptKey(PREFIX + testScript.getId());
+		testScript.setIdentificationKey(PREFIX + testScript.getId());
 		testScript.setDatatypeState(DatatypeState.MODIFIED);
 		testScript = this.persistenceHelper.persist(testScript);
 		return testScript;
@@ -230,6 +230,14 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
         }
 		
 		entity = this.persistenceHelper.persist(entity);
+
+		//Generate ActionId
+		if (entity instanceof Action) {
+			entity.setIdentificationKey(ACTION_PREFIX + entity.getId());
+			entity.setDatatypeState(DatatypeState.MODIFIED);
+			entity = this.persistenceHelper.persist(entity);
+		}
+		
 		return entity;
 	}
 	
@@ -237,7 +245,7 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
         
 		if(testScript.getFolder() == null){
 			try {
-				testScript.setFolder(FolderSupport.getInstance().getRootFolder(super.getContext()));
+				testScript.setFolder(FolderSupport.getInstance().getRootFolder(super.getContext(), testScript.getOwner()));
 			} catch (Exception e) {
 				super.getLogger().error(e,
 						"Could not set Rootfolder for TestScript '" + testScript.getId() + "'");
@@ -301,6 +309,14 @@ public class MaintainTestScriptServiceHandlerImpl extends MaintainTestScriptServ
         	propertyList = update(propertyList);
         	entity.setPropertyList(propertyList);
         }
+		
+		//Generate ActionId
+		if (entity instanceof Action
+				&& entity.getDatatypeState() == DatatypeState.INITIALIZED) {
+			entity = this.persistenceHelper.persist(entity);
+			entity.setIdentificationKey(ACTION_PREFIX + entity.getId());
+			entity.setDatatypeState(DatatypeState.MODIFIED);
+		}
 		
 		entity = this.persistenceHelper.persist(entity);
 		return entity;

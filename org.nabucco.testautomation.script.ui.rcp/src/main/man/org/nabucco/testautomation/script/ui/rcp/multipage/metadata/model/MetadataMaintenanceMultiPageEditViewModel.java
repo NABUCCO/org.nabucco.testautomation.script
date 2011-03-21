@@ -32,7 +32,11 @@ import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerPa
 import org.nabucco.framework.plugin.base.component.picker.dialog.LabelForDialog;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 
-
+/**
+ * MetadataMaintenanceMultiPageEditViewModel
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataMaintenanceMultiPageEditViewModel extends MultiPageEditViewModel implements
         NabuccoInjectionReciever {
 

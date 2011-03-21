@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.maintain;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -34,36 +34,15 @@ public class MaintainTestScriptDelegate extends ServiceDelegateSupport {
     /**
      * MaintainTestScript.
      *
+     * @param session the NabuccoSession.
      * @param rq the TestScriptMsg.
      * @return the TestScriptMsg.
      * @throws MaintainException
      */
-    public TestScriptMsg maintainTestScript(TestScriptMsg rq) throws MaintainException {
-        ServiceRequest<TestScriptMsg> request = new ServiceRequest<TestScriptMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<TestScriptMsg> rs;
-        if ((service != null)) {
-            rs = service.maintainTestScript(request);
-        } else {
-            throw new MaintainException(
-                    "Cannot execute service operation: MaintainTestScript.maintainTestScript");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * MaintainTestScript.
-     *
-     * @param subject the Subject.
-     * @param rq the TestScriptMsg.
-     * @return the TestScriptMsg.
-     * @throws MaintainException
-     */
-    public TestScriptMsg maintainTestScript(TestScriptMsg rq, Subject subject)
+    public TestScriptMsg maintainTestScript(TestScriptMsg rq, NabuccoSession session)
             throws MaintainException {
         ServiceRequest<TestScriptMsg> request = new ServiceRequest<TestScriptMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<TestScriptMsg> rs;
         if ((service != null)) {

@@ -21,8 +21,13 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.validation.constraint.element.ConstraintFactory;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.framework.base.impl.service.maintain.PersistenceCleaner;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.comparator.TestScriptElementSorter;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
@@ -37,9 +42,6 @@ import org.nabucco.testautomation.script.facade.message.TestScriptSearchMsg;
 import org.nabucco.testautomation.script.impl.service.PropertySupport;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.search.GetTestScriptServiceHandler;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 
 /**
  * GetTestScriptServiceHandlerImpl
@@ -68,16 +70,11 @@ public class GetTestScriptServiceHandlerImpl extends GetTestScriptServiceHandler
 		query.setParameter("id", msg.getIdentifier().getValue());
 
 		TestScript testScript = (TestScript) query.getSingleResult();
-		TestScriptMsg rs = new TestScriptMsg();
 
 		if (testScript == null) {
 			throw new SearchException("TestScript with id '" + msg.getIdentifier().getValue() + "' not found");
 		}
 		
-		if (!SubEngineCodeCache.getInstance().isInitialized()) {
-			SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
-		}
-
 		// load all children
 		this.actionList.clear();
 		this.load(testScript);
@@ -85,15 +82,36 @@ public class GetTestScriptServiceHandlerImpl extends GetTestScriptServiceHandler
 		// Detach Entity
 		this.getEntityManager().clear();
 		
+		if (!SubEngineCodeCache.getInstance().isInitialized()) {
+			SubEngineCodeSupport.getInstance().initCache(this.getContext());
+		}
+
 		// load actions
 		for (Action action : this.actionList) {
 			this.resolveSubEngineCodes(action);
 		}
 		this.actionList.clear();
 		
+		try {
+			testScript.accept(new PersistenceCleaner());
+		} catch (VisitorException e) {
+			throw new SearchException(e);
+		}
+		
 		// Sort
 		elementSorter.sort(testScript);
 		
+		// Check owner and set Editable-Constraint
+		if (!testScript.getOwner().equals(NabuccoInstance.getInstance().getOwner())) {
+			try {
+				testScript.addConstraint(ConstraintFactory.getInstance()
+						.createEditableConstraint(false), true);
+			} catch (VisitorException ex) {
+				throw new SearchException(ex);
+			}
+		}
+		
+		TestScriptMsg rs = new TestScriptMsg();
 		rs.setTestScript(testScript);
 		return rs;
 	}
@@ -159,9 +177,9 @@ public class GetTestScriptServiceHandlerImpl extends GetTestScriptServiceHandler
 						+ action.getId() + "'");
 			}
 		}
-		if (action.getAction() != null) {
-			action.setAction(SubEngineCodeCache.getInstance()
-					.getActionCode(action.getAction().getId()));
+		if (action.getActionCode() != null) {
+			action.setActionCode(SubEngineCodeCache.getInstance()
+					.getActionCode(action.getActionCode().getId()));
 		}
 	}
 

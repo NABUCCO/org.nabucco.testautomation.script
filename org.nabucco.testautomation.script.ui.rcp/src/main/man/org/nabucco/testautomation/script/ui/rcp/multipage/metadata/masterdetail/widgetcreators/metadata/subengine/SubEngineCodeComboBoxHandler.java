@@ -21,6 +21,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
 
 /**
+ * SubEngineCodeComboBoxHandler
  * 
  * @author Markus Jorroch, PRODYNA AG
  */

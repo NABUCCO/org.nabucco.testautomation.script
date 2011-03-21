@@ -18,6 +18,11 @@ package org.nabucco.testautomation.script.ui.rcp.browser.script;
 
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
 
+/**
+ * TestScriptEditViewBrowserElementHandlerImpl
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class TestScriptEditViewBrowserElementHandlerImpl implements
         TestScriptEditViewBrowserElementHandler {
 

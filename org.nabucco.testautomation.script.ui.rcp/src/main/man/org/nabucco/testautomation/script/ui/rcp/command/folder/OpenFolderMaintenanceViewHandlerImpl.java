@@ -23,14 +23,14 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.folder.FolderMaintenan
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderElementFactory;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderMaintenanceMultiPageEditViewModel;
 
-
-
 /**
  * OpenFolderMaintenanceViewHandlerImpl
  * 
  * @author Markus Jorroch, PRODYNA AG
  */
-public class OpenFolderMaintenanceViewHandlerImpl extends AbstractOpenViewHandler<FolderMaintenanceMultiPageEditView> implements OpenFolderMaintenanceViewHandler {
+public class OpenFolderMaintenanceViewHandlerImpl extends
+		AbstractOpenViewHandler<FolderMaintenanceMultiPageEditView> implements
+		OpenFolderMaintenanceViewHandler {
 
 	@Override
 	public void openFolderMaintenanceView() {
@@ -39,11 +39,11 @@ public class OpenFolderMaintenanceViewHandlerImpl extends AbstractOpenViewHandle
 
 	@Override
 	protected void preOpen(FolderMaintenanceMultiPageEditView view) {
-		Folder rootFolder = FolderElementFactory.getFolderStructure();
-		FolderMaintenanceMultiPageEditViewModel model = getView(FolderMaintenanceMultiPageEditView.ID).getModel();
+		Folder rootFolder = FolderElementFactory.getFolderStructure().get(0); // FIXME add more than one root folder
+		FolderMaintenanceMultiPageEditViewModel model = getView(
+				FolderMaintenanceMultiPageEditView.ID).getModel();
 		model.setRootFolder(rootFolder);
 		super.preOpen(view);
 	}
-
 
 }

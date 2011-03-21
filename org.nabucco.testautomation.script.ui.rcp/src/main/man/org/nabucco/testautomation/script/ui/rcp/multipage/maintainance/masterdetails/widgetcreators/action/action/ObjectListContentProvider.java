@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerContentProvider;
 
 /**
- * EnumerationContentProvider
+ * ObjectListContentProvider
  * 
  * @author Markus Jorroch, PRODYNA AG
  */

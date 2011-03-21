@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.utils.I18N;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailBlock;
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailHelper;
 import org.nabucco.framework.plugin.base.component.multipage.view.MultiPageEditView;
 import org.nabucco.framework.plugin.base.component.multipage.xml.XMLEditorPage;
 import org.nabucco.framework.plugin.base.component.multipage.xml.example.XmlDefaultPage;
@@ -109,20 +110,61 @@ MultiPageEditView<MetadataMaintenanceMultiPageEditViewModel> {
 	private void refreshReloadButtonState() {
 		// TODO Develop general concept in plugin.base
 		final ToolBar toolBar = ((ToolBarManager) getToolBarManager())
-		.getControl();
+				.getControl();
 		ToolItem reloadItem = null;
+		ToolItem importItem = null;
+		ToolItem saveItem = null;
+		ToolItem deleteItem = null;
+		ToolItem executeItem = null;
 
 		for (ToolItem item : toolBar.getItems()) {
 			if (item.getToolTipText().equals("Reload")) {
 				reloadItem = item;
+			} else if(item.getToolTipText().equals("Import")) {
+				importItem = item;
+			} else if(item.getToolTipText().equals("Save")) {
+				saveItem = item;
+			} else if(item.getToolTipText().equals("Delete")) {
+				deleteItem = item;
+			} else if(item.getToolTipText().equals("Execute")) {
+				executeItem = item;
 			}
 		}
 
 		if (reloadItem != null) {
-			if (super.getModel().getMetadata().getDatatypeState() == DatatypeState.INITIALIZED) {
+			if (super.getModel().getMetadata().getDatatypeState() == DatatypeState.INITIALIZED
+					|| !MasterDetailHelper.isDatatypeEditable(super.getModel().getMetadata())) {
 				reloadItem.setEnabled(false);
 			} else {
 				reloadItem.setEnabled(true);
+			}
+		}
+		if (importItem != null) {
+			if (MasterDetailHelper.isImportPossible(super.getModel().getMetadata())) {
+				importItem.setEnabled(true);
+			} else {
+				importItem.setEnabled(false);
+			}
+		}
+		if (saveItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getMetadata())) {
+				saveItem.setEnabled(true);
+			} else {
+				saveItem.setEnabled(false);
+			}
+		}
+		if (deleteItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getMetadata())) {
+				deleteItem.setEnabled(true);
+			} else {
+				deleteItem.setEnabled(false);
+			}
+		}
+		if (executeItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getMetadata())) {
+				executeItem.setEnabled(true);
+			} else {
+				executeItem.setEnabled(false);
 			}
 		}
 	}

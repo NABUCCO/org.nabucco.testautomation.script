@@ -3,14 +3,18 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
-import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.EnumProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
+import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 
@@ -19,21 +23,25 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScr
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-07
  */
-public abstract class TestScriptElement extends NabuccoDatatype implements Datatype {
+public abstract class TestScriptElement extends ExportDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "name", "propertyList", "type" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;", "l0,255;m1,1;", "m0,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "m0,1;", "m1,1;" };
+    public static final String TYPE = "type";
+
+    public static final String NAME = "name";
+
+    public static final String PROPERTYLIST = "propertyList";
+
+    protected TestScriptElementType type;
 
     private Name name;
 
     private PropertyList propertyList;
 
     private Long propertyListRefId;
-
-    protected TestScriptElementType type;
 
     /** Constructs a new TestScriptElement instance. */
     public TestScriptElement() {
@@ -52,6 +60,7 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
      */
     protected void cloneObject(TestScriptElement clone) {
         super.cloneObject(clone);
+        clone.setType(this.getType());
         if ((this.getName() != null)) {
             clone.setName(this.getName().cloneObject());
         }
@@ -61,7 +70,25 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
         if ((this.getPropertyListRefId() != null)) {
             clone.setPropertyListRefId(this.getPropertyListRefId());
         }
-        clone.setType(this.getType());
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(ExportDatatype.class)
+                .getPropertyMap());
+        propertyMap.put(TYPE, PropertyDescriptorSupport.createEnumeration(TYPE,
+                TestScriptElementType.class, 4, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 5,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST,
+                PropertyList.class, 6, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.COMPONENT));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -70,15 +97,33 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[0], Name.class,
-                PROPERTY_CONSTRAINTS[0], this.name));
-        properties.add(new DatatypeProperty<PropertyList>(PROPERTY_NAMES[1], PropertyList.class,
-                PROPERTY_CONSTRAINTS[1], this.propertyList));
-        properties.add(new EnumProperty<TestScriptElementType>(PROPERTY_NAMES[2],
-                TestScriptElementType.class, PROPERTY_CONSTRAINTS[2], this.type));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TestScriptElement.getPropertyDescriptor(TYPE),
+                this.type, null));
+        properties.add(super.createProperty(TestScriptElement.getPropertyDescriptor(NAME),
+                this.name, null));
+        properties.add(super.createProperty(TestScriptElement.getPropertyDescriptor(PROPERTYLIST),
+                this.propertyList, this.propertyListRefId));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(TYPE) && (property.getType() == TestScriptElementType.class))) {
+            this.setType(((TestScriptElementType) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
+            this.setName(((Name) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(PROPERTYLIST) && (property.getType() == PropertyList.class))) {
+            this.setPropertyList(((PropertyList) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -96,6 +141,11 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
             return false;
         }
         final TestScriptElement other = ((TestScriptElement) obj);
+        if ((this.type == null)) {
+            if ((other.type != null))
+                return false;
+        } else if ((!this.type.equals(other.type)))
+            return false;
         if ((this.name == null)) {
             if ((other.name != null))
                 return false;
@@ -111,11 +161,6 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
                 return false;
         } else if ((!this.propertyListRefId.equals(other.propertyListRefId)))
             return false;
-        if ((this.type == null)) {
-            if ((other.type != null))
-                return false;
-        } else if ((!this.type.equals(other.type)))
-            return false;
         return true;
     }
 
@@ -123,31 +168,48 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
+        result = ((PRIME * result) + ((this.type == null) ? 0 : this.type.hashCode()));
         result = ((PRIME * result) + ((this.name == null) ? 0 : this.name.hashCode()));
         result = ((PRIME * result) + ((this.propertyList == null) ? 0 : this.propertyList
                 .hashCode()));
         result = ((PRIME * result) + ((this.propertyListRefId == null) ? 0 : this.propertyListRefId
                 .hashCode()));
-        result = ((PRIME * result) + ((this.type == null) ? 0 : this.type.hashCode()));
         return result;
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<TestScriptElement>\n");
-        appendable.append(super.toString());
-        appendable.append((("<name>" + this.name) + "</name>\n"));
-        appendable.append((("<propertyList>" + this.propertyList) + "</propertyList>\n"));
-        appendable
-                .append((("<propertyListRefId>" + this.propertyListRefId) + "</propertyListRefId>\n"));
-        appendable.append((("<type>" + this.type) + "</type>\n"));
-        appendable.append("</TestScriptElement>\n");
-        return appendable.toString();
+    public abstract TestScriptElement cloneObject();
+
+    /**
+     * Missing description at method getType.
+     *
+     * @return the TestScriptElementType.
+     */
+    public TestScriptElementType getType() {
+        return this.type;
     }
 
-    @Override
-    public abstract TestScriptElement cloneObject();
+    /**
+     * Missing description at method setType.
+     *
+     * @param type the TestScriptElementType.
+     */
+    public void setType(TestScriptElementType type) {
+        this.type = type;
+    }
+
+    /**
+     * Missing description at method setType.
+     *
+     * @param type the String.
+     */
+    public void setType(String type) {
+        if ((type == null)) {
+            this.type = null;
+        } else {
+            this.type = TestScriptElementType.valueOf(type);
+        }
+    }
 
     /**
      * Missing description at method getName.
@@ -174,6 +236,9 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
      */
     public void setName(String name) {
         if ((this.name == null)) {
+            if ((name == null)) {
+                return;
+            }
             this.name = new Name();
         }
         this.name.setValue(name);
@@ -221,33 +286,22 @@ public abstract class TestScriptElement extends NabuccoDatatype implements Datat
     }
 
     /**
-     * Missing description at method getType.
+     * Getter for the PropertyDescriptor.
      *
-     * @return the TestScriptElementType.
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
      */
-    public TestScriptElementType getType() {
-        return this.type;
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(TestScriptElement.class)
+                .getProperty(propertyName);
     }
 
     /**
-     * Missing description at method setType.
+     * Getter for the PropertyDescriptorList.
      *
-     * @param type the TestScriptElementType.
+     * @return the List<NabuccoPropertyDescriptor>.
      */
-    public void setType(TestScriptElementType type) {
-        this.type = type;
-    }
-
-    /**
-     * Missing description at method setType.
-     *
-     * @param type the String.
-     */
-    public void setType(String type) {
-        if ((type == null)) {
-            this.type = null;
-        } else {
-            this.type = TestScriptElementType.valueOf(type);
-        }
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(TestScriptElement.class).getAllProperties();
     }
 }

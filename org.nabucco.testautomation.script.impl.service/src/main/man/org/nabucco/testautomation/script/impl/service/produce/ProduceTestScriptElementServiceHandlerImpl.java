@@ -16,15 +16,16 @@
 */
 package org.nabucco.testautomation.script.impl.service.produce;
 
-import java.util.UUID;
-
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.exception.service.ProduceException;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
@@ -39,11 +40,6 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScr
 import org.nabucco.testautomation.script.facade.datatype.dictionary.type.LoggerLevelType;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.type.OperatorType;
 import org.nabucco.testautomation.script.facade.message.ProduceTestScriptElementMsg;
-import org.nabucco.testautomation.script.impl.service.PropertySupport;
-import org.nabucco.testautomation.script.impl.service.produce.ProduceTestScriptElementServiceHandler;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageType;
 
 /**
  * ProduceTestScriptElementServiceHandlerImpl
@@ -52,6 +48,8 @@ import org.nabucco.testautomation.facade.datatype.property.base.PropertyUsageTyp
  */
 public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScriptElementServiceHandler {
 
+	public static final String TEST_SCRIPT_ELEMENT = "TSE";
+	
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -102,10 +100,15 @@ public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScrip
 		case PROPERTY_ACTION:
 			testScriptElement = producePropertyAction();
 			break;
+		case EMBEDDED_SCRIPT:
+			testScriptElement = produceEmbeddedTestScript();
+			break;
 		}
 		
 		if (testScriptElement != null) {
 			testScriptElement.setDatatypeState(DatatypeState.INITIALIZED);
+			testScriptElement.setOwner(NabuccoInstance.getInstance().getOwner());
+			testScriptElement.setIdentificationKey(new Key(TEST_SCRIPT_ELEMENT));
 			msg.setTestScriptElement(testScriptElement);
 			
 			TestScriptElementContainer container = new TestScriptElementContainer();
@@ -132,6 +135,13 @@ public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScrip
 
 	private TestScript produceTestScript() {
 		TestScript script = new TestScript();
+		script.setName("TestScript");
+		script.setDatatypeState(DatatypeState.INITIALIZED);
+		return script;
+	}
+
+	private EmbeddedTestScript produceEmbeddedTestScript() {
+		EmbeddedTestScript script = new EmbeddedTestScript();
 		script.setName("TestScript");
 		script.setDatatypeState(DatatypeState.INITIALIZED);
 		return script;
@@ -186,25 +196,17 @@ public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScrip
 		execution.setName("Execution");
 		execution.setDatatypeState(DatatypeState.INITIALIZED);
 		Action action = produceAction();
+		action.setOwner(NabuccoInstance.getInstance().getOwner());
+		action.setIdentificationKey(new Key());
 		add(action, execution);
 		return execution;
 	}
 
 	private Action produceAction() {
 		Action action = new Action();
-		Long id = Math.abs(UUID.randomUUID().getMostSignificantBits());
-		action.setActionId(id);
 		action.setName("Action");
 		action.setTrace(Boolean.FALSE);
 		action.setDatatypeState(DatatypeState.INITIALIZED);
-		try {
-			PropertyList propertyList = PropertySupport.getInstance().producePropertyList(getContext());
-			propertyList.setName("ActionParams");
-			propertyList.setUsageType(PropertyUsageType.TEST_SCRIPT_ELEMENT_PARAM);
-			action.setPropertyList(propertyList);
-		} catch (Exception e) {
-			// No handling -> return action without ProperyList
-		}
 		return action;
 	}
 	
@@ -214,6 +216,8 @@ public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScrip
 		logger.setName("Logger");
 		logger.setDatatypeState(DatatypeState.INITIALIZED);
 		TextMessage msg = produceTextMessage();
+		msg.setOwner(NabuccoInstance.getInstance().getOwner());
+		msg.setIdentificationKey(new Key());
 		add(msg, logger);
 		return logger;
 	}

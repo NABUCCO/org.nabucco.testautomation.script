@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.search;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -36,36 +36,15 @@ public class SearchTestScriptDelegate extends ServiceDelegateSupport {
     /**
      * SearchTestScript.
      *
+     * @param session the NabuccoSession.
      * @param rq the TestScriptSearchMsg.
      * @return the TestScriptListMsg.
      * @throws SearchException
      */
-    public TestScriptListMsg searchTestScript(TestScriptSearchMsg rq) throws SearchException {
-        ServiceRequest<TestScriptSearchMsg> request = new ServiceRequest<TestScriptSearchMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<TestScriptListMsg> rs;
-        if ((service != null)) {
-            rs = service.searchTestScript(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchTestScript.searchTestScript");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * SearchTestScript.
-     *
-     * @param subject the Subject.
-     * @param rq the TestScriptSearchMsg.
-     * @return the TestScriptListMsg.
-     * @throws SearchException
-     */
-    public TestScriptListMsg searchTestScript(TestScriptSearchMsg rq, Subject subject)
+    public TestScriptListMsg searchTestScript(TestScriptSearchMsg rq, NabuccoSession session)
             throws SearchException {
         ServiceRequest<TestScriptSearchMsg> request = new ServiceRequest<TestScriptSearchMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<TestScriptListMsg> rs;
         if ((service != null)) {
@@ -80,36 +59,15 @@ public class SearchTestScriptDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the TestScript.
      *
+     * @param session the NabuccoSession.
      * @param rq the TestScriptSearchMsg.
      * @return the TestScriptMsg.
      * @throws SearchException
      */
-    public TestScriptMsg getTestScript(TestScriptSearchMsg rq) throws SearchException {
-        ServiceRequest<TestScriptSearchMsg> request = new ServiceRequest<TestScriptSearchMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<TestScriptMsg> rs;
-        if ((service != null)) {
-            rs = service.getTestScript(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchTestScript.getTestScript");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * Getter for the TestScript.
-     *
-     * @param subject the Subject.
-     * @param rq the TestScriptSearchMsg.
-     * @return the TestScriptMsg.
-     * @throws SearchException
-     */
-    public TestScriptMsg getTestScript(TestScriptSearchMsg rq, Subject subject)
+    public TestScriptMsg getTestScript(TestScriptSearchMsg rq, NabuccoSession session)
             throws SearchException {
         ServiceRequest<TestScriptSearchMsg> request = new ServiceRequest<TestScriptSearchMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<TestScriptMsg> rs;
         if ((service != null)) {

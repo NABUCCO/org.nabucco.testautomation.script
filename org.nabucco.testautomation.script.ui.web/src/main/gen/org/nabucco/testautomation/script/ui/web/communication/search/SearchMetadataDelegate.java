@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.search;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -36,36 +36,15 @@ public class SearchMetadataDelegate extends ServiceDelegateSupport {
     /**
      * SearchMetadata.
      *
+     * @param session the NabuccoSession.
      * @param rq the MetadataSearchMsg.
      * @return the MetadataListMsg.
      * @throws SearchException
      */
-    public MetadataListMsg searchMetadata(MetadataSearchMsg rq) throws SearchException {
-        ServiceRequest<MetadataSearchMsg> request = new ServiceRequest<MetadataSearchMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<MetadataListMsg> rs;
-        if ((service != null)) {
-            rs = service.searchMetadata(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchMetadata.searchMetadata");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * SearchMetadata.
-     *
-     * @param subject the Subject.
-     * @param rq the MetadataSearchMsg.
-     * @return the MetadataListMsg.
-     * @throws SearchException
-     */
-    public MetadataListMsg searchMetadata(MetadataSearchMsg rq, Subject subject)
+    public MetadataListMsg searchMetadata(MetadataSearchMsg rq, NabuccoSession session)
             throws SearchException {
         ServiceRequest<MetadataSearchMsg> request = new ServiceRequest<MetadataSearchMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<MetadataListMsg> rs;
         if ((service != null)) {
@@ -80,35 +59,15 @@ public class SearchMetadataDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the Metadata.
      *
+     * @param session the NabuccoSession.
      * @param rq the MetadataSearchMsg.
      * @return the MetadataMsg.
      * @throws SearchException
      */
-    public MetadataMsg getMetadata(MetadataSearchMsg rq) throws SearchException {
+    public MetadataMsg getMetadata(MetadataSearchMsg rq, NabuccoSession session)
+            throws SearchException {
         ServiceRequest<MetadataSearchMsg> request = new ServiceRequest<MetadataSearchMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<MetadataMsg> rs;
-        if ((service != null)) {
-            rs = service.getMetadata(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchMetadata.getMetadata");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * Getter for the Metadata.
-     *
-     * @param subject the Subject.
-     * @param rq the MetadataSearchMsg.
-     * @return the MetadataMsg.
-     * @throws SearchException
-     */
-    public MetadataMsg getMetadata(MetadataSearchMsg rq, Subject subject) throws SearchException {
-        ServiceRequest<MetadataSearchMsg> request = new ServiceRequest<MetadataSearchMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<MetadataMsg> rs;
         if ((service != null)) {
@@ -123,35 +82,14 @@ public class SearchMetadataDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the Children.
      *
+     * @param session the NabuccoSession.
      * @param rq the MetadataMsg.
      * @return the MetadataMsg.
      * @throws SearchException
      */
-    public MetadataMsg getChildren(MetadataMsg rq) throws SearchException {
+    public MetadataMsg getChildren(MetadataMsg rq, NabuccoSession session) throws SearchException {
         ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<MetadataMsg> rs;
-        if ((service != null)) {
-            rs = service.getChildren(request);
-        } else {
-            throw new SearchException(
-                    "Cannot execute service operation: SearchMetadata.getChildren");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * Getter for the Children.
-     *
-     * @param subject the Subject.
-     * @param rq the MetadataMsg.
-     * @return the MetadataMsg.
-     * @throws SearchException
-     */
-    public MetadataMsg getChildren(MetadataMsg rq, Subject subject) throws SearchException {
-        ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<MetadataMsg> rs;
         if ((service != null)) {
@@ -166,34 +104,14 @@ public class SearchMetadataDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the Parents.
      *
+     * @param session the NabuccoSession.
      * @param rq the MetadataMsg.
      * @return the MetadataMsg.
      * @throws SearchException
      */
-    public MetadataMsg getParents(MetadataMsg rq) throws SearchException {
+    public MetadataMsg getParents(MetadataMsg rq, NabuccoSession session) throws SearchException {
         ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<MetadataMsg> rs;
-        if ((service != null)) {
-            rs = service.getParents(request);
-        } else {
-            throw new SearchException("Cannot execute service operation: SearchMetadata.getParents");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * Getter for the Parents.
-     *
-     * @param subject the Subject.
-     * @param rq the MetadataMsg.
-     * @return the MetadataMsg.
-     * @throws SearchException
-     */
-    public MetadataMsg getParents(MetadataMsg rq, Subject subject) throws SearchException {
-        ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<MetadataMsg> rs;
         if ((service != null)) {

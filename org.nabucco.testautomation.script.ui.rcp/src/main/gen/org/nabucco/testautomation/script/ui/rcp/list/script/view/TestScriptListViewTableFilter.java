@@ -26,8 +26,11 @@ public class TestScriptListViewTableFilter extends NabuccoTableFilter {
             result = true;
         } else if ((element instanceof TestScript)) {
             TestScript datatype = ((TestScript) element);
+            result = (result || this.contains(datatype.getIdentificationKey(),
+                    searchFilter.getFilter()));
             result = (result || this.contains(datatype.getName(), searchFilter.getFilter()));
             result = (result || this.contains(datatype.getDescription(), searchFilter.getFilter()));
+            result = (result || this.contains(datatype.getOwner(), searchFilter.getFilter()));
         }
         return result;
     }

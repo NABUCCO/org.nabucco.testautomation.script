@@ -21,9 +21,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
 
-
 /**
- * EnumerationLabelProvider
+ * SubEngineActionCodeLabelProvider
  * 
  * @author Markus Jorroch, PRODYNA AG
  */

@@ -22,17 +22,21 @@ import java.util.List;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
-import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.copypaste.CopyPasteHandler;
-import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
-import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
-import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.MetadataMaintenanceMasterDetailTreeNodeCreator;
-
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.copypaste.AbstractCopyPasteHandler;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
+import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
+import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
+import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.MetadataMaintenanceMasterDetailTreeNodeCreator;
 import org.nabucco.testautomation.ui.rcp.model.property.TestautomationElementFactory;
 
-public class MetadataCopyPasteHandler implements CopyPasteHandler {
+/**
+ * MetadataCopyPasteHandler
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
+public class MetadataCopyPasteHandler extends AbstractCopyPasteHandler {
 
 	private MetadataMaintenanceMasterDetailTreeNodeCreator treeNodeCreator;
 
@@ -43,6 +47,10 @@ public class MetadataCopyPasteHandler implements CopyPasteHandler {
 	@Override
 	public void paste(MasterDetailTreeNode targetNode,
 			Datatype copiedDatatype) {
+		
+		if(!super.validate(targetNode, copiedDatatype)){
+			return;
+		}
 
 		Class<? extends Datatype>[] possibleChildren = DataModelManager.getPossibleChildrenTypes(targetNode.getDatatype());
 		if(Arrays.asList(possibleChildren).contains(copiedDatatype.getClass())){
@@ -51,12 +59,12 @@ public class MetadataCopyPasteHandler implements CopyPasteHandler {
 			if(targetDatatype instanceof Metadata){
 				if(copiedDatatype instanceof Metadata){
 					Metadata copiedMetadata = (Metadata) copiedDatatype;
-					copiedMetadata.setId(null);
-					clone = MetadataElementFactory.clone(copiedMetadata);	
-					((Metadata) targetDatatype).getChildren().add((Metadata) clone);
+					copiedMetadata = (Metadata) MetadataElementFactory.clone(copiedMetadata);
+					copiedMetadata.setParent((Metadata) targetDatatype);
+					clone = copiedMetadata;
+					((Metadata) targetDatatype).getChildren().add(copiedMetadata);
 				} else if(copiedDatatype instanceof MetadataLabel){
 					MetadataLabel copiedMetadataLabel = (MetadataLabel) copiedDatatype;
-					copiedMetadataLabel.setId(null);
 					clone = MetadataElementFactory.clone(copiedMetadataLabel);	
 					((Metadata) targetDatatype).getLabelList().add((MetadataLabel) clone);
 				} else {
@@ -67,7 +75,6 @@ public class MetadataCopyPasteHandler implements CopyPasteHandler {
 					MetadataLabel targetMetadataLabel = (MetadataLabel) targetDatatype;
 					if(targetMetadataLabel.getPropertyList() == null){
 						PropertyList copiedPropertyList = (PropertyList) copiedDatatype;
-						copiedPropertyList.setId(null);
 						PropertyContainer propertyContainer = TestautomationElementFactory.clone(copiedPropertyList);	
 						clone = propertyContainer.getProperty();
 						targetMetadataLabel.setPropertyList((PropertyList) clone);
@@ -79,7 +86,6 @@ public class MetadataCopyPasteHandler implements CopyPasteHandler {
 				}
 			} else if(targetDatatype instanceof PropertyList && copiedDatatype instanceof Property){
 				Property copiedProperty = (Property) copiedDatatype;
-				copiedProperty.setId(null);
 				PropertyContainer propertyContainer = TestautomationElementFactory.clone(copiedProperty);
 				clone = propertyContainer.getProperty();
 				List<PropertyContainer> targetPropertyList = ((PropertyList) targetDatatype).getPropertyList();

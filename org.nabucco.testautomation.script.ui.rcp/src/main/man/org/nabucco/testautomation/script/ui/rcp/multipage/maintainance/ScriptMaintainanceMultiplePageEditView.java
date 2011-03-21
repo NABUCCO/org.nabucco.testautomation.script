@@ -22,16 +22,19 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.utils.I18N;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailBlock;
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailHelper;
 import org.nabucco.framework.plugin.base.component.multipage.view.MultiPageEditView;
 import org.nabucco.framework.plugin.base.component.multipage.xml.XMLEditorPage;
 import org.nabucco.framework.plugin.base.component.multipage.xml.example.XmlDefaultPage;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.ScriptMaintainanceMasterDetailBlock;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.ScriptMaintainanceMultiplePageMasterTreeDoubleClickListener;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.TestScriptCopyPasteHandler;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.TestScriptDragAndDropHandler;
@@ -104,27 +107,72 @@ MultiPageEditView<ScriptMaintainanceMultiplePageEditViewModel> {
 				refreshReloadButtonState();
 			}
 		});
+		// Add DoublieClickListener to TreeViewer
+		TreeViewer treeViewer = this.getMasterDetailsBlock().getTreeViewer();
+		treeViewer.addDoubleClickListener(new ScriptMaintainanceMultiplePageMasterTreeDoubleClickListener(treeViewer));
 	}
 
 	private void refreshReloadButtonState() {
 		// TODO Develop general concept in plugin.base
 		final ToolBar toolBar = ((ToolBarManager) getToolBarManager())
-		.getControl();
+				.getControl();
 		ToolItem reloadItem = null;
+		ToolItem importItem = null;
+		ToolItem saveItem = null;
+		ToolItem deleteItem = null;
+		ToolItem executeItem = null;
 
 		for (ToolItem item : toolBar.getItems()) {
-			if (item.getToolTipText() != null && item.getToolTipText().equals("Reload")) {
+			if (item.getToolTipText().equals("Reload")) {
 				reloadItem = item;
+			} else if(item.getToolTipText().equals("Import")) {
+				importItem = item;
+			} else if(item.getToolTipText().equals("Save")) {
+				saveItem = item;
+			} else if(item.getToolTipText().equals("Delete")) {
+				deleteItem = item;
+			} else if(item.getToolTipText().equals("Execute")) {
+				executeItem = item;
 			}
 		}
 
 		if (reloadItem != null) {
-			if (super.getModel().getTestScript().getDatatypeState() == DatatypeState.INITIALIZED) {
+			if (super.getModel().getTestScript().getDatatypeState() == DatatypeState.INITIALIZED
+					|| !MasterDetailHelper.isDatatypeEditable(super.getModel().getTestScript())) {
 				reloadItem.setEnabled(false);
 			} else {
 				reloadItem.setEnabled(true);
 			}
 		}
+		if (importItem != null) {
+			if (MasterDetailHelper.isImportPossible(super.getModel().getTestScript())) {
+				importItem.setEnabled(true);
+			} else {
+				importItem.setEnabled(false);
+			}
+		}
+		if (saveItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getTestScript())) {
+				saveItem.setEnabled(true);
+			} else {
+				saveItem.setEnabled(false);
+			}
+		}
+		if (deleteItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getTestScript())) {
+				deleteItem.setEnabled(true);
+			} else {
+				deleteItem.setEnabled(false);
+			}
+		}
+		if (executeItem != null) {
+			if (MasterDetailHelper.isDatatypeEditable(super.getModel().getTestScript())) {
+				executeItem.setEnabled(true);
+			} else {
+				executeItem.setEnabled(false);
+			}
+		}
 	}
+
 
 }

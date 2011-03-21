@@ -3,13 +3,19 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.metadata;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.code.Code;
 import org.nabucco.framework.base.facade.datatype.code.CodePath;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 
 /**
@@ -21,10 +27,15 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "environmentType", "releaseType", "brandType",
-            "propertyList" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m0,1;", "m0,1;", "m0,1;", "m0,1;" };
+
+    public static final String ENVIRONMENTTYPE = "environmentType";
+
+    public static final String RELEASETYPE = "releaseType";
+
+    public static final String BRANDTYPE = "brandType";
+
+    public static final String PROPERTYLIST = "propertyList";
 
     /** Environment of the TestConfiguration */
     private Code environmentType;
@@ -94,23 +105,65 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
         }
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class)
+                .getPropertyMap());
+        propertyMap.put(ENVIRONMENTTYPE, PropertyDescriptorSupport.createDatatype(ENVIRONMENTTYPE,
+                Code.class, 2, PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.COMPONENT));
+        propertyMap.put(RELEASETYPE, PropertyDescriptorSupport.createDatatype(RELEASETYPE,
+                Code.class, 3, PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.COMPONENT));
+        propertyMap.put(BRANDTYPE, PropertyDescriptorSupport.createDatatype(BRANDTYPE, Code.class,
+                4, PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPONENT));
+        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST,
+                PropertyList.class, 5, PROPERTY_CONSTRAINTS[3], false,
+                PropertyAssociationType.COMPONENT));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new DatatypeProperty<Code>(PROPERTY_NAMES[0], Code.class,
-                PROPERTY_CONSTRAINTS[0], this.environmentType));
-        properties.add(new DatatypeProperty<Code>(PROPERTY_NAMES[1], Code.class,
-                PROPERTY_CONSTRAINTS[1], this.releaseType));
-        properties.add(new DatatypeProperty<Code>(PROPERTY_NAMES[2], Code.class,
-                PROPERTY_CONSTRAINTS[2], this.brandType));
-        properties.add(new DatatypeProperty<PropertyList>(PROPERTY_NAMES[3], PropertyList.class,
-                PROPERTY_CONSTRAINTS[3], this.propertyList));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(ENVIRONMENTTYPE),
+                this.environmentType, this.environmentTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(RELEASETYPE),
+                this.releaseType, this.releaseTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(BRANDTYPE),
+                this.brandType, this.brandTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(PROPERTYLIST),
+                this.propertyList, this.propertyListRefId));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(ENVIRONMENTTYPE) && (property.getType() == Code.class))) {
+            this.setEnvironmentType(((Code) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(RELEASETYPE) && (property.getType() == Code.class))) {
+            this.setReleaseType(((Code) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(BRANDTYPE) && (property.getType() == Code.class))) {
+            this.setBrandType(((Code) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(PROPERTYLIST) && (property.getType() == PropertyList.class))) {
+            this.setPropertyList(((PropertyList) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -190,26 +243,6 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
         result = ((PRIME * result) + ((this.propertyListRefId == null) ? 0 : this.propertyListRefId
                 .hashCode()));
         return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<MetadataLabel>\n");
-        appendable.append(super.toString());
-        appendable.append((("<environmentType>" + this.environmentType) + "</environmentType>\n"));
-        appendable
-                .append((("<environmentTypeRefId>" + this.environmentTypeRefId) + "</environmentTypeRefId>\n"));
-        appendable.append((("<releaseType>" + this.releaseType) + "</releaseType>\n"));
-        appendable
-                .append((("<releaseTypeRefId>" + this.releaseTypeRefId) + "</releaseTypeRefId>\n"));
-        appendable.append((("<brandType>" + this.brandType) + "</brandType>\n"));
-        appendable.append((("<brandTypeRefId>" + this.brandTypeRefId) + "</brandTypeRefId>\n"));
-        appendable.append((("<propertyList>" + this.propertyList) + "</propertyList>\n"));
-        appendable
-                .append((("<propertyListRefId>" + this.propertyListRefId) + "</propertyListRefId>\n"));
-        appendable.append("</MetadataLabel>\n");
-        return appendable.toString();
     }
 
     @Override
@@ -381,6 +414,25 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
      */
     public void setPropertyListRefId(Long propertyListRefId) {
         this.propertyListRefId = propertyListRefId;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(MetadataLabel.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(MetadataLabel.class).getAllProperties();
     }
 
     /**

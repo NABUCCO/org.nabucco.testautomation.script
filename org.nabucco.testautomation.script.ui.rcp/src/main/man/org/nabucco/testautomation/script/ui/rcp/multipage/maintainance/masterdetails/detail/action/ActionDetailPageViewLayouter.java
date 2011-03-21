@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nabucco.framework.base.facade.datatype.Datatype;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.model.ViewModel;
@@ -43,7 +44,7 @@ import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPa
  */
 public class ActionDetailPageViewLayouter extends TestautomationDetailPageViewLayouter {
 
-	private static final String PROPERTY_ACTION = "action";
+	private static final String PROPERTY_ACTION = "actionCode";
 
 	private static final String PROPERTY_METADATA = "metadata";
 
@@ -70,31 +71,36 @@ public class ActionDetailPageViewLayouter extends TestautomationDetailPageViewLa
 	}
 
 	@Override
-	protected Control layoutElement(Composite parent, BaseTypeWidgetFactory widgetFactory, Datatype datatype, String masterBlockId, Object property,
-			String propertyName, GridData data, boolean readOnly, ViewModel externalViewModel, NabuccoMessageManager messageManager) {
+	protected Control layoutElement(Composite parent, BaseTypeWidgetFactory widgetFactory, Datatype datatype, String masterBlockId, NabuccoProperty property,
+			GridData data, boolean readOnly, ViewModel externalViewModel, NabuccoMessageManager messageManager) {
 
+		readOnly = !property.getConstraints().isEditable() || readOnly;
+		
+		Object instance = property.getInstance();
+		
 		// Validate property multiplicity
-		if ((property instanceof List<?>)) {
-			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, propertyName, data, readOnly, externalViewModel,
+		if (instance instanceof List<?>) {
+			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, data, readOnly, externalViewModel,
 					messageManager);
 		}
 
 		// Validate parent Type
 		if (!(datatype instanceof Action)) {
-			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, propertyName, data, readOnly, externalViewModel,
+			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, data, readOnly, externalViewModel,
 					messageManager);
 		}
 
 		// Validate property name
+		String propertyName = property.getName();
+		
 		if (propertyName.equalsIgnoreCase(PROPERTY_ACTION)) {
 			return null;
 		} else if (propertyName.equalsIgnoreCase(PROPERTY_METADATA)) {
-
-			return this.layoutMetadataTable(parent, widgetFactory, datatype, masterBlockId, property, propertyName, data, readOnly, externalViewModel,
+			return this.layoutMetadataTable(parent, widgetFactory, datatype, masterBlockId, (Metadata) instance, propertyName, data, readOnly, externalViewModel,
 					messageManager);
 		}
 
-		return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, propertyName, data, readOnly, externalViewModel, messageManager);
+		return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property, data, readOnly, externalViewModel, messageManager);
 	}
 
 	/**
@@ -123,13 +129,13 @@ public class ActionDetailPageViewLayouter extends TestautomationDetailPageViewLa
 	 * 
 	 * @return the layouted table
 	 */
-	private Control layoutMetadataTable(Composite parent, BaseTypeWidgetFactory widgetFactory, Datatype datatype, String masterBlockId, Object property,
+	private Control layoutMetadataTable(Composite parent, BaseTypeWidgetFactory widgetFactory, Datatype datatype, String masterBlockId, Metadata metadata,
 			String propertyName, GridData data, boolean readOnly, ViewModel externalViewModel, NabuccoMessageManager messageManager) {
 
 		NabuccoFormToolkit nft = widgetFactory.getNabuccoFormToolKit();
 
 		MetadataPickerActionComboWidgetCreator widgetCreator = new MetadataPickerActionComboWidgetCreator(parent, widgetFactory, data, nft, externalViewModel,
-				masterBlockId, (Metadata) property, (Action) datatype);
+				masterBlockId, metadata, (Action) datatype, readOnly);
 		Control[] newWidget = widgetCreator.createWidgets();
 
 		if (newWidget.length > 0 && newWidget[0] == null) {

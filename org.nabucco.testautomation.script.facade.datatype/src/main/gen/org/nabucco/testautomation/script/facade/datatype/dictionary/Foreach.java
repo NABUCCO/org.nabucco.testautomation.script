@@ -3,11 +3,16 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
@@ -21,9 +26,11 @@ public class Foreach extends TestScriptComposite implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "iterableRef", "elementName" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,255;m1,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m1,1;" };
+    public static final String ITERABLEREF = "iterableRef";
+
+    public static final String ELEMENTNAME = "elementName";
 
     private PropertyReference iterableRef;
 
@@ -56,19 +63,50 @@ public class Foreach extends TestScriptComposite implements Datatype {
         clone.setType(this.getType());
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class)
+                .getPropertyMap());
+        propertyMap.put(ITERABLEREF, PropertyDescriptorSupport.createBasetype(ITERABLEREF,
+                PropertyReference.class, 8, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(ELEMENTNAME, PropertyDescriptorSupport.createBasetype(ELEMENTNAME,
+                Name.class, 9, PROPERTY_CONSTRAINTS[1], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[0],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[0], this.iterableRef));
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[1], Name.class,
-                PROPERTY_CONSTRAINTS[1], this.elementName));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Foreach.getPropertyDescriptor(ITERABLEREF),
+                this.iterableRef, null));
+        properties.add(super.createProperty(Foreach.getPropertyDescriptor(ELEMENTNAME),
+                this.elementName, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(ITERABLEREF) && (property.getType() == PropertyReference.class))) {
+            this.setIterableRef(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(ELEMENTNAME) && (property.getType() == Name.class))) {
+            this.setElementName(((Name) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -109,17 +147,6 @@ public class Foreach extends TestScriptComposite implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Foreach>\n");
-        appendable.append(super.toString());
-        appendable.append((("<iterableRef>" + this.iterableRef) + "</iterableRef>\n"));
-        appendable.append((("<elementName>" + this.elementName) + "</elementName>\n"));
-        appendable.append("</Foreach>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public Foreach cloneObject() {
         Foreach clone = new Foreach();
         this.cloneObject(clone);
@@ -151,6 +178,9 @@ public class Foreach extends TestScriptComposite implements Datatype {
      */
     public void setIterableRef(String iterableRef) {
         if ((this.iterableRef == null)) {
+            if ((iterableRef == null)) {
+                return;
+            }
             this.iterableRef = new PropertyReference();
         }
         this.iterableRef.setValue(iterableRef);
@@ -181,8 +211,30 @@ public class Foreach extends TestScriptComposite implements Datatype {
      */
     public void setElementName(String elementName) {
         if ((this.elementName == null)) {
+            if ((elementName == null)) {
+                return;
+            }
             this.elementName = new Name();
         }
         this.elementName.setValue(elementName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Foreach.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Foreach.class).getAllProperties();
     }
 }

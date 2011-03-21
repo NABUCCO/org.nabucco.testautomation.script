@@ -22,9 +22,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
+import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionAccessor;
-import org.nabucco.framework.base.facade.exception.persistence.PersistenceException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
+import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.context.ServiceMessageContext;
 import org.nabucco.testautomation.script.facade.component.ScriptComponent;
@@ -32,6 +32,7 @@ import org.nabucco.testautomation.script.facade.component.ScriptComponentLocator
 import org.nabucco.testautomation.script.facade.datatype.comparator.FolderSorter;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
 
 
@@ -69,18 +70,22 @@ public class FolderSupport {
 		}		
 	}
 
-	public synchronized Folder getRootFolder(ServiceMessageContext ctx) throws PersistenceException {
+	public synchronized Folder getRootFolder(ServiceMessageContext ctx, Owner owner) throws SearchException {
 		
 		if (this.rootFolder == null) {
 		
 			try {
 				ScriptComponent scriptComponent = ScriptComponentLocator.getInstance().getComponent();
 				SearchFolder search = scriptComponent.getSearchFolder();
-				ServiceRequest<EmptyServiceMessage> rq = new ServiceRequest<EmptyServiceMessage>(ctx);
-				rq.setRequestMessage(new EmptyServiceMessage());
+				ServiceRequest<FolderSearchMsg> rq = new ServiceRequest<FolderSearchMsg>(ctx);
+				FolderSearchMsg msg = new FolderSearchMsg();
+				msg.setOwner(owner);
+				rq.setRequestMessage(msg);
 				this.rootFolder = search.getRootFolder(rq).getResponseMessage().getFolder();
-			} catch (Exception e) {
-				throw new PersistenceException(e);
+			} catch (SearchException ex) {
+				throw ex;
+			} catch (Exception ex) {
+				throw new SearchException(ex);
 			}
 		}
 		return this.rootFolder;

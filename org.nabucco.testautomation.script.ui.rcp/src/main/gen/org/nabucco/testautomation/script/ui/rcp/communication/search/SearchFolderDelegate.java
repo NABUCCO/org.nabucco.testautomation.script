@@ -4,13 +4,14 @@
 package org.nabucco.testautomation.script.ui.rcp.communication.search;
 
 import org.nabucco.framework.base.facade.exception.client.ClientException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.communication.ServiceDelegateSupport;
 import org.nabucco.framework.plugin.base.logging.NabuccoLogMessage;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
 
 /**
@@ -36,12 +37,12 @@ public class SearchFolderDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the RootFolder.
      *
-     * @param rq the EmptyServiceMessage.
+     * @param rq the FolderSearchMsg.
      * @return the FolderMsg.
      * @throws ClientException
      */
-    public FolderMsg getRootFolder(EmptyServiceMessage rq) throws ClientException {
-        ServiceRequest<EmptyServiceMessage> request = new ServiceRequest<EmptyServiceMessage>(
+    public FolderMsg getRootFolder(FolderSearchMsg rq) throws ClientException {
+        ServiceRequest<FolderSearchMsg> request = new ServiceRequest<FolderSearchMsg>(
                 super.createServiceContext());
         request.setRequestMessage(rq);
         ServiceResponse<FolderMsg> rs;
@@ -66,15 +67,15 @@ public class SearchFolderDelegate extends ServiceDelegateSupport {
     /**
      * Getter for the FolderStructure.
      *
-     * @param rq the EmptyServiceMessage.
-     * @return the FolderMsg.
+     * @param rq the FolderSearchMsg.
+     * @return the FolderListMsg.
      * @throws ClientException
      */
-    public FolderMsg getFolderStructure(EmptyServiceMessage rq) throws ClientException {
-        ServiceRequest<EmptyServiceMessage> request = new ServiceRequest<EmptyServiceMessage>(
+    public FolderListMsg getFolderStructure(FolderSearchMsg rq) throws ClientException {
+        ServiceRequest<FolderSearchMsg> request = new ServiceRequest<FolderSearchMsg>(
                 super.createServiceContext());
         request.setRequestMessage(rq);
-        ServiceResponse<FolderMsg> rs;
+        ServiceResponse<FolderListMsg> rs;
         if ((service != null)) {
             long start = System.currentTimeMillis();
             try {

@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nabucco.framework.base.facade.datatype.Datatype;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.model.ViewModel;
@@ -36,7 +37,7 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.
 import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageViewLayouter;
 
 /**
- * ActionDetailPageViewLayouter
+ * TestScriptDetailPageViewLayouter
  * 
  * @author Markus Jorroch, PRODYNA AG
  */
@@ -52,7 +53,6 @@ public class TestScriptDetailPageViewLayouter extends TestautomationDetailPageVi
 	 */
 	public TestScriptDetailPageViewLayouter(String title) {
 		super(title);
-
 	}
 
 	@Override
@@ -76,34 +76,37 @@ public class TestScriptDetailPageViewLayouter extends TestautomationDetailPageVi
 	@Override
 	protected Control layoutElement(Composite parent,
 			BaseTypeWidgetFactory widgetFactory, Datatype datatype,
-			String masterBlockId, Object property, String propertyName,
+			String masterBlockId, NabuccoProperty property,
 			GridData data, boolean readOnly, ViewModel externalViewModel,
 			NabuccoMessageManager messageManager) {
 
+		Object instance = property.getInstance();
+
 		// Validate property multiplicity
-		if ((property instanceof List<?>)) {
+		if (instance instanceof List<?>) {
 			return super.layoutElement(parent, widgetFactory, datatype,
-					masterBlockId, property, propertyName, data, readOnly,
+					masterBlockId, property, data, readOnly,
 					externalViewModel, messageManager);
 		}
 
 		// Validate parent Type
 		if (!(datatype instanceof TestScript)) {
 			return super.layoutElement(parent, widgetFactory, datatype,
-					masterBlockId, property, propertyName, data, readOnly,
+					masterBlockId, property, data, readOnly,
 					externalViewModel, messageManager);
 		}
 
 		// Validate property name
+		String propertyName = property.getName();
+		
 		if (propertyName.equalsIgnoreCase(PROPERTY_FOLDER)) {
-
 			return this.layoutFolderPicker(parent, widgetFactory, datatype,
-					masterBlockId, property, propertyName, data, readOnly,
+					masterBlockId, property, data, readOnly,
 					externalViewModel, messageManager);
 		}
 
 		return super.layoutElement(parent, widgetFactory, datatype,
-				masterBlockId, property, propertyName, data, readOnly,
+				masterBlockId, property, data, readOnly,
 				externalViewModel, messageManager);
 	}
 
@@ -135,17 +138,19 @@ public class TestScriptDetailPageViewLayouter extends TestautomationDetailPageVi
 	 */
 	private Control layoutFolderPicker(Composite parent,
 			BaseTypeWidgetFactory widgetFactory, Datatype datatype,
-			String masterBlockId, Object property, String propertyName,
+			String masterBlockId, NabuccoProperty property,
 			GridData data, boolean readOnly, ViewModel externalViewModel,
 			NabuccoMessageManager messageManager) {
 
+		readOnly = !property.getConstraints().isEditable() || readOnly;
+		
 		NabuccoFormToolkit nft = widgetFactory.getNabuccoFormToolKit();
 
 		FolderPickerActionComboWidgetCreator widgetCreator = new FolderPickerActionComboWidgetCreator(
 				nft);
 		Control newWidget = widgetCreator.createWidget(parent,
-				(Folder) property, null, datatype, readOnly,
-				externalViewModel, messageManager, propertyName, data,
+				(Folder) property.getInstance(), null, datatype, readOnly,
+				externalViewModel, messageManager, property.getName(), data,
 				masterBlockId);
 
 		if (newWidget == null) {

@@ -6,6 +6,8 @@ package org.nabucco.testautomation.script.facade.component;
 import org.nabucco.framework.base.facade.component.Component;
 import org.nabucco.framework.base.facade.exception.service.ServiceException;
 import org.nabucco.testautomation.facade.component.TestautomationComponent;
+import org.nabucco.testautomation.script.facade.service.export.ExportScript;
+import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
@@ -123,4 +125,20 @@ public interface ScriptComponent extends Component {
      * @throws ServiceException
      */
     ProduceFolder getProduceFolder() throws ServiceException;
+
+    /**
+     * Getter for the ExportScript.
+     *
+     * @return the ExportScript.
+     * @throws ServiceException
+     */
+    ExportScript getExportScript() throws ServiceException;
+
+    /**
+     * Getter for the ImportScript.
+     *
+     * @return the ImportScript.
+     * @throws ServiceException
+     */
+    ImportScript getImportScript() throws ServiceException;
 }

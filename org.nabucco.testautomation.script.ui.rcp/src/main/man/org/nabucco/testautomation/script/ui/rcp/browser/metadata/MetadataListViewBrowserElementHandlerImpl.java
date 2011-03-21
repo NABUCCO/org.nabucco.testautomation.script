@@ -22,7 +22,6 @@ import org.nabucco.testautomation.script.ui.rcp.browser.metadata.MetadataListVie
 import org.nabucco.testautomation.script.ui.rcp.browser.metadata.MetadataListViewBrowserElementHandler;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.model.MetadataListViewModel;
 
-
 /**
  * TestScriptListViewBrowserElementHandlerImpl
  * 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchModel;
@@ -43,10 +44,12 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
     public static final String ID = "org.nabucco.testautomation.script.ui.search.script.model.TestScriptSearchBusinessModel";
 
     @Override
-    public TestScriptListViewBrowserElement search(NabuccoComponentSearchParameter searchViewModel) {
-        TestScriptListViewBrowserElement result = null;
-        if (searchViewModel instanceof TestScriptSearchViewModel) {
-            TestScriptSearchViewModel testScriptSearchViewModel = (TestScriptSearchViewModel) searchViewModel;
+    public TestScriptListViewBrowserElement search(NabuccoComponentSearchParameter parameter) {
+        
+    	TestScriptListViewBrowserElement result = null;
+        
+    	if (parameter instanceof TestScriptSearchViewModel) {
+            TestScriptSearchViewModel testScriptSearchViewModel = (TestScriptSearchViewModel) parameter;
             TestScriptSearchMsg rq = createTestScriptSearchMsg(testScriptSearchViewModel);
             result = new TestScriptListViewBrowserElement(search(rq).toArray(new TestScript[0]));
 
@@ -55,8 +58,10 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
     }
 
     private List<TestScript> search(final TestScriptSearchMsg rq) {
-        List<TestScript> result = null;
-        try {
+        
+    	List<TestScript> result = null;
+        
+    	try {
             SearchTestScriptDelegate searchDelegate = ScriptComponentServiceDelegateFactory
                     .getInstance().getSearchTestScript();
             TestScriptListMsg response = searchDelegate.searchTestScript(rq);
@@ -68,24 +73,31 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
     }
 
     private TestScriptSearchMsg createTestScriptSearchMsg(TestScriptSearchViewModel searchViewModel) {
-        TestScriptSearchMsg result = new TestScriptSearchMsg();
+        
+    	TestScriptSearchMsg result = new TestScriptSearchMsg();
+        String owner = searchViewModel.getOwner();
 
-        result.setName(getNameFromModel(searchViewModel));
-        result.setDescription(getDescriptionFromModel(searchViewModel));
+        if (owner != null && owner.length() > 0) {
+        	result.setOwner(new Owner(owner));
+        }
+        result.setName(getName(searchViewModel));
+        result.setDescription(getDescription(searchViewModel));
 
         return result;
     }
 
-    private Description getDescriptionFromModel(final TestScriptSearchViewModel searchViewModel) {
-        Description result = new Description();
+    private Description getDescription(final TestScriptSearchViewModel searchViewModel) {
+       
+    	Description result = new Description();
         String description = searchViewModel.getTestScriptDescription();
 
         result.setValue((description == null || description.length() == 0) ? null : description);
         return result;
     }
 
-    private Name getNameFromModel(TestScriptSearchViewModel searchViewModel) {
-        Name result = new Name();
+    private Name getName(TestScriptSearchViewModel searchViewModel) {
+        
+    	Name result = new Name();
         String name = searchViewModel.getTestScriptName();
 
         result.setValue((name == null || name.length() == 0) ? null : name);

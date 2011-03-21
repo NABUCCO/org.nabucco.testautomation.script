@@ -5,12 +5,12 @@ package org.nabucco.testautomation.script.impl.service.search;
 
 import org.nabucco.framework.base.facade.exception.NabuccoException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
 import org.nabucco.framework.base.impl.service.handler.ServiceHandler;
 import org.nabucco.framework.base.impl.service.handler.ServiceHandlerSupport;
-import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 
 /**
  * GetFolderStructureServiceHandler<p/>Folder search service<p/>
@@ -33,14 +33,14 @@ public abstract class GetFolderStructureServiceHandler extends ServiceHandlerSup
     /**
      * Invokes the service handler method.
      *
-     * @param rq the ServiceRequest<EmptyServiceMessage>.
-     * @return the ServiceResponse<FolderMsg>.
+     * @param rq the ServiceRequest<FolderSearchMsg>.
+     * @return the ServiceResponse<FolderListMsg>.
      * @throws SearchException
      */
-    protected ServiceResponse<FolderMsg> invoke(ServiceRequest<EmptyServiceMessage> rq)
+    protected ServiceResponse<FolderListMsg> invoke(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException {
-        ServiceResponse<FolderMsg> rs;
-        FolderMsg msg;
+        ServiceResponse<FolderListMsg> rs;
+        FolderListMsg msg;
         try {
             this.validateRequest(rq);
             this.setContext(rq.getContext());
@@ -50,7 +50,7 @@ public abstract class GetFolderStructureServiceHandler extends ServiceHandlerSup
             } else {
                 super.cleanServiceMessage(msg);
             }
-            rs = new ServiceResponse<FolderMsg>(rq.getContext());
+            rs = new ServiceResponse<FolderListMsg>(rq.getContext());
             rs.setResponseMessage(msg);
             return rs;
         } catch (SearchException e) {
@@ -62,18 +62,18 @@ public abstract class GetFolderStructureServiceHandler extends ServiceHandlerSup
             throw wrappedException;
         } catch (Exception e) {
             super.getLogger().error(e);
-            throw new SearchException(e.getMessage());
+            throw new SearchException("Error during service invocation.", e);
         }
     }
 
     /**
      * Returns the root folder with loaded subfolders an flat loaded testscripts
      *
-     * @param msg the EmptyServiceMessage.
-     * @return the FolderMsg.
+     * @param msg the FolderSearchMsg.
+     * @return the FolderListMsg.
      * @throws SearchException
      */
-    protected abstract FolderMsg getFolderStructure(EmptyServiceMessage msg) throws SearchException;
+    protected abstract FolderListMsg getFolderStructure(FolderSearchMsg msg) throws SearchException;
 
     /**
      * Getter for the Id.

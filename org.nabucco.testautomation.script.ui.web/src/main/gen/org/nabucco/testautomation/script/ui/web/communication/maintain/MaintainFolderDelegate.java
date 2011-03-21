@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.maintain;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -34,35 +34,14 @@ public class MaintainFolderDelegate extends ServiceDelegateSupport {
     /**
      * MaintainFolder.
      *
+     * @param session the NabuccoSession.
      * @param rq the FolderMsg.
      * @return the FolderMsg.
      * @throws MaintainException
      */
-    public FolderMsg maintainFolder(FolderMsg rq) throws MaintainException {
+    public FolderMsg maintainFolder(FolderMsg rq, NabuccoSession session) throws MaintainException {
         ServiceRequest<FolderMsg> request = new ServiceRequest<FolderMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<FolderMsg> rs;
-        if ((service != null)) {
-            rs = service.maintainFolder(request);
-        } else {
-            throw new MaintainException(
-                    "Cannot execute service operation: MaintainFolder.maintainFolder");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * MaintainFolder.
-     *
-     * @param subject the Subject.
-     * @param rq the FolderMsg.
-     * @return the FolderMsg.
-     * @throws MaintainException
-     */
-    public FolderMsg maintainFolder(FolderMsg rq, Subject subject) throws MaintainException {
-        ServiceRequest<FolderMsg> request = new ServiceRequest<FolderMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<FolderMsg> rs;
         if ((service != null)) {

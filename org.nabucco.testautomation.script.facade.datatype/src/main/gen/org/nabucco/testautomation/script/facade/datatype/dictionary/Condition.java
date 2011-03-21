@@ -3,12 +3,16 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.EnumProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.facade.datatype.base.Value;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
@@ -25,11 +29,20 @@ public class Condition extends TestScriptComposite implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "propertyRef", "value", "valueRef",
-            "conditionType", "operator", "isBreakCondition" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;",
             "l0,n;m0,1;", "m0,1;", "m0,1;", "l0,n;m1,1;" };
+
+    public static final String PROPERTYREF = "propertyRef";
+
+    public static final String VALUE = "value";
+
+    public static final String VALUEREF = "valueRef";
+
+    public static final String CONDITIONTYPE = "conditionType";
+
+    public static final String OPERATOR = "operator";
+
+    public static final String ISBREAKCONDITION = "isBreakCondition";
 
     private PropertyReference propertyRef;
 
@@ -78,27 +91,78 @@ public class Condition extends TestScriptComposite implements Datatype {
         }
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class)
+                .getPropertyMap());
+        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
+                PropertyReference.class, 8, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(VALUE, PropertyDescriptorSupport.createBasetype(VALUE, Value.class, 9,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(VALUEREF, PropertyDescriptorSupport.createBasetype(VALUEREF,
+                PropertyReference.class, 10, PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(CONDITIONTYPE, PropertyDescriptorSupport.createEnumeration(CONDITIONTYPE,
+                ConditionType.class, 11, PROPERTY_CONSTRAINTS[3], false));
+        propertyMap.put(OPERATOR, PropertyDescriptorSupport.createEnumeration(OPERATOR,
+                OperatorType.class, 12, PROPERTY_CONSTRAINTS[4], false));
+        propertyMap.put(ISBREAKCONDITION, PropertyDescriptorSupport.createBasetype(
+                ISBREAKCONDITION, Flag.class, 13, PROPERTY_CONSTRAINTS[5], false));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
     public void init() {
         this.initDefaults();
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[0],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[0], this.propertyRef));
-        properties.add(new BasetypeProperty<Value>(PROPERTY_NAMES[1], Value.class,
-                PROPERTY_CONSTRAINTS[1], this.value));
-        properties.add(new BasetypeProperty<PropertyReference>(PROPERTY_NAMES[2],
-                PropertyReference.class, PROPERTY_CONSTRAINTS[2], this.valueRef));
-        properties.add(new EnumProperty<ConditionType>(PROPERTY_NAMES[3], ConditionType.class,
-                PROPERTY_CONSTRAINTS[3], this.conditionType));
-        properties.add(new EnumProperty<OperatorType>(PROPERTY_NAMES[4], OperatorType.class,
-                PROPERTY_CONSTRAINTS[4], this.operator));
-        properties.add(new BasetypeProperty<Flag>(PROPERTY_NAMES[5], Flag.class,
-                PROPERTY_CONSTRAINTS[5], this.isBreakCondition));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(PROPERTYREF),
+                this.propertyRef, null));
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(VALUE), this.value,
+                null));
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(VALUEREF),
+                this.valueRef, null));
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(CONDITIONTYPE),
+                this.conditionType, null));
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(OPERATOR),
+                this.operator, null));
+        properties.add(super.createProperty(Condition.getPropertyDescriptor(ISBREAKCONDITION),
+                this.isBreakCondition, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
+            this.setPropertyRef(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(VALUE) && (property.getType() == Value.class))) {
+            this.setValue(((Value) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(VALUEREF) && (property.getType() == PropertyReference.class))) {
+            this.setValueRef(((PropertyReference) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(CONDITIONTYPE) && (property.getType() == ConditionType.class))) {
+            this.setConditionType(((ConditionType) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(OPERATOR) && (property.getType() == OperatorType.class))) {
+            this.setOperator(((OperatorType) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(ISBREAKCONDITION) && (property.getType() == Flag.class))) {
+            this.setIsBreakCondition(((Flag) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -165,22 +229,6 @@ public class Condition extends TestScriptComposite implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Condition>\n");
-        appendable.append(super.toString());
-        appendable.append((("<propertyRef>" + this.propertyRef) + "</propertyRef>\n"));
-        appendable.append((("<value>" + this.value) + "</value>\n"));
-        appendable.append((("<valueRef>" + this.valueRef) + "</valueRef>\n"));
-        appendable.append((("<conditionType>" + this.conditionType) + "</conditionType>\n"));
-        appendable.append((("<operator>" + this.operator) + "</operator>\n"));
-        appendable
-                .append((("<isBreakCondition>" + this.isBreakCondition) + "</isBreakCondition>\n"));
-        appendable.append("</Condition>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public Condition cloneObject() {
         Condition clone = new Condition();
         this.cloneObject(clone);
@@ -212,6 +260,9 @@ public class Condition extends TestScriptComposite implements Datatype {
      */
     public void setPropertyRef(String propertyRef) {
         if ((this.propertyRef == null)) {
+            if ((propertyRef == null)) {
+                return;
+            }
             this.propertyRef = new PropertyReference();
         }
         this.propertyRef.setValue(propertyRef);
@@ -242,6 +293,9 @@ public class Condition extends TestScriptComposite implements Datatype {
      */
     public void setValue(String value) {
         if ((this.value == null)) {
+            if ((value == null)) {
+                return;
+            }
             this.value = new Value();
         }
         this.value.setValue(value);
@@ -272,6 +326,9 @@ public class Condition extends TestScriptComposite implements Datatype {
      */
     public void setValueRef(String valueRef) {
         if ((this.valueRef == null)) {
+            if ((valueRef == null)) {
+                return;
+            }
             this.valueRef = new PropertyReference();
         }
         this.valueRef.setValue(valueRef);
@@ -364,8 +421,30 @@ public class Condition extends TestScriptComposite implements Datatype {
      */
     public void setIsBreakCondition(Boolean isBreakCondition) {
         if ((this.isBreakCondition == null)) {
+            if ((isBreakCondition == null)) {
+                return;
+            }
             this.isBreakCondition = new Flag();
         }
         this.isBreakCondition.setValue(isBreakCondition);
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Condition.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Condition.class).getAllProperties();
     }
 }

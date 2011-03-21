@@ -23,7 +23,7 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdet
 
 
 /**
- * Allows general enumeration handler to update its model.
+ * SubEngineActionCodeComboBoxHandler
  * 
  * @author Michael Krausse, PRODYNA AG
  */
@@ -48,11 +48,11 @@ public class SubEngineActionCodeComboBoxHandler implements SelectionListener {
 
     @Override
     public void widgetSelected(SelectionEvent event) {
-        if ((event.widget instanceof Combo)) {
+        
+    	if ((event.widget instanceof Combo)) {
             Combo combo = ((Combo) event.widget);
             model.setAction(combo.getText());
         }
-
     }
 
 }

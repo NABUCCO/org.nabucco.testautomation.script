@@ -25,6 +25,11 @@ import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
 
+/**
+ * MetadataMaintenanceMasterDetailAddDialogLabelProvider
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataMaintenanceMasterDetailAddDialogLabelProvider extends AddDialogLabelProvider {
 
     @Override

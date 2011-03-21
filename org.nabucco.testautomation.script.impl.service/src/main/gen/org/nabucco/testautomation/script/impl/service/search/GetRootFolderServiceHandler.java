@@ -5,12 +5,12 @@ package org.nabucco.testautomation.script.impl.service.search;
 
 import org.nabucco.framework.base.facade.exception.NabuccoException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
 import org.nabucco.framework.base.impl.service.handler.ServiceHandler;
 import org.nabucco.framework.base.impl.service.handler.ServiceHandlerSupport;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 
 /**
  * GetRootFolderServiceHandler<p/>Folder search service<p/>
@@ -33,11 +33,11 @@ public abstract class GetRootFolderServiceHandler extends ServiceHandlerSupport 
     /**
      * Invokes the service handler method.
      *
-     * @param rq the ServiceRequest<EmptyServiceMessage>.
+     * @param rq the ServiceRequest<FolderSearchMsg>.
      * @return the ServiceResponse<FolderMsg>.
      * @throws SearchException
      */
-    protected ServiceResponse<FolderMsg> invoke(ServiceRequest<EmptyServiceMessage> rq)
+    protected ServiceResponse<FolderMsg> invoke(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException {
         ServiceResponse<FolderMsg> rs;
         FolderMsg msg;
@@ -62,18 +62,18 @@ public abstract class GetRootFolderServiceHandler extends ServiceHandlerSupport 
             throw wrappedException;
         } catch (Exception e) {
             super.getLogger().error(e);
-            throw new SearchException(e.getMessage());
+            throw new SearchException("Error during service invocation.", e);
         }
     }
 
     /**
      * Returns the flat root folder
      *
-     * @param msg the EmptyServiceMessage.
+     * @param msg the FolderSearchMsg.
      * @return the FolderMsg.
      * @throws SearchException
      */
-    protected abstract FolderMsg getRootFolder(EmptyServiceMessage msg) throws SearchException;
+    protected abstract FolderMsg getRootFolder(FolderSearchMsg msg) throws SearchException;
 
     /**
      * Getter for the Id.

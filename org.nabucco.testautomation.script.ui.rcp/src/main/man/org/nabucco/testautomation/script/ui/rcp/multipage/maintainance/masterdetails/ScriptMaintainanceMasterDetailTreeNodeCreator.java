@@ -22,13 +22,15 @@ import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNodeCreatorForAllDatatypes;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNodeCreatorImpl;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptToEmbeddedTestScriptMapper;
 
 /**
  * ScriptMaintainanceMasterDetailTreeNodeCreator
@@ -62,6 +64,12 @@ MasterDetailTreeNodeCreatorImpl<Datatype> {
 				result.getChildren().add(0, child);
 			}
 		} else if (dataType instanceof TestScriptElement) {
+			// Handle embedded scripts
+			if(dataType instanceof EmbeddedTestScript){
+				TestScript testScript = ((EmbeddedTestScript) dataType).getTestScript();
+				TestScriptToEmbeddedTestScriptMapper.map(testScript, (EmbeddedTestScript) dataType);
+			}
+			
 			TestScriptElement testScriptElementParent = (TestScriptElement) dataType;
 			// force property list node to index 0
 			if (testScriptElementParent.getPropertyList() != null) {

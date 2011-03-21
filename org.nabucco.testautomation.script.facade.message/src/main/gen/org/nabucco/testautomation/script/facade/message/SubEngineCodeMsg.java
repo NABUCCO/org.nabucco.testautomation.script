@@ -3,9 +3,15 @@
  */
 package org.nabucco.testautomation.script.facade.message;
 
+import java.util.HashMap;
 import java.util.List;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.framework.base.facade.message.ServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceMessageSupport;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
@@ -20,9 +26,9 @@ public class SubEngineCodeMsg extends ServiceMessageSupport implements ServiceMe
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "subEngineCode" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;" };
+
+    public static final String SUBENGINECODE = "subEngineCode";
 
     private SubEngineCode subEngineCode;
 
@@ -31,12 +37,37 @@ public class SubEngineCodeMsg extends ServiceMessageSupport implements ServiceMe
         super();
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.put(SUBENGINECODE, PropertyDescriptorSupport.createDatatype(SUBENGINECODE,
+                SubEngineCode.class, 0, PROPERTY_CONSTRAINTS[0], false,
+                PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new DatatypeProperty<SubEngineCode>(PROPERTY_NAMES[0], SubEngineCode.class,
-                PROPERTY_CONSTRAINTS[0], this.subEngineCode));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(SubEngineCodeMsg.getPropertyDescriptor(SUBENGINECODE),
+                this.subEngineCode));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(SUBENGINECODE) && (property.getType() == SubEngineCode.class))) {
+            this.setSubEngineCode(((SubEngineCode) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -72,16 +103,6 @@ public class SubEngineCodeMsg extends ServiceMessageSupport implements ServiceMe
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<SubEngineCodeMsg>\n");
-        appendable.append(super.toString());
-        appendable.append((("<subEngineCode>" + this.subEngineCode) + "</subEngineCode>\n"));
-        appendable.append("</SubEngineCodeMsg>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public ServiceMessage cloneObject() {
         return this;
     }
@@ -102,5 +123,25 @@ public class SubEngineCodeMsg extends ServiceMessageSupport implements ServiceMe
      */
     public void setSubEngineCode(SubEngineCode subEngineCode) {
         this.subEngineCode = subEngineCode;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeMsg.class)
+                .getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeMsg.class).getAllProperties();
     }
 }

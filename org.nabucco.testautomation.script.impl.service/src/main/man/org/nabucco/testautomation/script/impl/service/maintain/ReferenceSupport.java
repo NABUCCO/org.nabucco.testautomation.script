@@ -46,7 +46,7 @@ public class ReferenceSupport {
 			Long testScriptId) {
 
 		Query query = em
-				.createNativeQuery("SELECT DISTINCT test_config_element_test_script_list_id FROM conf_test_script_container WHERE testScriptRefId = "
+				.createNativeQuery("SELECT DISTINCT test_config_element_test_script_list_id FROM conf_test_script_container WHERE test_script_ref_id = "
 						+ testScriptId);
 
 		@SuppressWarnings("unchecked")

@@ -20,13 +20,16 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.validation.constraint.element.ConstraintFactory;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
+import org.nabucco.framework.base.impl.service.maintain.PersistenceCleaner;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
-import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.impl.service.FolderSupport;
-import org.nabucco.testautomation.script.impl.service.search.GetFolderStructureServiceHandler;
 
 /**
  * GetFolderStructureServiceHandlerImpl
@@ -38,12 +41,22 @@ public class GetFolderStructureServiceHandlerImpl extends GetFolderStructureServ
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected FolderMsg getFolderStructure(EmptyServiceMessage msg)
+	protected FolderListMsg getFolderStructure(FolderSearchMsg msg)
 			throws SearchException {
 
-		Query query = super.getEntityManager().createQuery("select f from Folder f where f.root = :root");
+		String statement = "FROM Folder f WHERE f.root = :root";
+		
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			statement += " AND f.owner = :owner";
+		}
+
+		Query query = super.getEntityManager().createQuery(statement);
 		query.setParameter("root", new Flag(Boolean.TRUE));
 
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			query.setParameter("owner", msg.getOwner());
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<Folder> folderList = query.getResultList();
 
@@ -52,30 +65,40 @@ public class GetFolderStructureServiceHandlerImpl extends GetFolderStructureServ
 			throw new SearchException("No RootFolder found");
 		}
 		
-		// More than one RootFolder exists in database
-		if (folderList.size() > 1) {
-			this.getLogger().warning("More than one RootFolder found in database !");
-		}
-		
-		FolderMsg rs = new FolderMsg();
-		Folder folder = folderList.get(0);
-
-		if (folder != null) {
+		for (Folder folder : folderList) {
 			try {
 				FolderSupport.getInstance().loadFolder(folder, super.getEntityManager());
-				
-				// Detach Entity
-				this.getEntityManager().clear();
-				
-				// Sort
-				FolderSupport.getInstance().sort(folder);
 			} catch (Exception e) {
 				super.getLogger().error(e, "Could not load '"
 							+ folder.getId() + "'");
 			}
 		}
+	
+		// Detach Entity
+		this.getEntityManager().clear();
 		
-		rs.setFolder(folder);
+		// Sort
+		for (Folder folder : folderList) {
+			try {
+				folder.accept(new PersistenceCleaner());
+			} catch (VisitorException e) {
+				throw new SearchException(e);
+			}
+			FolderSupport.getInstance().sort(folder);
+		
+			// Check owner and set Editable-Constraint
+			if (!folder.getOwner().equals(NabuccoInstance.getInstance().getOwner())) {
+				try {
+					folder.addConstraint(ConstraintFactory.getInstance()
+							.createEditableConstraint(false), true);
+				} catch (VisitorException ex) {
+					throw new SearchException(ex);
+				}
+			}
+		}
+		
+		FolderListMsg rs = new FolderListMsg();
+		rs.getFolderList().addAll(folderList);
 		return rs;
 	}
 	

@@ -20,12 +20,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.validation.constraint.element.ConstraintFactory;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
-import org.nabucco.testautomation.script.impl.service.search.GetRootFolderServiceHandler;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 
 /**
  * GetRootFolderServiceHandlerImpl
@@ -37,12 +39,22 @@ public class GetRootFolderServiceHandlerImpl extends GetRootFolderServiceHandler
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	protected FolderMsg getRootFolder(EmptyServiceMessage msg)
+	protected FolderMsg getRootFolder(FolderSearchMsg msg)
 			throws SearchException {
 		
-        Query query = super.getEntityManager().createQuery("select f from Folder f where f.root = :root");
+		String statement = "FROM Folder f WHERE f.root = :root";
+		
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			statement += " AND f.owner = :owner";
+		}
+		
+        Query query = super.getEntityManager().createQuery(statement);
 		query.setParameter("root", new Flag(Boolean.TRUE));
         
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			query.setParameter("owner", msg.getOwner());
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<Folder> folderList = query.getResultList();
 
@@ -56,8 +68,20 @@ public class GetRootFolderServiceHandlerImpl extends GetRootFolderServiceHandler
 			this.getLogger().warning("More than one RootFolder found in database !");
 		}
 		
+		Folder folder = folderList.get(0);
+
+		// Check owner and set Editable-Constraint
+		if (!folder.getOwner().equals(NabuccoInstance.getInstance().getOwner())) {
+			try {
+				folder.addConstraint(ConstraintFactory.getInstance()
+						.createEditableConstraint(false), true);
+			} catch (VisitorException ex) {
+				throw new SearchException(ex);
+			}
+		}
+		
 		FolderMsg rs = new FolderMsg();
-		rs.setFolder(folderList.get(0));
+		rs.setFolder(folder);
 		return rs;
 	}
 	

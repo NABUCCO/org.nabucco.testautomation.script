@@ -3,7 +3,12 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
 
+import java.util.Collections;
+import java.util.List;
 import org.nabucco.framework.base.facade.datatype.Enumeration;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.visitor.Visitor;
+import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
 
 /**
  * ConditionType<p/>Enumeration for all possible condition types.<p/>
@@ -34,7 +39,13 @@ public enum ConditionType implements Enumeration {
     /** is empty */
     IS_EMPTY("P"),
     /** not empty */
-    NOT_EMPTY("Q"), ;
+    NOT_EMPTY("Q"),
+    /** starts with */
+    STARTS_WITH("S"),
+    /** ends with */
+    ENDS_WITH("U"),
+    /** contains */
+    CONTAINS("V"), ;
 
     private String id;
 
@@ -60,5 +71,14 @@ public enum ConditionType implements Enumeration {
     @Override
     public Enumeration cloneObject() {
         return this;
+    }
+
+    @Override
+    public void accept(Visitor visitor) throws VisitorException {
+    }
+
+    @Override
+    public List<NabuccoProperty> getProperties() {
+        return Collections.emptyList();
     }
 }

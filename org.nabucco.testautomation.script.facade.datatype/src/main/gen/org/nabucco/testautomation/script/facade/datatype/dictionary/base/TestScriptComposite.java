@@ -3,12 +3,19 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
-import org.nabucco.framework.base.facade.datatype.property.ListProperty;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoListImpl;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
 
@@ -21,11 +28,11 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "testScriptElementList" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m0,n;" };
 
-    private List<TestScriptElementContainer> testScriptElementList;
+    public static final String TESTSCRIPTELEMENTLIST = "testScriptElementList";
+
+    private NabuccoList<TestScriptElementContainer> testScriptElementList;
 
     /** Constructs a new TestScriptComposite instance. */
     public TestScriptComposite() {
@@ -44,9 +51,8 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
      */
     protected void cloneObject(TestScriptComposite clone) {
         super.cloneObject(clone);
-        if ((this.testScriptElementList instanceof NabuccoList<?>)) {
-            clone.testScriptElementList = ((NabuccoList<TestScriptElementContainer>) this.testScriptElementList)
-                    .cloneCollection();
+        if ((this.testScriptElementList != null)) {
+            clone.testScriptElementList = this.testScriptElementList.cloneCollection();
         }
     }
 
@@ -57,10 +63,11 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
      */
     List<TestScriptElementContainer> getTestScriptElementListJPA() {
         if ((this.testScriptElementList == null)) {
-            this.testScriptElementList = new NabuccoList<TestScriptElementContainer>(
+            this.testScriptElementList = new NabuccoListImpl<TestScriptElementContainer>(
                     NabuccoCollectionState.LAZY);
         }
-        return ((NabuccoList<TestScriptElementContainer>) this.testScriptElementList).getDelegate();
+        return ((NabuccoListImpl<TestScriptElementContainer>) this.testScriptElementList)
+                .getDelegate();
     }
 
     /**
@@ -70,11 +77,26 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
      */
     void setTestScriptElementListJPA(List<TestScriptElementContainer> testScriptElementList) {
         if ((this.testScriptElementList == null)) {
-            this.testScriptElementList = new NabuccoList<TestScriptElementContainer>(
+            this.testScriptElementList = new NabuccoListImpl<TestScriptElementContainer>(
                     NabuccoCollectionState.LAZY);
         }
-        ((NabuccoList<TestScriptElementContainer>) this.testScriptElementList)
+        ((NabuccoListImpl<TestScriptElementContainer>) this.testScriptElementList)
                 .setDelegate(testScriptElementList);
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptElement.class)
+                .getPropertyMap());
+        propertyMap.put(TESTSCRIPTELEMENTLIST, PropertyDescriptorSupport.createCollection(
+                TESTSCRIPTELEMENTLIST, TestScriptElementContainer.class, 7,
+                PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -83,19 +105,26 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new ListProperty<TestScriptElementContainer>(PROPERTY_NAMES[0],
-                TestScriptElementContainer.class, PROPERTY_CONSTRAINTS[0],
-                this.testScriptElementList));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(
+                TestScriptComposite.getPropertyDescriptor(TESTSCRIPTELEMENTLIST),
+                this.testScriptElementList, null));
         return properties;
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append(super.toString());
-        return appendable.toString();
+    @SuppressWarnings("unchecked")
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(TESTSCRIPTELEMENTLIST) && (property.getType() == TestScriptElementContainer.class))) {
+            this.testScriptElementList = ((NabuccoList<TestScriptElementContainer>) property
+                    .getInstance());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -104,13 +133,33 @@ public abstract class TestScriptComposite extends TestScriptElement implements D
     /**
      * Missing description at method getTestScriptElementList.
      *
-     * @return the List<TestScriptElementContainer>.
+     * @return the NabuccoList<TestScriptElementContainer>.
      */
-    public List<TestScriptElementContainer> getTestScriptElementList() {
+    public NabuccoList<TestScriptElementContainer> getTestScriptElementList() {
         if ((this.testScriptElementList == null)) {
-            this.testScriptElementList = new NabuccoList<TestScriptElementContainer>(
+            this.testScriptElementList = new NabuccoListImpl<TestScriptElementContainer>(
                     NabuccoCollectionState.INITIALIZED);
         }
         return this.testScriptElementList;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(TestScriptComposite.class)
+                .getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(TestScriptComposite.class).getAllProperties();
     }
 }

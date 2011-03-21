@@ -76,7 +76,7 @@ public class SubEngineActionCodeMiniModel extends MiniViewModel {
      *            the string representation
      */
     public void setAction(String value) {
-        SubEngineActionCode oldValue = this.action.getAction();
+        SubEngineActionCode oldValue = this.action.getActionCode();
         SubEngineActionCode newValue = null;
 
         Object[] allElements = this.contentProvider.getElements(null);
@@ -89,7 +89,7 @@ public class SubEngineActionCodeMiniModel extends MiniViewModel {
                 }
             }
         }
-        this.action.setAction(newValue);
+        this.action.setActionCode(newValue);
         super.updateProperty(PROPERTY_VALUE_STRING, oldValue, newValue);
     }
 
@@ -99,8 +99,9 @@ public class SubEngineActionCodeMiniModel extends MiniViewModel {
      * @return the string value
      */
     public String getAction() {
-        if (this.action != null && this.action.getAction() != null) {
-            return this.action.getAction().getName().toString();
+    	
+        if (this.action != null && this.action.getActionCode() != null) {
+            return this.action.getActionCode().getName().getValue();
         }
         return "";
     }

@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.maintain;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -34,35 +34,15 @@ public class MaintainMetadataDelegate extends ServiceDelegateSupport {
     /**
      * MaintainMetadata.
      *
+     * @param session the NabuccoSession.
      * @param rq the MetadataMsg.
      * @return the MetadataMsg.
      * @throws MaintainException
      */
-    public MetadataMsg maintainMetadata(MetadataMsg rq) throws MaintainException {
+    public MetadataMsg maintainMetadata(MetadataMsg rq, NabuccoSession session)
+            throws MaintainException {
         ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<MetadataMsg> rs;
-        if ((service != null)) {
-            rs = service.maintainMetadata(request);
-        } else {
-            throw new MaintainException(
-                    "Cannot execute service operation: MaintainMetadata.maintainMetadata");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * MaintainMetadata.
-     *
-     * @param subject the Subject.
-     * @param rq the MetadataMsg.
-     * @return the MetadataMsg.
-     * @throws MaintainException
-     */
-    public MetadataMsg maintainMetadata(MetadataMsg rq, Subject subject) throws MaintainException {
-        ServiceRequest<MetadataMsg> request = new ServiceRequest<MetadataMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<MetadataMsg> rs;
         if ((service != null)) {

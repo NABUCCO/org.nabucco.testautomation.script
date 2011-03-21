@@ -16,19 +16,22 @@
 */
 package org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model;
 
+import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.Identifier;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.logging.Loggable;
 import org.nabucco.framework.plugin.base.model.BusinessModel;
+import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
+import org.nabucco.testautomation.script.facade.message.ProduceTestScriptElementMsg;
 import org.nabucco.testautomation.script.facade.message.TestScriptMsg;
 import org.nabucco.testautomation.script.facade.message.TestScriptSearchMsg;
 import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentServiceDelegateFactory;
 import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainTestScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceTestScriptElementDelegate;
 import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchTestScriptDelegate;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 
 /**
  * ScriptMaintenanceEditViewBusinessModel
@@ -97,5 +100,25 @@ public class ScriptMaintenanceEditViewBusinessModel implements BusinessModel, Lo
     public PropertyList readPropertyList(PropertyList propertyList) {
         return propertyList; // no load necessary today.
     }
+
+	public TestScript importDatatype(TestScript testScript) {
+		try {
+			ScriptComponentServiceDelegateFactory scriptComponentServiceDelegateFactory = ScriptComponentServiceDelegateFactory
+			.getInstance();
+			ProduceTestScriptElementDelegate produceTestScriptElementDelegate = scriptComponentServiceDelegateFactory.getProduceTestScriptElement();
+
+			ProduceTestScriptElementMsg rq = new ProduceTestScriptElementMsg();
+			rq.setTestScriptElement(testScript);
+			rq.setTestScriptElementType(TestScriptElementType.SCRIPT);
+			rq.setImportElement(new Flag(Boolean.TRUE));
+			ProduceTestScriptElementMsg response = produceTestScriptElementDelegate.produceTestScriptElementClone(rq);
+			if (response != null) {
+				return (TestScript) response.getTestScriptElement();
+			}
+		} catch (ClientException e) {
+			Activator.getDefault().logError(e);
+		}
+		return testScript;
+	}
 
 }

@@ -38,14 +38,19 @@ import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentSer
 import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainFolderDelegate;
 import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceFolderDelegate;
 
-
+/**
+ * FolderTreePickerDialog
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class FolderTreePickerDialog extends TreePickerDialog{
 
-
-
 	private static final String DELETE = "deleteFolder";
+	
 	public static final String ID = "org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.testscript.folder.FolderTreePickerDialog";
+	
 	private static final String NEW = "newFolder";
+	
 	private Shell shell;
 
 	public FolderTreePickerDialog(Shell parentShell,
@@ -54,7 +59,8 @@ public class FolderTreePickerDialog extends TreePickerDialog{
 		this.shell = parentShell;
 		this.setTreeStyle(SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.BORDER);
 	}
-
+	
+	
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
@@ -86,18 +92,16 @@ public class FolderTreePickerDialog extends TreePickerDialog{
 		super.createButtonsForButtonBar(parent);
 	}
 
-
-
 	private void addFolder(){
 		NewFolderDialog dialog = new NewFolderDialog(this.shell, this.dialogArea);
 		String folderName = dialog.open();
 		StructuredSelection selection = (StructuredSelection) this.treeViewer.getSelection();
-		Folder parentFolder;
+		Folder parentFolder = null;
+		
 		if(selection != null && selection.getFirstElement() != null){
 			parentFolder = (Folder) selection.getFirstElement();
-		} else {
-			parentFolder = ((FolderPickerDialogContentProvider) this.treeViewer.getContentProvider()).getRoot();
 		}
+		
 		if(parentFolder == null){
 			Activator.getDefault().logError("No parent folder or root folder found.");
 			return;
@@ -122,7 +126,6 @@ public class FolderTreePickerDialog extends TreePickerDialog{
 		} catch (ClientException e) {
 			Activator.getDefault().logError(e);
 		}
-
 	}
 
 	private void deleteFolder(){
@@ -143,20 +146,5 @@ public class FolderTreePickerDialog extends TreePickerDialog{
 			Activator.getDefault().logError(e);
 		}		
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

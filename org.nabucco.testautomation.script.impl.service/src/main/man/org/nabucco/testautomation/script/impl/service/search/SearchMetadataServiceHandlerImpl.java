@@ -50,7 +50,7 @@ public class SearchMetadataServiceHandlerImpl extends SearchMetadataServiceHandl
 			throws SearchException {
 		
 		StringBuilder queryString = new StringBuilder();
-		queryString.append("select m from Metadata m");
+		queryString.append("FROM Metadata m");
 
 		List<String> filter = new ArrayList<String>();
 		
@@ -59,15 +59,22 @@ public class SearchMetadataServiceHandlerImpl extends SearchMetadataServiceHandl
 		Description description = msg.getDescription();
 		SubEngineCode subEngine = msg.getSubEngine();
         
+		if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+			filter.add("m.owner = :owner");
+		}
+		
 		if (identifier != null && identifier.getValue() != null) {
 			filter.add("m.id = :id");
 		} 
+		
 		if (name != null && name.getValue() != null) {
 			filter.add("m.name LIKE '" + name.getValue() + "%'");
 		}
+		
 		if (description != null && description.getValue() != null) {
 			filter.add("m.description LIKE :description");
 		}
+		
 		if (subEngine != null) {
 			filter.add("m.subEngine = :subEngine");
 		}
@@ -94,13 +101,19 @@ public class SearchMetadataServiceHandlerImpl extends SearchMetadataServiceHandl
         Query query = super.getEntityManager().createQuery(
 				queryString.toString());
 		
+        if (msg.getOwner() != null && msg.getOwner().getValue() != null) {
+        	query.setParameter("owner", msg.getOwner());
+		}
+        
         if (identifier != null && identifier.getValue() != null) {
 			query.setParameter("id", identifier.getValue());
 		} 
-		if (description != null && description.getValue() != null) {
+		
+        if (description != null && description.getValue() != null) {
 			query.setParameter("description", QuerySupport.searchParameter(description));
 		}
-		if (subEngine != null) {
+		
+        if (subEngine != null) {
 			query.setParameter("subEngine", subEngine);
 		}
         
@@ -110,7 +123,7 @@ public class SearchMetadataServiceHandlerImpl extends SearchMetadataServiceHandl
 		this.getEntityManager().clear();
 		
 		if (!SubEngineCodeCache.getInstance().isInitialized()) {
-			SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+			SubEngineCodeSupport.getInstance().initCache(this.getContext());
 		}
 		
 		for (Metadata metadata : resultList) {

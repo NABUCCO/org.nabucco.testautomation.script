@@ -66,20 +66,38 @@ public class MetadataMaintenanceMasterDetailBlock extends
     protected void registerPages(DetailsPart arg0) {
     	Map<Class<? extends Datatype>, Set<String>> typeToInvisiblePropertiesMap = this.getTypeToInvisiblePropertiesMap();
     	
-        detailsPart.registerPage(Metadata.class, new MetadataDetailPageView(this, getManagedForm(),
-                getManagedFormViewPart(), nabuccoMessageManager, ID, ID + "Metadata",
-                new HashSet<String>(), new HashSet<String>()));
-        detailsPart.registerPage(MetadataLabel.class, new TestautomationDetailPageView<MetadataMaintenanceMultiPageEditViewModel>(
-                this, getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID, ID
-                        + "MetadataLabel", new HashSet<String>(), new HashSet<String>()));
+    	Set<String> readOnlyProperties = new HashSet<String>();
+    	Set<String> invisibleProperties = new HashSet<String>();
 
-        Set<String> readOnlyProperties = new HashSet<String>();
-        Set<String> invisibleProperties = new HashSet<String>();
-
-        readOnlyProperties.add("type");
-        invisibleProperties.add("reference");
+    	/*
+    	 * Metadata
+    	 */
+    	readOnlyProperties.add("identificationKey");
+    	readOnlyProperties.add("owner");
     	invisibleProperties.add("id");
     	invisibleProperties.add("version");
+    	
+    	detailsPart.registerPage(Metadata.class, new MetadataDetailPageView(this, getManagedForm(),
+                getManagedFormViewPart(), nabuccoMessageManager, ID, ID + "Metadata",
+                invisibleProperties, readOnlyProperties));
+        detailsPart.registerPage(MetadataLabel.class, new TestautomationDetailPageView<MetadataMaintenanceMultiPageEditViewModel>(
+                this, getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID, ID
+                        + "MetadataLabel", invisibleProperties, new HashSet<String>()));
+
+        /*
+         * Property        
+         */
+        invisibleProperties = new HashSet<String>();
+        readOnlyProperties = new HashSet<String>();
+        
+        invisibleProperties.add("owner");
+        invisibleProperties.add("identificationKey");
+    	invisibleProperties.add("id");
+    	invisibleProperties.add("version");
+    	invisibleProperties.add("filename");
+    	invisibleProperties.add("reference");
+        readOnlyProperties.add("type");
+    	
         detailsPart.registerPage(StringProperty.class, new TestautomationDetailPageView<MetadataMaintenanceMultiPageEditViewModel>(this,
                 getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID, ID
                         + "StringProperty", invisibleProperties, readOnlyProperties));
@@ -128,10 +146,23 @@ public class MetadataMaintenanceMasterDetailBlock extends
                 getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID, ID
                         + "SqlProperty", invisibleProperties, readOnlyProperties));
         
+        /*
+         * PropertyList
+         */
+        invisibleProperties = new HashSet<String>();
+        readOnlyProperties = new HashSet<String>();
+        
+        readOnlyProperties.add("owner");
+        readOnlyProperties.add("type");
+        readOnlyProperties.add("identificationKey");
+    	invisibleProperties.add("id");
+    	invisibleProperties.add("version");
         invisibleProperties.add("reused");
         invisibleProperties.add("usageType");
+        invisibleProperties.add("reference");
+        
         detailsPart.registerPage(PropertyList.class, new TestautomationDetailPageView<MetadataMaintenanceMultiPageEditViewModel>(this,
-                getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID, ID
+                getManagedForm(), getManagedFormViewPart(), nabuccoMessageManager, ID + ".PropertyList", ID
                         + "PropertyList", invisibleProperties, readOnlyProperties));
         typeToInvisiblePropertiesMap.put(PropertyList.class, invisibleProperties);
     }

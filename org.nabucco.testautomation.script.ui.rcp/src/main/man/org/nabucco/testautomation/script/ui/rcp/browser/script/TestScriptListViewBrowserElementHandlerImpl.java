@@ -22,7 +22,6 @@ import org.nabucco.testautomation.script.ui.rcp.browser.script.TestScriptListVie
 import org.nabucco.testautomation.script.ui.rcp.browser.script.TestScriptListViewBrowserElementHandler;
 import org.nabucco.testautomation.script.ui.rcp.list.script.model.TestScriptListViewModel;
 
-
 /**
  * TestScriptListViewBrowserElementHandlerImpl
  * 

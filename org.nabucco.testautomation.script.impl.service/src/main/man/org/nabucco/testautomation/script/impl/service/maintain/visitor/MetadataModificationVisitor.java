@@ -20,11 +20,10 @@ import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.visitor.DatatypeVisitor;
 import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyComposite;
+import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 
 /**
  * MetadataModificationVisitor
@@ -48,40 +47,53 @@ public final class MetadataModificationVisitor extends DatatypeVisitor {
     @Override
 	public void visit(Datatype datatype) throws VisitorException {
 
-		if (datatype.getDatatypeState() == DatatypeState.INITIALIZED
-				|| datatype.getDatatypeState() == DatatypeState.MODIFIED
-				|| datatype.getDatatypeState() == DatatypeState.DELETED) {
-			rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
-		} else if (datatype instanceof Metadata) {
-			Metadata metadata = (Metadata) datatype;
-			
-			for (MetadataLabel label : metadata.getLabelList()) {
-				
-				if (label.getDatatypeState() == DatatypeState.INITIALIZED
-						|| label.getDatatypeState() == DatatypeState.MODIFIED
-						|| label.getDatatypeState() == DatatypeState.DELETED) {
-					this.rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
-					return;
-				}
-
-				PropertyList propertyList = label.getPropertyList();
-
-				if (propertyList != null) {
-					PropertyModificationVisitor visitor = new PropertyModificationVisitor(
-							propertyList);
-					propertyList.accept(visitor);
-
-					if (propertyList.getDatatypeState() == DatatypeState.INITIALIZED
-							|| propertyList.getDatatypeState() == DatatypeState.MODIFIED
-							|| propertyList.getDatatypeState() == DatatypeState.DELETED) {
-						this.rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
-						return;
-					}
-				}
-			}
-			super.visit(datatype);
-		} else {
-			super.visit(datatype);
-		}
+    	if (datatype instanceof Metadata) {
+    		this.visit((Metadata) datatype);
+    	} else if (datatype instanceof MetadataLabel) {
+    		this.visit((MetadataLabel) datatype);
+    	} else if (datatype instanceof PropertyComposite) {
+    		this.visit((PropertyComposite) datatype);
+    		return;
+    	}
+    	
+    	if (this.rootMetadata.getDatatypeState() == DatatypeState.PERSISTENT) {
+    		super.visit(datatype);
+    	}
 	}
+    
+    private void visit(Metadata metadata) throws VisitorException {
+    	
+    	if (metadata != null &&
+    			(metadata.getDatatypeState() == DatatypeState.INITIALIZED
+				|| metadata.getDatatypeState() == DatatypeState.MODIFIED
+				|| metadata.getDatatypeState() == DatatypeState.DELETED)) {
+			rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
+		}
+    }
+
+    private void visit(MetadataLabel metadataLabel) throws VisitorException {
+    	
+    	if (metadataLabel != null &&
+    			(metadataLabel.getDatatypeState() == DatatypeState.INITIALIZED
+				|| metadataLabel.getDatatypeState() == DatatypeState.MODIFIED
+				|| metadataLabel.getDatatypeState() == DatatypeState.DELETED)) {
+			rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
+		}
+    }
+    
+    private void visit(PropertyComposite property) throws VisitorException {
+    	
+    	if (property != null) {
+	    	PropertyModificationVisitor visitor = new PropertyModificationVisitor(
+	    			property);
+			property.accept(visitor);
+	
+			if (property.getDatatypeState() == DatatypeState.INITIALIZED
+					|| property.getDatatypeState() == DatatypeState.MODIFIED
+					|| property.getDatatypeState() == DatatypeState.DELETED) {
+				this.rootMetadata.setDatatypeState(DatatypeState.MODIFIED);
+			}
+    	}
+    }
+    
 }

@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nabucco.framework.base.facade.datatype.Datatype;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.model.ViewModel;
@@ -71,23 +72,25 @@ public class MetadataDetailPageViewLayouter extends TestautomationDetailPageView
 
 	@Override
 	protected Control layoutElement(Composite parent, BaseTypeWidgetFactory widgetFactory,
-			Datatype datatype, String masterBlockId, Object property, String propertyName,
+			Datatype datatype, String masterBlockId, NabuccoProperty property,
 			GridData data, boolean readOnly, ViewModel externalViewModel,
 			NabuccoMessageManager messageManager) {
 
 		// Validate property multiplicity
 		if ((property instanceof List<?>)) {
 			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property,
-					propertyName, data, readOnly, externalViewModel, messageManager);
+					data, readOnly, externalViewModel, messageManager);
 		}
 
 		// Validate parent Type
 		if (!(datatype instanceof Metadata)) {
 			return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property,
-					propertyName, data, readOnly, externalViewModel, messageManager);
+					data, readOnly, externalViewModel, messageManager);
 		}
 
 		// Validate property name
+		String propertyName = property.getName();
+		
 		if (propertyName.equalsIgnoreCase(PROPERTY_SUB_ENGINE)) {
 
 			return this.layoutSubEngineDropDownBoxPair(parent, widgetFactory, datatype,
@@ -99,20 +102,22 @@ public class MetadataDetailPageViewLayouter extends TestautomationDetailPageView
 		}
 
 		return super.layoutElement(parent, widgetFactory, datatype, masterBlockId, property,
-				propertyName, data, readOnly, externalViewModel, messageManager);
+				data, readOnly, externalViewModel, messageManager);
 	}
 
 	private Control layoutSubEngineDropDownBoxPair(Composite parent,
 			BaseTypeWidgetFactory widgetFactory, Datatype datatype, String masterBlockId,
-			Object property, String propertyName, GridData data, boolean readOnly,
+			NabuccoProperty property, String propertyName, GridData data, boolean readOnly,
 			ViewModel externalViewModel, NabuccoMessageManager messageManager) {
 
+		readOnly = !property.getConstraints().isEditable() || readOnly;
+		
 		Metadata metadata = (Metadata) datatype;
 		List<SubEngineCode> subEngineCodes = MetadataElementFactory.getSubEngineCodes(metadata);
 		try {
 			NabuccoFormToolkit nft = widgetFactory.getNabuccoFormToolKit();
 			WidgetCreatorForSubEngineComboPair widgetCreatorForSubEngineCode = new WidgetCreatorForSubEngineComboPair(
-					parent, widgetFactory, data, nft, externalViewModel, masterBlockId, metadata, subEngineCodes);
+					parent, widgetFactory, data, nft, externalViewModel, masterBlockId, metadata, subEngineCodes, readOnly);
 			Control[] newWidget = widgetCreatorForSubEngineCode.createWidget();
 			if (newWidget.length > 0 && newWidget[0] == null) {
 				Activator.getDefault().logError(

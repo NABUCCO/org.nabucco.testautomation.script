@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
@@ -39,9 +40,15 @@ import org.nabucco.testautomation.facade.message.PropertyMsg;
 import org.nabucco.testautomation.ui.rcp.communication.TestautomationComponentServiceDelegateFactory;
 import org.nabucco.testautomation.ui.rcp.model.property.DataModelManager;
 
+/**
+ * CodeParameterListDoubleClickListener
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class CodeParameterListDoubleClickListener implements IDoubleClickListener {
 
-
+	private static final String ACTION_PARAMS = "ActionParams";
+	
 	private TableViewer listViewer;
 
 	public CodeParameterListDoubleClickListener(TableViewer listViewer){
@@ -71,7 +78,12 @@ public class CodeParameterListDoubleClickListener implements IDoubleClickListene
 			}
 			if(!foundPropertList){
 				PropertyList propertyList = (PropertyList) ((PropertyContainer) ScriptElementFactory.create(PropertyList.class)).getProperty();
+				propertyList.setName(ACTION_PARAMS);
 				action.setPropertyList(propertyList);
+				
+				if (action.getDatatypeState() == DatatypeState.PERSISTENT) {
+					action.setDatatypeState(DatatypeState.MODIFIED);
+				}
 
 				MasterDetailTreeNode newNode = new MasterDetailTreeNode(propertyList, actionNode);
 				newNode.setViewModel(actionNode.getViewModel());
@@ -84,6 +96,10 @@ public class CodeParameterListDoubleClickListener implements IDoubleClickListene
 	}
 
 	private void addProperty(MasterDetailTreeNode propertyListNode, CodeParameter codeParameter) {
+		
+		if (propertyListNode == null || codeParameter == null) {
+			return;
+		}
 		PropertyList propertyList = (PropertyList) propertyListNode.getDatatype();
 		List<PropertyContainer> properties = propertyList.getPropertyList();
 		for (PropertyContainer propertyContainer : properties) {

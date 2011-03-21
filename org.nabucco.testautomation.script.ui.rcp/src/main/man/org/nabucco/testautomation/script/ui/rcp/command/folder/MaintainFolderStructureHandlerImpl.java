@@ -23,7 +23,11 @@ import org.nabucco.testautomation.script.ui.rcp.command.folder.MaintainFolderStr
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderMaintenanceEditViewBusinessModel;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderMaintenanceMultiPageEditViewModel;
 
-
+/**
+ * MaintainFolderStructureHandlerImpl
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MaintainFolderStructureHandlerImpl extends NabuccoAbstractSaveCommandHandlerImpl<FolderMaintenanceEditViewBusinessModel, FolderMaintenanceMultiPageEditViewModel> implements
 		MaintainFolderStructureHandler {
 

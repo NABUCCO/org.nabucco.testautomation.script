@@ -56,6 +56,11 @@ public class FolderMaintenanceMasterDetailBlock extends
     	Set<String> readOnlyProperties = new HashSet<String>();
     	Set<String> invisibleProperties = new HashSet<String>();
     	
+    	/*
+    	 * Folder
+    	 */
+    	readOnlyProperties.add("owner");
+    	readOnlyProperties.add("identificationKey");
     	invisibleProperties.add("id");
     	invisibleProperties.add("version");
     	invisibleProperties.add("root");
@@ -66,8 +71,14 @@ public class FolderMaintenanceMasterDetailBlock extends
                 invisibleProperties, readOnlyProperties));
         typeToInvisiblePropertiesMap.put(Folder.class, invisibleProperties);
         
+        readOnlyProperties = new HashSet<String>();
+        readOnlyProperties.add("owner");
+        readOnlyProperties.add("name");
+        readOnlyProperties.add("identificationKey");
+        readOnlyProperties.add("description");
+
         detailsPart.registerPage(TestScript.class, new TestautomationDetailPageView<FolderMaintenanceMultiPageEditViewModel>(this, getManagedForm(),
-                getManagedFormViewPart(), nabuccoMessageManager, ID, ID + "TestScript",
+                getManagedFormViewPart(), nabuccoMessageManager, ID + ".TestScript", ID + "TestScript",
                 invisibleProperties, readOnlyProperties));
         typeToInvisiblePropertiesMap.put(TestScript.class, invisibleProperties);
 

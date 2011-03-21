@@ -43,14 +43,13 @@ import org.nabucco.framework.plugin.base.layout.ImageProvider;
 import org.nabucco.framework.plugin.base.model.ViewModel;
 import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
 import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
-import org.nabucco.testautomation.script.ui.rcp.images.ScriptImageRegistry;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.ObjectListContentProvider;
-
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
+import org.nabucco.testautomation.ui.rcp.images.TestautomationImageRegistry;
 
 /**
  * WidgetCreatorForSubEngineActionCode
@@ -59,16 +58,6 @@ import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
  */
 public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCreator<List<SubEngineCode>> {
 
-	private static final String ICON_PROPERTY = "icons/text.png";
-
-	private static final String ICON_PROPERTY_LIST = "icons/browser_list.png";
-
-	private static final String ICON_PROPERTY_STRING = "icons/text.png";
-
-	private static final String ICON_PROPERTY_NUMERIC = "icons/calculator.png";
-
-	private static final String ICON_PROPERTY_XML = "icons/xml.png";
-
 	private Composite parent;
 	private BaseTypeWidgetFactory widgetFactory;
 	private GridData data;
@@ -76,6 +65,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 	private String masterBlockId;
 	private Metadata metadata;
 	private List<SubEngineCode> subEngineCodeList;
+	private boolean readOnly;
 
 	/**
 	 * Creates a new {@link WidgetCreatorForSubEngineComboPair} instance.
@@ -84,7 +74,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 	 *            the nabucco form toolkit
 	 */
 	public WidgetCreatorForSubEngineComboPair(Composite parent, BaseTypeWidgetFactory widgetFactory, GridData data, NabuccoFormToolkit nft,
-			ViewModel externalViewModel, String masterBlockId, Metadata metadata, List<SubEngineCode> subEngineCodeList) {
+			ViewModel externalViewModel, String masterBlockId, Metadata metadata, List<SubEngineCode> subEngineCodeList, boolean readOnly) {
 		super(nft);
 		this.parent = parent;
 		this.widgetFactory = widgetFactory;
@@ -93,6 +83,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 		this.masterBlockId = masterBlockId;
 		this.metadata = metadata;
 		this.subEngineCodeList = subEngineCodeList;
+		this.readOnly = readOnly;
 	}
 
 	/**
@@ -160,7 +151,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 		Label label = widgetFactory.createLabel(parent, masterBlockId + "." + SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE);
 		label.setToolTipText(label.getText());
 		label.setLayoutData(data);
-		ElementPickerCombo subEngineCodeCombo = super.getFormToolkit().createElementPickerCombo(parent, subEngineCodeParameter, false, false);
+		ElementPickerCombo subEngineCodeCombo = super.getFormToolkit().createElementPickerCombo(parent, subEngineCodeParameter, this.readOnly, false);
 		return subEngineCodeCombo;
 	}
 
@@ -169,7 +160,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 		label.setToolTipText(label.getText());
 		label.setLayoutData(data);
 		boolean readOnly = false;
-		if (metadata.getSubEngine() == null) {
+		if (this.readOnly || metadata.getSubEngine() == null) {
 			readOnly = true;
 		}
 		ElementPickerCombo subEngineOperationCodeCombo = super.getFormToolkit().createElementPickerCombo(parent, subEngineOperationCodeParameter, readOnly,
@@ -185,6 +176,7 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 		TableViewer tableViewer = new TableViewer(parent);
 		new FormToolkit(parent.getDisplay()).adapt(tableViewer.getControl(), true, true);
 		tableViewer.getControl().setLayoutData(data);
+		tableViewer.getControl().setEnabled(!this.readOnly);
 
 		int ops = DND.DROP_COPY  | DND.DROP_MOVE;
 		Transfer[] transfers = new Transfer[] { MasterTreeExternalDatatypeTransfer.getInstance()};
@@ -210,21 +202,37 @@ public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCr
 					
 					switch (propertyType) {
 					case LIST:
-						imagePath = ICON_PROPERTY_LIST;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_LIST.getId();
+						break;
 					case STRING:
-						imagePath = ICON_PROPERTY_STRING;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_STRING.getId();
+						break;
 					case LONG:
 					case DOUBLE:
 					case INTEGER:
-						imagePath = ICON_PROPERTY_NUMERIC;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_NUMERIC.getId();
+						break;
 					case XML:
-						imagePath = ICON_PROPERTY_XML;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XML.getId();
+						break;
 					case SQL:
-						imagePath = ScriptImageRegistry.ICON_SQL.getId();
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_SQL.getId();
+						break;
 					case FILE:
-						imagePath = ScriptImageRegistry.ICON_FILE.getId();
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_FILE.getId();
+						break;
+					case DATE:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_DATE.getId();
+						break;
+					case BOOLEAN:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_BOOLEAN.getId();
+						break;
+					case XPATH:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XPATH.getId();
+						break;
 					default:
-						imagePath = ICON_PROPERTY;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY.getId();
+						break;
 					}
 					return ImageProvider.createImage(imagePath);
 				}

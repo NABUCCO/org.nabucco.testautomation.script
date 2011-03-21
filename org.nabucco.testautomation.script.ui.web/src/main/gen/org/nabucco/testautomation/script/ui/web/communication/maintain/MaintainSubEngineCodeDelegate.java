@@ -3,7 +3,7 @@
  */
 package org.nabucco.testautomation.script.ui.web.communication.maintain;
 
-import org.nabucco.framework.base.facade.datatype.security.Subject;
+import org.nabucco.framework.base.facade.datatype.session.NabuccoSession;
 import org.nabucco.framework.base.facade.exception.service.MaintainException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
@@ -34,36 +34,15 @@ public class MaintainSubEngineCodeDelegate extends ServiceDelegateSupport {
     /**
      * MaintainSubEngineCode.
      *
+     * @param session the NabuccoSession.
      * @param rq the SubEngineCodeMsg.
      * @return the SubEngineCodeMsg.
      * @throws MaintainException
      */
-    public SubEngineCodeMsg maintainSubEngineCode(SubEngineCodeMsg rq) throws MaintainException {
-        ServiceRequest<SubEngineCodeMsg> request = new ServiceRequest<SubEngineCodeMsg>(
-                super.createServiceContext());
-        request.setRequestMessage(rq);
-        ServiceResponse<SubEngineCodeMsg> rs;
-        if ((service != null)) {
-            rs = service.maintainSubEngineCode(request);
-        } else {
-            throw new MaintainException(
-                    "Cannot execute service operation: MaintainSubEngineCode.maintainSubEngineCode");
-        }
-        return rs.getResponseMessage();
-    }
-
-    /**
-     * MaintainSubEngineCode.
-     *
-     * @param subject the Subject.
-     * @param rq the SubEngineCodeMsg.
-     * @return the SubEngineCodeMsg.
-     * @throws MaintainException
-     */
-    public SubEngineCodeMsg maintainSubEngineCode(SubEngineCodeMsg rq, Subject subject)
+    public SubEngineCodeMsg maintainSubEngineCode(SubEngineCodeMsg rq, NabuccoSession session)
             throws MaintainException {
         ServiceRequest<SubEngineCodeMsg> request = new ServiceRequest<SubEngineCodeMsg>(
-                super.createServiceContext(subject));
+                super.createServiceContext(session));
         request.setRequestMessage(rq);
         ServiceResponse<SubEngineCodeMsg> rs;
         if ((service != null)) {

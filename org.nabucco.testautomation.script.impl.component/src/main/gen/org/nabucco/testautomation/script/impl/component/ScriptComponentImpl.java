@@ -8,6 +8,8 @@ import org.nabucco.framework.base.facade.service.componentrelation.ComponentRela
 import org.nabucco.framework.base.impl.component.ComponentSupport;
 import org.nabucco.testautomation.facade.component.TestautomationComponent;
 import org.nabucco.testautomation.script.facade.component.ScriptComponent;
+import org.nabucco.testautomation.script.facade.service.export.ExportScript;
+import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
 import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
@@ -55,6 +57,10 @@ public class ScriptComponentImpl extends ComponentSupport implements ScriptCompo
     private SearchSubEngineCode searchSubEngineCode;
 
     private ProduceFolder produceFolder;
+
+    private ExportScript exportScript;
+
+    private ImportScript importScript;
 
     /** Constructs a new ScriptComponentImpl instance. */
     public ScriptComponentImpl() {
@@ -172,5 +178,23 @@ public class ScriptComponentImpl extends ComponentSupport implements ScriptCompo
      */
     public ProduceFolder getProduceFolder() {
         return this.produceFolder;
+    }
+
+    /**
+     * Getter for the ExportScript.
+     *
+     * @return the ExportScript.
+     */
+    public ExportScript getExportScript() {
+        return this.exportScript;
+    }
+
+    /**
+     * Getter for the ImportScript.
+     *
+     * @return the ImportScript.
+     */
+    public ImportScript getImportScript() {
+        return this.importScript;
     }
 }

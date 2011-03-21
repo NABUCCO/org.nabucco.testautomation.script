@@ -28,7 +28,7 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.Scr
 import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageView;
 
 /**
- * MetadataDetailPageView
+ * FilePropertyDetailPageView
  * 
  * @author Markus Jorroch, PRODYNA AG
  */

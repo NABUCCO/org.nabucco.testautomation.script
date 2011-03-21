@@ -5,13 +5,14 @@ package org.nabucco.testautomation.script.impl.service.search;
 
 import javax.persistence.EntityManager;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
 import org.nabucco.framework.base.facade.service.injection.InjectionException;
 import org.nabucco.framework.base.facade.service.injection.InjectionProvider;
 import org.nabucco.framework.base.impl.service.ServiceSupport;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
 
 /**
@@ -58,7 +59,7 @@ public class SearchFolderImpl extends ServiceSupport implements SearchFolder {
     }
 
     @Override
-    public ServiceResponse<FolderMsg> getRootFolder(ServiceRequest<EmptyServiceMessage> rq)
+    public ServiceResponse<FolderMsg> getRootFolder(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException {
         if ((this.getRootFolderServiceHandler == null)) {
             super.getLogger().error("No service implementation configured for getRootFolder().");
@@ -73,7 +74,7 @@ public class SearchFolderImpl extends ServiceSupport implements SearchFolder {
     }
 
     @Override
-    public ServiceResponse<FolderMsg> getFolderStructure(ServiceRequest<EmptyServiceMessage> rq)
+    public ServiceResponse<FolderListMsg> getFolderStructure(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException {
         if ((this.getFolderStructureServiceHandler == null)) {
             super.getLogger().error(
@@ -81,7 +82,7 @@ public class SearchFolderImpl extends ServiceSupport implements SearchFolder {
             throw new InjectionException(
                     "No service implementation configured for getFolderStructure().");
         }
-        ServiceResponse<FolderMsg> rs;
+        ServiceResponse<FolderListMsg> rs;
         this.getFolderStructureServiceHandler.init();
         rs = this.getFolderStructureServiceHandler.invoke(rq);
         this.getFolderStructureServiceHandler.finish();

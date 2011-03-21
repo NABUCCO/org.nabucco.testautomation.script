@@ -16,19 +16,19 @@
 */
 package org.nabucco.testautomation.script.impl.service.search;
 
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
-import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.exception.service.SearchException;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.message.MetadataMsg;
 import org.nabucco.testautomation.script.impl.service.SubEngineCodeSupport;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
-import org.nabucco.testautomation.script.impl.service.search.GetParentsServiceHandler;
 
 
 /**
- * GetChildrenServiceHandlerImpl
+ * GetParentsServiceHandlerImpl
  * 
  * @author Steffen Schmidt, PRODYNA AG
  */
@@ -37,23 +37,21 @@ public class GetParentsServiceHandlerImpl extends
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Query query = super.getEntityManager().createNativeQuery("SELECT metadata_id FROM metadata WHERE id = :id");
-	
 	@Override
 	protected MetadataMsg getParents(MetadataMsg msg) throws SearchException {
 
 		Metadata metadata = msg.getMetadata();
 
 		if (metadata == null || metadata.getId() == null) {
-			throw new SearchException("Invalid Metadata in getChildren()");
+			throw new SearchException("No Metadata for resolving parents");
 		}
 		
-		metadata = resolve(metadata);
+		resolveParents(metadata);
 		
 		this.getEntityManager().clear();
 		
 		if (!SubEngineCodeCache.getInstance().isInitialized()) {
-			SubEngineCodeSupport.getInstance().initCache(this.getEntityManager());
+			SubEngineCodeSupport.getInstance().initCache(this.getContext());
 		}
 		SubEngineCodeSupport.getInstance().resolveSubEngineCodeShallow(metadata);
 		
@@ -62,24 +60,31 @@ public class GetParentsServiceHandlerImpl extends
 		return rs;
 	}
 	
-	private Metadata resolve(Metadata metadata) throws SearchException {
-		metadata = find(metadata.getId());
+	private void resolveParents(Metadata metadata) throws SearchException {
 		
-		query.setParameter("id", metadata.getId());
-		Long parentId = (Long) query.getSingleResult();
+		Metadata parent = null;
 		
-		if (parentId != null) {
-			Metadata parent = find(parentId);
+		while ((parent = findParent(metadata)) != null) {
 			metadata.setParent(parent);
-			resolve(parent);
-		}	
-		return metadata;
+			metadata = parent;
+		}
 	}
 	
-	private Metadata find(Long id) {
-		Metadata metadata = super.getEntityManager().find(Metadata.class, id);
-		metadata.setDatatypeState(DatatypeState.PERSISTENT);
-		return metadata;
+	private Metadata findParent(Metadata metadata) throws SearchException {
+		
+		Query query = super.getEntityManager().createQuery("FROM Metadata m WHERE :child MEMBER OF m.childrenJPA");
+		query.setParameter("child", metadata);
+		
+		try {
+			Metadata parent = (Metadata) query.getSingleResult();
+			return parent;
+		} catch (NoResultException ex) {
+			return null;
+		} catch (NonUniqueResultException ex) {
+			throw new SearchException("More than one parent found for Metadata [" 
+					+ metadata.getId() + "] '" 
+					+ metadata.getIdentificationKey() + "'");
+		}
 	}
 	
 }

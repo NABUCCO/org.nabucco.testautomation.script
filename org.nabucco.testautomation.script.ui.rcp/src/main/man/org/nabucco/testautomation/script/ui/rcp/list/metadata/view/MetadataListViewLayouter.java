@@ -33,12 +33,13 @@ import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.model.MetadataListViewModel;
-import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.MetadataListViewTableFilter;
-import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.MetadataListViewWidgetFactory;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.comparator.MetadataListViewMetadataDescriptionComparator;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.comparator.MetadataListViewMetadataNameComparator;
+import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.comparator.MetadataListViewOwnerComparator;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.label.MetadataListViewMetadataDescriptionLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.label.MetadataListViewMetadataKeyLabelProvider;
 import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.label.MetadataListViewMetadataNameLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.label.MetadataListViewOwnerLabelProvider;
 
 
 /**
@@ -48,7 +49,15 @@ import org.nabucco.testautomation.script.ui.rcp.list.metadata.view.label.Metadat
  */
 public class MetadataListViewLayouter extends NabuccoAbstractListLayouter<MetadataListViewModel> {
 
-    /**
+	private static final String OWNER_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.metadata.view.owner";
+	
+	private static final String DESCRIPTION_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.metadata.view.description";
+	
+	private static final String NAME_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.metadata.view.name";
+	
+	private static final String KEY_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.metadata.view.key";
+
+	/**
      * Layouts the table
      **/
     @Override
@@ -71,6 +80,7 @@ public class MetadataListViewLayouter extends NabuccoAbstractListLayouter<Metada
         List<Comparator<Metadata>> comparators = new ArrayList<Comparator<Metadata>>();
         comparators.add(new MetadataListViewMetadataNameComparator());
         comparators.add(new MetadataListViewMetadataDescriptionComparator());
+        comparators.add(new MetadataListViewOwnerComparator());
 
         return comparators;
     }
@@ -82,11 +92,20 @@ public class MetadataListViewLayouter extends NabuccoAbstractListLayouter<Metada
      */
     private NabuccoTableColumnInfo[] createTableColumnInfo() {
         NabuccoTableColumnInfo[] result = {
-                new NabuccoTableColumnInfo("Name", "This is a script name.", 200, SWT.CENTER,
+        		new NabuccoTableColumnInfo(KEY_COLUMN_KEY,
+        				KEY_COLUMN_KEY, 150, SWT.LEFT,
+        				SWT.CENTER, new MetadataListViewMetadataKeyLabelProvider()),
+                new NabuccoTableColumnInfo(NAME_COLUMN_KEY,
+                		NAME_COLUMN_KEY, 400, SWT.LEFT,
                         SWT.CENTER, new MetadataListViewMetadataNameLabelProvider()),
-                new NabuccoTableColumnInfo("Description", "This is a script description", 300,
-                        SWT.RIGHT, SWT.RIGHT,
-                        new MetadataListViewMetadataDescriptionLabelProvider()) };
+                new NabuccoTableColumnInfo(DESCRIPTION_COLUMN_KEY,
+                		DESCRIPTION_COLUMN_KEY, 400,
+                        SWT.LEFT, SWT.LEFT,
+                        new MetadataListViewMetadataDescriptionLabelProvider()),
+                new NabuccoTableColumnInfo(OWNER_COLUMN_KEY,
+                		OWNER_COLUMN_KEY, 200,
+                        SWT.LEFT, SWT.LEFT,
+                        new MetadataListViewOwnerLabelProvider()) };
 
         return result;
     }

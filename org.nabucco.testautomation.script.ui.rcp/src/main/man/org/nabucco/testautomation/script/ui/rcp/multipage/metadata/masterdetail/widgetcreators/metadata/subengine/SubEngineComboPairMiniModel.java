@@ -118,7 +118,7 @@ public class SubEngineComboPairMiniModel extends MiniViewModel {
         // update SubEngineOperationCode
         super.updateProperty(PROPERTY_VALUE_SUB_ENGINE_OPERATION, this.metadata, null);
         List<SubEngineOperationCode> operationList;
-        if (newValue.getOperationList() != null) {
+        if (newValue != null && newValue.getOperationList() != null) {
             operationList = newValue.getOperationList();
         } else {
             operationList = new ArrayList<SubEngineOperationCode>();

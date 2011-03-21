@@ -20,11 +20,11 @@ import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.visitor.DatatypeVisitor;
 import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyComposite;
+import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.visitor.PropertyModificationVisitor;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
 
 /**
  * TestScriptModificationVisitor
@@ -48,28 +48,53 @@ public final class TestScriptModificationVisitor extends DatatypeVisitor {
     @Override
     public void visit(Datatype datatype) throws VisitorException {
 
-        if (datatype.getDatatypeState() == DatatypeState.INITIALIZED
-                || datatype.getDatatypeState() == DatatypeState.MODIFIED
-                || datatype.getDatatypeState() == DatatypeState.DELETED) {
-        	this.testScript.setDatatypeState(DatatypeState.MODIFIED);
-        } else if (datatype instanceof TestScriptElement) {
-        	TestScriptElement element = (TestScriptElement) datatype;
-        	PropertyList propertyList = element.getPropertyList();
-        	
-			if (propertyList != null) {
-				PropertyModificationVisitor visitor = new PropertyModificationVisitor(propertyList);
-				propertyList.accept(visitor);
-
-				if (propertyList.getDatatypeState() == DatatypeState.INITIALIZED
-		                || propertyList.getDatatypeState() == DatatypeState.MODIFIED
-		                || propertyList.getDatatypeState() == DatatypeState.DELETED) {
-					this.testScript.setDatatypeState(DatatypeState.MODIFIED);
-					return;
-				}
-			}
-			super.visit(datatype);
-        } else {
-            super.visit(datatype);
-        }
+        if (datatype instanceof TestScriptElement) {
+    		this.visit((TestScriptElement) datatype);
+    	} else if (datatype instanceof TestScriptElementContainer) {
+    		this.visit((TestScriptElementContainer) datatype);
+    	} else if (datatype instanceof PropertyComposite) {
+    		this.visit((PropertyComposite) datatype);
+    		return;
+    	}
+    	
+    	if (this.testScript.getDatatypeState() == DatatypeState.PERSISTENT) {
+    		super.visit(datatype);
+    	}
     }
+    
+    private void visit(TestScriptElement element) throws VisitorException {
+    	
+    	if (element.getDatatypeState() == DatatypeState.INITIALIZED
+				|| element.getDatatypeState() == DatatypeState.MODIFIED
+				|| element.getDatatypeState() == DatatypeState.DELETED) {
+			this.testScript.setDatatypeState(DatatypeState.MODIFIED);
+		}
+    }
+    
+    private void visit(TestScriptElementContainer element) throws VisitorException {
+    	
+    	if (element.getDatatypeState() == DatatypeState.INITIALIZED
+				|| element.getDatatypeState() == DatatypeState.MODIFIED
+				|| element.getDatatypeState() == DatatypeState.DELETED) {
+			this.testScript.setDatatypeState(DatatypeState.MODIFIED);
+		}
+    }
+    
+    private void visit(PropertyComposite property) throws VisitorException {
+    	
+    	if (property.getDatatypeState() == DatatypeState.PERSISTENT) {
+	    	PropertyModificationVisitor visitor = new PropertyModificationVisitor(
+	    			property);
+			property.accept(visitor);
+	
+			if (property.getDatatypeState() == DatatypeState.INITIALIZED
+					|| property.getDatatypeState() == DatatypeState.MODIFIED
+					|| property.getDatatypeState() == DatatypeState.DELETED) {
+				this.testScript.setDatatypeState(DatatypeState.MODIFIED);
+			}
+    	} else {
+    		this.testScript.setDatatypeState(DatatypeState.MODIFIED);
+    	}
+    }
+    
 }

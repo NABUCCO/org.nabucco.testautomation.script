@@ -38,6 +38,11 @@ import org.nabucco.testautomation.facade.message.ProducePropertyMsg;
 import org.nabucco.testautomation.facade.message.PropertyMsg;
 import org.nabucco.testautomation.ui.rcp.communication.TestautomationComponentServiceDelegateFactory;
 
+/**
+ * MetadataDragAndDropHandler
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class MetadataDragAndDropHandler extends AbstractDragAndDropHandler
 implements
 org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.draganddrop.DragAndDropHandler {
@@ -113,6 +118,10 @@ org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.dragan
 	public boolean validateDrop(MasterDetailTreeNode data,
 			MasterDetailTreeNode target, int location) {
 
+		if(!super.validateDrop(data, target, location)){
+			return false;
+		}
+		
 		// Movement to same node instance makes no sense
 		Datatype targetDatatype = target.getDatatype();
 		Datatype movedDatatype = data.getDatatype();
@@ -233,6 +242,7 @@ org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.dragan
 					propertyContainer = ((PropertyList) movedNode.getParent().getDatatype()).getPropertyList().get(indexOfMovedNodeInOldParent);
 				}
 				targetPropertyList.getPropertyList().add(propertyContainer);
+				org.nabucco.testautomation.ui.rcp.model.property.DataModelManager.normalizeOrderIndicies(targetPropertyList, false);
 				if(targetPropertyList.getDatatypeState() == DatatypeState.PERSISTENT){
 					targetPropertyList.setDatatypeState(DatatypeState.MODIFIED);
 				}
@@ -311,7 +321,7 @@ org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.dragan
 		} else if(location == 3){ 
 			newNode = new MasterDetailTreeNode(movedNode.getDatatype(), targetNode);
 			newNode.setViewModel(targetNode.getViewModel());
-			if(movedNode.getDatatype() instanceof PropertyList){
+			if(movedNode.getDatatype() instanceof PropertyList && (!(targetNode.getParent().getDatatype() instanceof PropertyContainer))){
 				targetNode.getChildren().add(0, newNode);
 			} else if(newNode.getDatatype() instanceof MetadataLabel){
 				targetNode.getChildren().add(0, newNode);

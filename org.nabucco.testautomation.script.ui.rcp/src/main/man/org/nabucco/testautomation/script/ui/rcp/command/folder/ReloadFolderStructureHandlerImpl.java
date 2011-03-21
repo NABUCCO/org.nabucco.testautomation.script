@@ -23,10 +23,15 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.folder.FolderMaintenan
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderElementFactory;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderMaintenanceMultiPageEditViewModel;
 
-
-public class ReloadFolderStructureHandlerImpl extends
-AbstractRefreshViewHandler<FolderMaintenanceMultiPageEditViewModel, FolderMaintenanceMultiPageEditView>
-implements ReloadFolderStructureHandler {
+/**
+ * ReloadFolderStructureHandlerImpl
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
+public class ReloadFolderStructureHandlerImpl
+		extends
+		AbstractRefreshViewHandler<FolderMaintenanceMultiPageEditViewModel, FolderMaintenanceMultiPageEditView>
+		implements ReloadFolderStructureHandler {
 
 	@Override
 	public void reloadFolderStructure() {
@@ -40,9 +45,9 @@ implements ReloadFolderStructureHandler {
 
 	@Override
 	protected void updateModel(FolderMaintenanceMultiPageEditViewModel model) {
-			final Folder folder = FolderElementFactory.getFolderStructure();
-			model.setRootFolder(folder);
-			model.setDirty(false);
+		final Folder folder = FolderElementFactory.getFolderStructure().get(0); // FIXME add more than one root folder
+		model.setRootFolder(folder);
+		model.setDirty(false);
 	}
 
 }

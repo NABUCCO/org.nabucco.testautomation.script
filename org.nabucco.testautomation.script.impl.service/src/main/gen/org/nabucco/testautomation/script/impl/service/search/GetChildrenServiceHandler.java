@@ -61,7 +61,7 @@ public abstract class GetChildrenServiceHandler extends ServiceHandlerSupport im
             throw wrappedException;
         } catch (Exception e) {
             super.getLogger().error(e);
-            throw new SearchException(e.getMessage());
+            throw new SearchException("Error during service invocation.", e);
         }
     }
 

@@ -17,12 +17,12 @@
 package org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
-
 import org.nabucco.testautomation.facade.datatype.property.BooleanProperty;
 import org.nabucco.testautomation.facade.datatype.property.DateProperty;
 import org.nabucco.testautomation.facade.datatype.property.DoubleProperty;
@@ -43,6 +43,7 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
@@ -55,8 +56,11 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScr
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 import org.nabucco.testautomation.script.facade.message.ProduceTestScriptElementMsg;
+import org.nabucco.testautomation.script.facade.message.TestScriptListMsg;
+import org.nabucco.testautomation.script.facade.message.TestScriptSearchMsg;
 import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentServiceDelegateFactory;
 import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceTestScriptElementDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchTestScriptDelegate;
 import org.nabucco.testautomation.ui.rcp.communication.TestautomationComponentServiceDelegateFactory;
 import org.nabucco.testautomation.ui.rcp.communication.produce.ProducePropertyDelegate;
 
@@ -87,6 +91,7 @@ public class ScriptElementFactory {
         typeMap.put(PropertyAction.class, TestScriptElementType.PROPERTY_ACTION);
         typeMap.put(TestScript.class, TestScriptElementType.SCRIPT);
         typeMap.put(TextMessage.class, TestScriptElementType.TEXT_MESSAGE);
+        typeMap.put(EmbeddedTestScript.class, TestScriptElementType.EMBEDDED_SCRIPT);
 
         propertyTypeMap.put(PropertyList.class, PropertyType.LIST);
         propertyTypeMap.put(BooleanProperty.class, PropertyType.BOOLEAN);
@@ -103,7 +108,7 @@ public class ScriptElementFactory {
     }
 
     public static Datatype create(Class<? extends Datatype> className) {
-        Datatype result = null;
+    	Datatype result = null;
         Datatype cachedElement = cache.get(className);
         if (cachedElement != null) {
             return cachedElement.cloneObject();
@@ -160,5 +165,21 @@ public class ScriptElementFactory {
         }
         return null;
     }
+
+	public static TestScript[] getExistingTestScripts() {
+		try {
+        	SearchTestScriptDelegate searchTestScriptDelegate = ScriptComponentServiceDelegateFactory
+            	.getInstance().getSearchTestScript();
+
+        	TestScriptSearchMsg rq = new TestScriptSearchMsg();
+        	
+            TestScriptListMsg rs = searchTestScriptDelegate.searchTestScript(rq);
+            List<TestScript> testScriptList = rs.getTestScriptList();
+			return testScriptList.toArray(new TestScript[testScriptList.size()]);
+        } catch (ClientException e) {
+            Activator.getDefault().logError(e);
+        }
+		return new TestScript[]{};
+	}
 
 }

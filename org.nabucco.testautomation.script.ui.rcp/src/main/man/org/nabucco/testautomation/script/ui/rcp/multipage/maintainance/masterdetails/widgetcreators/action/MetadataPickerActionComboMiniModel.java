@@ -99,8 +99,11 @@ public class MetadataPickerActionComboMiniModel extends MiniViewModel {
 	 * @return Returns the metadata.
 	 */
 	public String getMetadataName() {
-		if (this.getMetadata() != null && this.getMetadata().getName() != null) {
-			return this.getMetadata().getName().getValue();
+		
+		Metadata metadata = this.getMetadata();
+		
+		if (metadata != null && metadata.getName() != null) {
+			return metadata.getIdentificationKey().getValue() + " - " + this.getMetadata().getName().getValue();
 		}
 		return "";
 	}
@@ -160,7 +163,7 @@ public class MetadataPickerActionComboMiniModel extends MiniViewModel {
 	 *            the string representation
 	 */
 	public void setAction(String value) {
-		SubEngineActionCode oldValue = this.action.getAction();
+		SubEngineActionCode oldValue = this.action.getActionCode();
 		SubEngineActionCode newValue = null;
 
 		Object[] allElements = this.actionComboContentProvider.getElements(null);
@@ -173,7 +176,7 @@ public class MetadataPickerActionComboMiniModel extends MiniViewModel {
 				}
 			}
 		}
-		this.action.setAction(newValue);
+		this.action.setActionCode(newValue);
 		super.updateProperty(PROPERTY_ACTION, oldValue, newValue);
 		super.updateProperty(PROPERTY_ACTION_DESCRIPTION, oldValue, newValue);
 		this.propertiesList.setInput(newValue.getParameterList());
@@ -185,8 +188,8 @@ public class MetadataPickerActionComboMiniModel extends MiniViewModel {
 	 * @return the string value
 	 */
 	public String getAction() {
-		if (this.action != null && this.action.getAction() != null) {
-			return this.action.getAction().getName().toString();
+		if (this.action != null && this.action.getActionCode() != null) {
+			return this.action.getActionCode().getName().toString();
 		}
 		return "";
 	}

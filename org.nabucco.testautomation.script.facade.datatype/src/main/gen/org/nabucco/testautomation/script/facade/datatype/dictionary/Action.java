@@ -3,14 +3,18 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Duration;
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.framework.base.facade.datatype.Identifier;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
@@ -25,13 +29,16 @@ public class Action extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "actionId", "trace", "delay", "metadata",
-            "action" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m0,1;", "m0,1;",
+            "m0,1;" };
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m1,1;",
-            "l0,n;m0,1;", "m0,1;", "m0,1;" };
+    public static final String TRACE = "trace";
 
-    private Identifier actionId;
+    public static final String DELAY = "delay";
+
+    public static final String METADATA = "metadata";
+
+    public static final String ACTIONCODE = "actionCode";
 
     private Flag trace;
 
@@ -39,7 +46,7 @@ public class Action extends TestScriptComponent implements Datatype {
 
     private Metadata metadata;
 
-    private SubEngineActionCode action;
+    private SubEngineActionCode actionCode;
 
     /** Constructs a new Action instance. */
     public Action() {
@@ -59,9 +66,6 @@ public class Action extends TestScriptComponent implements Datatype {
      */
     protected void cloneObject(Action clone) {
         super.cloneObject(clone);
-        if ((this.getActionId() != null)) {
-            clone.setActionId(this.getActionId().cloneObject());
-        }
         if ((this.getTrace() != null)) {
             clone.setTrace(this.getTrace().cloneObject());
         }
@@ -71,10 +75,32 @@ public class Action extends TestScriptComponent implements Datatype {
         if ((this.getMetadata() != null)) {
             clone.setMetadata(this.getMetadata().cloneObject());
         }
-        if ((this.getAction() != null)) {
-            clone.setAction(this.getAction().cloneObject());
+        if ((this.getActionCode() != null)) {
+            clone.setActionCode(this.getActionCode().cloneObject());
         }
         clone.setType(this.getType());
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
+                .getPropertyMap());
+        propertyMap.put(TRACE, PropertyDescriptorSupport.createBasetype(TRACE, Flag.class, 7,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(DELAY, PropertyDescriptorSupport.createBasetype(DELAY, Duration.class, 8,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(METADATA, PropertyDescriptorSupport.createDatatype(METADATA,
+                Metadata.class, 9, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.AGGREGATION));
+        propertyMap.put(ACTIONCODE, PropertyDescriptorSupport.createDatatype(ACTIONCODE,
+                SubEngineActionCode.class, 10, PROPERTY_CONSTRAINTS[3], false,
+                PropertyAssociationType.AGGREGATION));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -83,19 +109,36 @@ public class Action extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Identifier>(PROPERTY_NAMES[0], Identifier.class,
-                PROPERTY_CONSTRAINTS[0], this.actionId));
-        properties.add(new BasetypeProperty<Flag>(PROPERTY_NAMES[1], Flag.class,
-                PROPERTY_CONSTRAINTS[1], this.trace));
-        properties.add(new BasetypeProperty<Duration>(PROPERTY_NAMES[2], Duration.class,
-                PROPERTY_CONSTRAINTS[2], this.delay));
-        properties.add(new DatatypeProperty<Metadata>(PROPERTY_NAMES[3], Metadata.class,
-                PROPERTY_CONSTRAINTS[3], this.metadata));
-        properties.add(new DatatypeProperty<SubEngineActionCode>(PROPERTY_NAMES[4],
-                SubEngineActionCode.class, PROPERTY_CONSTRAINTS[4], this.action));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Action.getPropertyDescriptor(TRACE), this.trace, null));
+        properties.add(super.createProperty(Action.getPropertyDescriptor(DELAY), this.delay, null));
+        properties.add(super.createProperty(Action.getPropertyDescriptor(METADATA), this.metadata,
+                null));
+        properties.add(super.createProperty(Action.getPropertyDescriptor(ACTIONCODE),
+                this.actionCode, null));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(TRACE) && (property.getType() == Flag.class))) {
+            this.setTrace(((Flag) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(DELAY) && (property.getType() == Duration.class))) {
+            this.setDelay(((Duration) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(METADATA) && (property.getType() == Metadata.class))) {
+            this.setMetadata(((Metadata) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(ACTIONCODE) && (property.getType() == SubEngineActionCode.class))) {
+            this.setActionCode(((SubEngineActionCode) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -113,11 +156,6 @@ public class Action extends TestScriptComponent implements Datatype {
             return false;
         }
         final Action other = ((Action) obj);
-        if ((this.actionId == null)) {
-            if ((other.actionId != null))
-                return false;
-        } else if ((!this.actionId.equals(other.actionId)))
-            return false;
         if ((this.trace == null)) {
             if ((other.trace != null))
                 return false;
@@ -133,10 +171,10 @@ public class Action extends TestScriptComponent implements Datatype {
                 return false;
         } else if ((!this.metadata.equals(other.metadata)))
             return false;
-        if ((this.action == null)) {
-            if ((other.action != null))
+        if ((this.actionCode == null)) {
+            if ((other.actionCode != null))
                 return false;
-        } else if ((!this.action.equals(other.action)))
+        } else if ((!this.actionCode.equals(other.actionCode)))
             return false;
         return true;
     }
@@ -145,26 +183,11 @@ public class Action extends TestScriptComponent implements Datatype {
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.actionId == null) ? 0 : this.actionId.hashCode()));
         result = ((PRIME * result) + ((this.trace == null) ? 0 : this.trace.hashCode()));
         result = ((PRIME * result) + ((this.delay == null) ? 0 : this.delay.hashCode()));
         result = ((PRIME * result) + ((this.metadata == null) ? 0 : this.metadata.hashCode()));
-        result = ((PRIME * result) + ((this.action == null) ? 0 : this.action.hashCode()));
+        result = ((PRIME * result) + ((this.actionCode == null) ? 0 : this.actionCode.hashCode()));
         return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Action>\n");
-        appendable.append(super.toString());
-        appendable.append((("<actionId>" + this.actionId) + "</actionId>\n"));
-        appendable.append((("<trace>" + this.trace) + "</trace>\n"));
-        appendable.append((("<delay>" + this.delay) + "</delay>\n"));
-        appendable.append((("<metadata>" + this.metadata) + "</metadata>\n"));
-        appendable.append((("<action>" + this.action) + "</action>\n"));
-        appendable.append("</Action>\n");
-        return appendable.toString();
     }
 
     @Override
@@ -172,36 +195,6 @@ public class Action extends TestScriptComponent implements Datatype {
         Action clone = new Action();
         this.cloneObject(clone);
         return clone;
-    }
-
-    /**
-     * Missing description at method getActionId.
-     *
-     * @return the Identifier.
-     */
-    public Identifier getActionId() {
-        return this.actionId;
-    }
-
-    /**
-     * Missing description at method setActionId.
-     *
-     * @param actionId the Identifier.
-     */
-    public void setActionId(Identifier actionId) {
-        this.actionId = actionId;
-    }
-
-    /**
-     * Missing description at method setActionId.
-     *
-     * @param actionId the Long.
-     */
-    public void setActionId(Long actionId) {
-        if ((this.actionId == null)) {
-            this.actionId = new Identifier();
-        }
-        this.actionId.setValue(actionId);
     }
 
     /**
@@ -229,6 +222,9 @@ public class Action extends TestScriptComponent implements Datatype {
      */
     public void setTrace(Boolean trace) {
         if ((this.trace == null)) {
+            if ((trace == null)) {
+                return;
+            }
             this.trace = new Flag();
         }
         this.trace.setValue(trace);
@@ -259,6 +255,9 @@ public class Action extends TestScriptComponent implements Datatype {
      */
     public void setDelay(Long delay) {
         if ((this.delay == null)) {
+            if ((delay == null)) {
+                return;
+            }
             this.delay = new Duration();
         }
         this.delay.setValue(delay);
@@ -283,20 +282,39 @@ public class Action extends TestScriptComponent implements Datatype {
     }
 
     /**
-     * Missing description at method setAction.
+     * Missing description at method setActionCode.
      *
-     * @param action the SubEngineActionCode.
+     * @param actionCode the SubEngineActionCode.
      */
-    public void setAction(SubEngineActionCode action) {
-        this.action = action;
+    public void setActionCode(SubEngineActionCode actionCode) {
+        this.actionCode = actionCode;
     }
 
     /**
-     * Missing description at method getAction.
+     * Missing description at method getActionCode.
      *
      * @return the SubEngineActionCode.
      */
-    public SubEngineActionCode getAction() {
-        return this.action;
+    public SubEngineActionCode getActionCode() {
+        return this.actionCode;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Action.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Action.class).getAllProperties();
     }
 }

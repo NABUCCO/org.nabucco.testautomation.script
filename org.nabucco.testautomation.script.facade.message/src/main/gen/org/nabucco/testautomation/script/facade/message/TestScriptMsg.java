@@ -3,9 +3,15 @@
  */
 package org.nabucco.testautomation.script.facade.message;
 
+import java.util.HashMap;
 import java.util.List;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.framework.base.facade.message.ServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceMessageSupport;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
@@ -20,9 +26,9 @@ public class TestScriptMsg extends ServiceMessageSupport implements ServiceMessa
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "testScript" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;" };
+
+    public static final String TESTSCRIPT = "testScript";
 
     private TestScript testScript;
 
@@ -31,12 +37,37 @@ public class TestScriptMsg extends ServiceMessageSupport implements ServiceMessa
         super();
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.put(TESTSCRIPT, PropertyDescriptorSupport.createDatatype(TESTSCRIPT,
+                TestScript.class, 0, PROPERTY_CONSTRAINTS[0], false,
+                PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new DatatypeProperty<TestScript>(PROPERTY_NAMES[0], TestScript.class,
-                PROPERTY_CONSTRAINTS[0], this.testScript));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TestScriptMsg.getPropertyDescriptor(TESTSCRIPT),
+                this.testScript));
         return properties;
+    }
+
+    @Override
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(TESTSCRIPT) && (property.getType() == TestScript.class))) {
+            this.setTestScript(((TestScript) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -71,16 +102,6 @@ public class TestScriptMsg extends ServiceMessageSupport implements ServiceMessa
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<TestScriptMsg>\n");
-        appendable.append(super.toString());
-        appendable.append((("<testScript>" + this.testScript) + "</testScript>\n"));
-        appendable.append("</TestScriptMsg>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public ServiceMessage cloneObject() {
         return this;
     }
@@ -101,5 +122,24 @@ public class TestScriptMsg extends ServiceMessageSupport implements ServiceMessa
      */
     public void setTestScript(TestScript testScript) {
         this.testScript = testScript;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(TestScriptMsg.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(TestScriptMsg.class).getAllProperties();
     }
 }

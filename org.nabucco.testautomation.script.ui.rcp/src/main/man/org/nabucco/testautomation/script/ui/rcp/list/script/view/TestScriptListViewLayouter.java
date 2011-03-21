@@ -33,11 +33,12 @@ import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.ui.rcp.list.script.model.TestScriptListViewModel;
-import org.nabucco.testautomation.script.ui.rcp.list.script.view.TestScriptListViewTableFilter;
-import org.nabucco.testautomation.script.ui.rcp.list.script.view.TestScriptListViewWidgetFactory;
+import org.nabucco.testautomation.script.ui.rcp.list.script.view.comparator.TestScriptListViewOwnerComparator;
 import org.nabucco.testautomation.script.ui.rcp.list.script.view.comparator.TestScriptListViewTestScriptDescriptionComparator;
 import org.nabucco.testautomation.script.ui.rcp.list.script.view.comparator.TestScriptListViewTestScriptNameComparator;
+import org.nabucco.testautomation.script.ui.rcp.list.script.view.label.TestScriptListViewOwnerLabelProvider;
 import org.nabucco.testautomation.script.ui.rcp.list.script.view.label.TestScriptListViewTestScriptDescriptionLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.list.script.view.label.TestScriptListViewTestScriptKeyLabelProvider;
 import org.nabucco.testautomation.script.ui.rcp.list.script.view.label.TestScriptListViewTestScriptNameLabelProvider;
 
 
@@ -47,7 +48,15 @@ import org.nabucco.testautomation.script.ui.rcp.list.script.view.label.TestScrip
  */
 public class TestScriptListViewLayouter extends NabuccoAbstractListLayouter<TestScriptListViewModel> {
 
-    /**
+	private static final String OWNER_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.script.view.owner";
+	
+	private static final String DESCRIPTION_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.script.view.description";
+	
+	private static final String NAME_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.script.view.name";
+	
+	private static final String KEY_COLUMN_KEY = "org.nabucco.testautomation.script.ui.rcp.list.script.view.key";
+
+	/**
      * Layouts the table
      **/
     @Override
@@ -71,6 +80,7 @@ public class TestScriptListViewLayouter extends NabuccoAbstractListLayouter<Test
         List<Comparator<TestScript>> comparators = new ArrayList<Comparator<TestScript>>();
         comparators.add(new TestScriptListViewTestScriptNameComparator());
         comparators.add(new TestScriptListViewTestScriptDescriptionComparator());
+        comparators.add(new TestScriptListViewOwnerComparator());
 
         return comparators;
     }
@@ -82,11 +92,20 @@ public class TestScriptListViewLayouter extends NabuccoAbstractListLayouter<Test
      */
     private NabuccoTableColumnInfo[] createTableColumnInfo() {
         NabuccoTableColumnInfo[] result = {
-                new NabuccoTableColumnInfo("Name", "This is a script name.", 200, SWT.CENTER,
+        		new NabuccoTableColumnInfo(KEY_COLUMN_KEY,
+        				KEY_COLUMN_KEY, 150, SWT.LEFT,
+        				SWT.CENTER, new TestScriptListViewTestScriptKeyLabelProvider()),
+                new NabuccoTableColumnInfo(NAME_COLUMN_KEY,
+                		NAME_COLUMN_KEY, 400, SWT.LEFT,
                         SWT.CENTER, new TestScriptListViewTestScriptNameLabelProvider()),
-                new NabuccoTableColumnInfo("Description", "This is a script description", 300,
+                new NabuccoTableColumnInfo(DESCRIPTION_COLUMN_KEY,
+                		DESCRIPTION_COLUMN_KEY, 400,
                         SWT.LEFT, SWT.LEFT,
-                        new TestScriptListViewTestScriptDescriptionLabelProvider()) };
+                        new TestScriptListViewTestScriptDescriptionLabelProvider()),
+                new NabuccoTableColumnInfo(OWNER_COLUMN_KEY,
+                		OWNER_COLUMN_KEY, 150,
+                        SWT.LEFT, SWT.LEFT,
+                        new TestScriptListViewOwnerLabelProvider()) };
 
         return result;
     }

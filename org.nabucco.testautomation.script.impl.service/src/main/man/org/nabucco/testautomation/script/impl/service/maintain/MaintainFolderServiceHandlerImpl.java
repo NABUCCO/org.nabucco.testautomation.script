@@ -18,6 +18,7 @@ package org.nabucco.testautomation.script.impl.service.maintain;
 
 import java.util.List;
 
+import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionAccessor;
@@ -31,7 +32,6 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
 import org.nabucco.testautomation.script.impl.service.FolderSupport;
 import org.nabucco.testautomation.script.impl.service.ScriptSupport;
-import org.nabucco.testautomation.script.impl.service.maintain.MaintainFolderServiceHandler;
 import org.nabucco.testautomation.script.impl.service.maintain.visitor.FolderModificationVisitor;
 
 
@@ -44,6 +44,8 @@ public class MaintainFolderServiceHandlerImpl extends
 		MaintainFolderServiceHandler {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final String PREFIX = "FLD-";
 	
 	private PersistenceHelper persistenceHelper;
 	
@@ -112,7 +114,6 @@ public class MaintainFolderServiceHandlerImpl extends
 		msg.setFolder(folder);
 		return msg;
 	}
-	
 
 	private Folder create(Folder entity) throws PersistenceException {
 		
@@ -126,6 +127,10 @@ public class MaintainFolderServiceHandlerImpl extends
 		
 		// Create Folder
 		List<TestScript> testScriptList = entity.getTestScriptList();
+		entity.setOwner(NabuccoInstance.getInstance().getOwner());
+		entity = this.persistenceHelper.persist(entity);
+		entity.setIdentificationKey(PREFIX + entity.getId());
+		entity.setDatatypeState(DatatypeState.MODIFIED);
 		entity = this.persistenceHelper.persist(entity);
 		
 		// Update TestScripts
@@ -172,6 +177,13 @@ public class MaintainFolderServiceHandlerImpl extends
 			}
 		}
 
+		// Generate FolderKey
+		if (entity.getDatatypeState() == DatatypeState.INITIALIZED) {
+			entity = this.persistenceHelper.persist(entity);
+			entity.setIdentificationKey(PREFIX + entity.getId());
+			entity.setDatatypeState(DatatypeState.MODIFIED);
+		}
+
 		// Create or update Folder
 		entity = this.persistenceHelper.persist(entity);
 		
@@ -210,7 +222,7 @@ public class MaintainFolderServiceHandlerImpl extends
 		List<TestScript> testScriptList = entity.getTestScriptList();
 		
 		try {
-			Folder rootFolder = FolderSupport.getInstance().getRootFolder(super.getContext());
+			Folder rootFolder = FolderSupport.getInstance().getRootFolder(super.getContext(), entity.getOwner());
 			
 			for (TestScript testScript : testScriptList) {
 				testScript = this.persistenceHelper.find(TestScript.class, testScript);

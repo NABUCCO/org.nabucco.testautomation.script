@@ -25,11 +25,10 @@ import org.nabucco.framework.plugin.base.model.browser.DatatypeBrowserElement;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
 
-
 /**
  * TestScriptEditViewBrowserElement
  * 
- * @author Undefined
+ * @author Markus Jorroch, PRODYNA AG
  */
 public class TestScriptEditViewBrowserElement extends DatatypeBrowserElement implements
         NabuccoInjectionReciever {

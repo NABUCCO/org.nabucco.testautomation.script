@@ -19,7 +19,11 @@ package org.nabucco.testautomation.script.ui.rcp.browser.metadata;
 import org.nabucco.framework.plugin.base.command.CommandHandler;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model.MetadataMaintenanceMultiPageEditViewModel;
 
-
+/**
+ * MetadataEditViewBrowserElementHandler
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public interface MetadataEditViewBrowserElementHandler extends CommandHandler {
 
     /**

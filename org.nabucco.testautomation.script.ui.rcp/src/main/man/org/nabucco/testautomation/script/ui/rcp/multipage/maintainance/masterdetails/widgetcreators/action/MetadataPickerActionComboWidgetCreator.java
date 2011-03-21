@@ -41,19 +41,18 @@ import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master
 import org.nabucco.framework.plugin.base.component.newpicker.composite.element.ElementPickerComposite;
 import org.nabucco.framework.plugin.base.component.newpicker.dialog.tree.TreePickerDialog;
 import org.nabucco.framework.plugin.base.component.newpicker.dialog.tree.TreePickerDialogLabel;
-import org.nabucco.framework.plugin.base.component.newpicker.dialog.tree.TreePickerDialogParameter;
 import org.nabucco.framework.plugin.base.component.picker.combo.ElementPickerCombo;
 import org.nabucco.framework.plugin.base.component.picker.combo.ElementPickerComboParameter;
 import org.nabucco.framework.plugin.base.layout.ImageProvider;
 import org.nabucco.framework.plugin.base.model.ViewModel;
 import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
+import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
 import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
-import org.nabucco.testautomation.script.ui.rcp.images.ScriptImageRegistry;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.action.ObjectListContentProvider;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.action.SubEngineActionCodeComboBoxHandler;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.action.SubEngineActionCodeLabelProvider;
@@ -61,8 +60,8 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdet
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.metadata.MetadataPickerDialogLabelProvider;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.metadata.MetadataPickerDialogListener;
 import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.widgetcreators.action.metadata.MetadataTreePickerDialog;
-
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
+import org.nabucco.testautomation.ui.rcp.base.dialog.OwnerSelectionTreePickerDialogParameter;
+import org.nabucco.testautomation.ui.rcp.images.TestautomationImageRegistry;
 
 /**
  * MetadataPickerActionComboWidgetCreator
@@ -82,22 +81,14 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 
 	private static final String TREE_TITLE = ID + ".treeTitle";
 	
-	private static final String ICON_PROPERTY = "icons/text.png";
-
-	private static final String ICON_PROPERTY_LIST = "icons/browser_list.png";
-
-	private static final String ICON_PROPERTY_STRING = "icons/text.png";
-
-	private static final String ICON_PROPERTY_NUMERIC = "icons/calculator.png";
-
-	private static final String ICON_PROPERTY_XML = "icons/xml.png";
-
 	private Composite parent;
 	private BaseTypeWidgetFactory widgetFactory;
 	private GridData data;
 	private ViewModel externalViewModel;
 	private String masterBlockId;
 	private Action action;
+
+	private boolean readOnly;
 
 	/**
 	 * Creates a new {@link MetadataPickerActionComboWidgetCreator} instance.
@@ -106,7 +97,7 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 	 *            the form toolkit
 	 */
 	public MetadataPickerActionComboWidgetCreator(Composite parent, BaseTypeWidgetFactory widgetFactory, GridData data, NabuccoFormToolkit nft,
-			ViewModel externalViewModel, String masterBlockId, Metadata metadata, Action action) {
+			ViewModel externalViewModel, String masterBlockId, Metadata metadata, Action action, boolean readOnly) {
 		super(nft);
 		this.parent = parent;
 		this.widgetFactory = widgetFactory;
@@ -114,6 +105,7 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		this.externalViewModel = externalViewModel;
 		this.masterBlockId = masterBlockId;
 		this.action = action;
+		this.readOnly =readOnly;
 	}
 
 	public Control[] createWidgets() {
@@ -144,8 +136,6 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		model.setPropertiesListViewer(propertiesControl);
 		result[2] = propertiesControl.getControl();
 
-
-
 		return result;
 	}
 
@@ -156,6 +146,9 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		List<SubEngineActionCode> availableActionCodes;
 		Metadata metadata = action.getMetadata();
 		boolean readOnly = false;
+		if(this.readOnly){
+			readOnly = true;
+		}
 		if (metadata == null) {
 			readOnly = true;
 			availableActionCodes = new ArrayList<SubEngineActionCode>();
@@ -230,21 +223,20 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		TreePickerDialogLabel label = new TreePickerDialogLabel(TITLE, MESSAGE,
 				SHELL_TITLE, "Tree", TREE_TITLE);
 
-		TreePickerDialogParameter parameter = new TreePickerDialogParameter(
+		OwnerSelectionTreePickerDialogParameter parameter = new OwnerSelectionTreePickerDialogParameter(
 				label, model);
 		parameter.setContentProvider(new MetadataPickerDialogContentProvider());
 		parameter.setLabelProvider(new MetadataPickerDialogLabelProvider());
 
-		TreePickerDialog dialog = new MetadataTreePickerDialog(parent.getShell(),
-				parameter);
-
+		MetadataTreePickerDialog dialog = new MetadataTreePickerDialog(parent.getShell(),
+				parameter, this.action.getMetadata());
+		
 		dialog.addSelectionListener(MetadataPickerDialogListener.ID,
 				new MetadataPickerDialogListener(model));
 
 		return new ElementPickerComposite<TreePickerDialog>(parent, SWT.NONE,
-				dialog);
+				dialog, this.readOnly);
 	}
-
 
 	private TableViewer layoutPropertiesControl() {
 		Label label = widgetFactory.createLabel(parent, masterBlockId + "." + MetadataPickerActionComboMiniModel.PROPERTY_ACTION_DESCRIPTION);
@@ -254,6 +246,7 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		TableViewer tableViewer = new TableViewer(parent);
 		new FormToolkit(parent.getDisplay()).adapt(tableViewer.getControl(), true, true);
 		tableViewer.getControl().setLayoutData(data);
+		tableViewer.getControl().setEnabled(!this.readOnly);
 
 		int ops = DND.DROP_COPY  | DND.DROP_MOVE;
 		Transfer[] transfers = new Transfer[] { MasterTreeExternalDatatypeTransfer.getInstance()};
@@ -262,8 +255,8 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 		tableViewer.addDoubleClickListener(new CodeParameterListDoubleClickListener(tableViewer));
 
 		List<CodeParameter> parameterList; 
-		if (action != null && action.getAction() != null && action.getAction().getParameterList() != null) {
-			parameterList = action.getAction().getParameterList();
+		if (action != null && action.getActionCode() != null && action.getActionCode().getParameterList() != null) {
+			parameterList = action.getActionCode().getParameterList();
 		} else {
 			parameterList = new ArrayList<CodeParameter>();
 		}
@@ -279,27 +272,37 @@ AbstractBaseTypeWidgetCreator<Metadata> {
 					
 					switch (propertyType) {
 					case LIST:
-						imagePath = ICON_PROPERTY_LIST;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_LIST.getId();
 						break;
 					case STRING:
-						imagePath = ICON_PROPERTY_STRING;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_STRING.getId();
 						break;
 					case LONG:
 					case DOUBLE:
 					case INTEGER:
-						imagePath = ICON_PROPERTY_NUMERIC;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_NUMERIC.getId();
 						break;
 					case XML:
-						imagePath = ICON_PROPERTY_XML;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XML.getId();
 						break;
 					case SQL:
-						imagePath = ScriptImageRegistry.ICON_SQL.getId();
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_SQL.getId();
 						break;
 					case FILE:
-						imagePath = ScriptImageRegistry.ICON_FILE.getId();
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_FILE.getId();
+						break;
+					case DATE:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_DATE.getId();
+						break;
+					case BOOLEAN:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_BOOLEAN.getId();
+						break;
+					case XPATH:
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XPATH.getId();
 						break;
 					default:
-						imagePath = ICON_PROPERTY;
+						imagePath = TestautomationImageRegistry.ICON_PROPERTY.getId();
+						break;
 					}
 					return ImageProvider.createImage(imagePath);
 				}

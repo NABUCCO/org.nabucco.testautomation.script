@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchModel;
@@ -47,10 +48,12 @@ public class MetadataSearchBusinessModel implements NabuccoComponentSearchModel 
      * {@inheritDoc}
      */
     @Override
-    public MetadataListViewBrowserElement search(NabuccoComponentSearchParameter searchViewModel) {
-        MetadataListViewBrowserElement result = null;
-        if (searchViewModel instanceof MetadataSearchViewModel) {
-            MetadataSearchViewModel testScriptSearchViewModel = (MetadataSearchViewModel) searchViewModel;
+    public MetadataListViewBrowserElement search(NabuccoComponentSearchParameter parameter) {
+        
+    	MetadataListViewBrowserElement result = null;
+        
+    	if (parameter instanceof MetadataSearchViewModel) {
+            MetadataSearchViewModel testScriptSearchViewModel = (MetadataSearchViewModel) parameter;
             MetadataSearchMsg rq = createMetadataSearchMsg(testScriptSearchViewModel);
             result = new MetadataListViewBrowserElement(search(rq).toArray(new Metadata[0]));
 
@@ -59,8 +62,10 @@ public class MetadataSearchBusinessModel implements NabuccoComponentSearchModel 
     }
 
     private List<Metadata> search(final MetadataSearchMsg rq) {
-        List<Metadata> result = null;
-        try {
+        
+    	List<Metadata> result = null;
+        
+    	try {
             SearchMetadataDelegate searchDelegate = ScriptComponentServiceDelegateFactory
                     .getInstance().getSearchMetadata();
             MetadataListMsg response = searchDelegate.searchMetadata(rq);
@@ -72,25 +77,32 @@ public class MetadataSearchBusinessModel implements NabuccoComponentSearchModel 
     }
 
     private MetadataSearchMsg createMetadataSearchMsg(MetadataSearchViewModel searchViewModel) {
-        MetadataSearchMsg result = new MetadataSearchMsg();
+        
+    	MetadataSearchMsg result = new MetadataSearchMsg();
+        String owner = searchViewModel.getOwner();
 
-        result.setName(getNameFromModel(searchViewModel));
-        result.setDescription(getDescriptionFromModel(searchViewModel)); 
+        if (owner != null && owner.length() > 0) {
+        	result.setOwner(new Owner(owner));
+        }
+        result.setName(getName(searchViewModel));
+        result.setDescription(getDescription(searchViewModel)); 
         result.setSubEngine(searchViewModel.getMetadata().getSubEngine());
 
         return result;
     }
 
-    private Description getDescriptionFromModel(final MetadataSearchViewModel searchViewModel) {
-        Description result = new Description();
+    private Description getDescription(final MetadataSearchViewModel searchViewModel) {
+        
+    	Description result = new Description();
         String description = searchViewModel.getMetadataDescription();
 
         result.setValue((description == null || description.length() == 0) ? null : description);
         return result;
     }
 
-    private Name getNameFromModel(MetadataSearchViewModel searchViewModel) {
-        Name result = new Name();
+    private Name getName(MetadataSearchViewModel searchViewModel) {
+        
+    	Name result = new Name();
         String name = searchViewModel.getMetadataName();
 
         result.setValue((name == null || name.length() == 0) ? null : name);

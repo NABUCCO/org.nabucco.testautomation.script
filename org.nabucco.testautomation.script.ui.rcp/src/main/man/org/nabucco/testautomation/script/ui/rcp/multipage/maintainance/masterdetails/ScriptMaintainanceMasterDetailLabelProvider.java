@@ -28,6 +28,7 @@ import org.nabucco.framework.plugin.base.layout.I18NLabelProviderContributor;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
 import org.nabucco.testautomation.script.ui.rcp.images.ScriptImageRegistry;
+import org.nabucco.testautomation.ui.rcp.images.TestautomationImageRegistry;
 
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
 import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
@@ -38,18 +39,6 @@ import org.nabucco.testautomation.facade.datatype.property.base.PropertyContaine
  * @author Markus Jorroch, PRODYNA AG
  */
 public class ScriptMaintainanceMasterDetailLabelProvider implements I18NLabelProviderContributor {
-
-	private static final String ICON_FOLDER = "icons/folder.png";
-
-	private static final String ICON_PROPERTY = "icons/text.png";
-
-	private static final String ICON_PROPERTY_LIST = "icons/browser_list.png";
-
-	private static final String ICON_PROPERTY_STRING = "icons/text.png";
-
-	private static final String ICON_PROPERTY_NUMERIC = "icons/calculator.png";
-
-	private static final String ICON_PROPERTY_XML = "icons/xml.png";
 
 	private static ScriptMaintainanceMasterDetailLabelProvider instance = new ScriptMaintainanceMasterDetailLabelProvider();
 	
@@ -125,16 +114,16 @@ public class ScriptMaintainanceMasterDetailLabelProvider implements I18NLabelPro
 		} else if(element instanceof Datatype){
 			return getImage((Datatype) element);
 		}
-		return ICON_FOLDER;
+		return ScriptImageRegistry.ICON_FOLDER.getId();
 	}
 
 	private String getImage(Datatype datatype) {
+		
 		if(datatype instanceof TestScriptElementContainer){
 			datatype = ((TestScriptElementContainer) datatype).getElement();
 		} else if(datatype instanceof PropertyContainer){
 			datatype = ((PropertyContainer) datatype).getProperty();
 		}
-		
 		
 		if (datatype instanceof TestScriptElement) {
 
@@ -158,9 +147,11 @@ public class ScriptMaintainanceMasterDetailLabelProvider implements I18NLabelPro
 			case TEXT_MESSAGE:
 				return ScriptImageRegistry.ICON_MESSAGE.getId();
 			case PROPERTY_ACTION:
-				return ICON_PROPERTY_LIST;
+				return ScriptImageRegistry.ICON_PROPERTY_ACTION.getId();
 			case SCRIPT:
 				return ScriptImageRegistry.ICON_SCRIPT.getId();
+			case EMBEDDED_SCRIPT:
+				return ScriptImageRegistry.ICON_EMBEDDED.getId();
 			default:
 				return ScriptImageRegistry.ICON_SCRIPT.getId();
 			}
@@ -171,24 +162,30 @@ public class ScriptMaintainanceMasterDetailLabelProvider implements I18NLabelPro
 
 			switch (((Property) datatype).getType()) {
 			case LIST:
-				return ICON_PROPERTY_LIST;
+				return TestautomationImageRegistry.ICON_PROPERTY_LIST.getId();
 			case STRING:
-				return ICON_PROPERTY_STRING;
+				return TestautomationImageRegistry.ICON_PROPERTY_STRING.getId();
 			case LONG:
 			case DOUBLE:
 			case INTEGER:
-				return ICON_PROPERTY_NUMERIC;
+				return TestautomationImageRegistry.ICON_PROPERTY_NUMERIC.getId();
 			case XML:
-				return ICON_PROPERTY_XML;
+				return TestautomationImageRegistry.ICON_PROPERTY_XML.getId();
 			case SQL:
-				return ScriptImageRegistry.ICON_SQL.getId();
+				return TestautomationImageRegistry.ICON_PROPERTY_SQL.getId();
 			case FILE:
-				return ScriptImageRegistry.ICON_FILE.getId();
+				return TestautomationImageRegistry.ICON_PROPERTY_FILE.getId();
+			case DATE:
+				return TestautomationImageRegistry.ICON_PROPERTY_DATE.getId();
+			case BOOLEAN:
+				return TestautomationImageRegistry.ICON_PROPERTY_BOOLEAN.getId();
+			case XPATH:
+				return TestautomationImageRegistry.ICON_PROPERTY_XPATH.getId();
 			default:
-				return ICON_PROPERTY;
+				return TestautomationImageRegistry.ICON_PROPERTY.getId();
 			}
 		}
-		return ICON_FOLDER;
+		return ScriptImageRegistry.ICON_FOLDER.getId();
 	}
 
 }

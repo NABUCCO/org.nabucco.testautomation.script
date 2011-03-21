@@ -3,10 +3,18 @@
  */
 package org.nabucco.testautomation.script.facade.message;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import org.nabucco.framework.base.facade.datatype.property.ListProperty;
+import java.util.Map;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoListImpl;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
 import org.nabucco.framework.base.facade.message.ServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceMessageSupport;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
@@ -21,23 +29,50 @@ public class SubEngineCodeListMsg extends ServiceMessageSupport implements Servi
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "subEngineCodeList" };
-
     private static final String[] PROPERTY_CONSTRAINTS = { "m0,n;" };
 
-    private List<SubEngineCode> subEngineCodeList;
+    public static final String SUBENGINECODELIST = "subEngineCodeList";
+
+    private NabuccoList<SubEngineCode> subEngineCodeList;
 
     /** Constructs a new SubEngineCodeListMsg instance. */
     public SubEngineCodeListMsg() {
         super();
     }
 
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.put(SUBENGINECODELIST, PropertyDescriptorSupport.createCollection(
+                SUBENGINECODELIST, SubEngineCode.class, 0, PROPERTY_CONSTRAINTS[0], false,
+                PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
+    }
+
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new ListProperty<SubEngineCode>(PROPERTY_NAMES[0], SubEngineCode.class,
-                PROPERTY_CONSTRAINTS[0], this.subEngineCodeList));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(
+                SubEngineCodeListMsg.getPropertyDescriptor(SUBENGINECODELIST),
+                this.subEngineCodeList));
         return properties;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(SUBENGINECODELIST) && (property.getType() == SubEngineCode.class))) {
+            this.subEngineCodeList = ((NabuccoList<SubEngineCode>) property.getInstance());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -73,17 +108,6 @@ public class SubEngineCodeListMsg extends ServiceMessageSupport implements Servi
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<SubEngineCodeListMsg>\n");
-        appendable.append(super.toString());
-        appendable
-                .append((("<subEngineCodeList>" + this.subEngineCodeList) + "</subEngineCodeList>\n"));
-        appendable.append("</SubEngineCodeListMsg>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public ServiceMessage cloneObject() {
         return this;
     }
@@ -91,12 +115,33 @@ public class SubEngineCodeListMsg extends ServiceMessageSupport implements Servi
     /**
      * Missing description at method getSubEngineCodeList.
      *
-     * @return the List<SubEngineCode>.
+     * @return the NabuccoList<SubEngineCode>.
      */
-    public List<SubEngineCode> getSubEngineCodeList() {
+    public NabuccoList<SubEngineCode> getSubEngineCodeList() {
         if ((this.subEngineCodeList == null)) {
-            this.subEngineCodeList = new ArrayList<SubEngineCode>();
+            this.subEngineCodeList = new NabuccoListImpl<SubEngineCode>(
+                    NabuccoCollectionState.INITIALIZED);
         }
         return this.subEngineCodeList;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeListMsg.class)
+                .getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(SubEngineCodeListMsg.class).getAllProperties();
     }
 }

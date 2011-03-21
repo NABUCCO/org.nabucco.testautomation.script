@@ -16,24 +16,23 @@
 */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.fileproperty;
 
-import org.eclipse.swt.widgets.Composite;
-import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.file.TextFileContent;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.GeneralDetailPageViewModel;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.model.MiniViewModel;
 import org.nabucco.framework.plugin.base.component.multipage.model.MultiPageEditViewModel;
 import org.nabucco.framework.plugin.base.model.ViewModel;
-
 import org.nabucco.testautomation.facade.datatype.property.FileProperty;
 
 /**
- * SubEngineCodeMiniModel
+ * NameContentCombinationMiniModel
  * 
  * @author Markus Jorroch, PRODYNA AG
  */
 public class NameContentCombinationMiniModel extends MiniViewModel {
 
 	public static final String PROPERTY_NAME = "name";
+
+	public static final String FILE_NAME = "filename";
 
 	public static final String PROPERTY_CONTENT = "content";
 
@@ -51,7 +50,7 @@ public class NameContentCombinationMiniModel extends MiniViewModel {
 	 * @param fileProperty
 	 *            the fileProperty that contains the SubEngineCode
 	 */
-	public NameContentCombinationMiniModel(Composite parent, ViewModel externalViewModel, FileProperty fileProperty) {
+	public NameContentCombinationMiniModel(ViewModel externalViewModel, FileProperty fileProperty) {
 		super(externalViewModel, fileProperty);
 
 		this.fileProperty = fileProperty;
@@ -72,13 +71,44 @@ public class NameContentCombinationMiniModel extends MiniViewModel {
 	 * @param value
 	 *            the string representation
 	 */
-	public void setName(String value) {
-		Name oldNameValue = this.fileProperty.getName();
-		this.fileProperty.setName(value);
+	public void setFilename(String value) {
+		String oldNameValue = null;
+		
+		if (this.fileProperty != null && this.fileProperty.getFilename() != null) {
+			oldNameValue = this.fileProperty.getFilename().getValue();
+		}
+		this.fileProperty.setFilename(value);
 
+		super.updateProperty(FILE_NAME, oldNameValue, fileProperty.getFilename());
+	}
+
+	/**
+	 * @param value
+	 *            the string representation
+	 */
+	public void setName(String value) {
+		String oldNameValue = null;
+		
+		if (this.fileProperty != null && this.fileProperty.getName() != null) {
+			oldNameValue = this.fileProperty.getName().getValue();
+		}
+		this.fileProperty.setName(value);
+		
 		super.updateProperty(PROPERTY_NAME, oldNameValue, fileProperty.getName());
 	}
 
+	/**
+	 * Getter for the Name string representation.
+	 * 
+	 * @return the string value
+	 */
+	public String getFilename() {
+		if (this.fileProperty != null && fileProperty.getFilename() != null) {
+			return this.fileProperty.getFilename().getValue();
+		}
+		return "";
+	}
+	
 	/**
 	 * Getter for the Name string representation.
 	 * 

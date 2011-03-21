@@ -4,11 +4,12 @@
 package org.nabucco.testautomation.script.facade.service.search;
 
 import org.nabucco.framework.base.facade.exception.service.SearchException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.ServiceResponse;
 import org.nabucco.framework.base.facade.service.Service;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
 import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 
 /**
  * SearchFolder<p/>Folder search service<p/>
@@ -21,20 +22,20 @@ public interface SearchFolder extends Service {
     /**
      * Returns the flat root folder
      *
-     * @param rq the ServiceRequest<EmptyServiceMessage>.
+     * @param rq the ServiceRequest<FolderSearchMsg>.
      * @return the ServiceResponse<FolderMsg>.
      * @throws SearchException
      */
-    ServiceResponse<FolderMsg> getRootFolder(ServiceRequest<EmptyServiceMessage> rq)
+    ServiceResponse<FolderMsg> getRootFolder(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException;
 
     /**
      * Returns the root folder with loaded subfolders an flat loaded testscripts
      *
-     * @param rq the ServiceRequest<EmptyServiceMessage>.
-     * @return the ServiceResponse<FolderMsg>.
+     * @param rq the ServiceRequest<FolderSearchMsg>.
+     * @return the ServiceResponse<FolderListMsg>.
      * @throws SearchException
      */
-    ServiceResponse<FolderMsg> getFolderStructure(ServiceRequest<EmptyServiceMessage> rq)
+    ServiceResponse<FolderListMsg> getFolderStructure(ServiceRequest<FolderSearchMsg> rq)
             throws SearchException;
 }

@@ -21,11 +21,11 @@ import java.util.List;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollection;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
-import org.nabucco.framework.base.facade.message.EmptyServiceMessage;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.newpicker.dialog.tree.TreePickerDialogContentProvider;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
-import org.nabucco.testautomation.script.facade.message.FolderMsg;
+import org.nabucco.testautomation.script.facade.message.FolderListMsg;
+import org.nabucco.testautomation.script.facade.message.FolderSearchMsg;
 import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentServiceDelegateFactory;
 import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchFolderDelegate;
 
@@ -37,7 +37,6 @@ import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchFolde
  */
 public class FolderPickerDialogContentProvider extends TreePickerDialogContentProvider<Folder> {
 
-	Folder root;
 	
     @Override
     public boolean hasChildren(Object element) {
@@ -67,9 +66,10 @@ public class FolderPickerDialogContentProvider extends TreePickerDialogContentPr
 
     @Override
     public Folder[] getElements(Object element) {
+    	
         if (element instanceof FolderPickerActionComboMiniModel) {
-            this.root = this.loadRootFolder();
-            return new Folder[] {root};
+            List<Folder> rootFolderList = this.loadRootFolder();
+			return rootFolderList.toArray(new Folder[rootFolderList.size()]);
         }
 
         if (element instanceof List<?>) {
@@ -107,15 +107,15 @@ public class FolderPickerDialogContentProvider extends TreePickerDialogContentPr
      * 
      * @return the loaded folder roots
      */
-    private Folder loadRootFolder() {
+    private List<Folder> loadRootFolder() {
         try {
         	SearchFolderDelegate searchFolderDelegate = ScriptComponentServiceDelegateFactory
             	.getInstance().getSearchFolder();
 
-            FolderMsg rs = searchFolderDelegate.getFolderStructure(new EmptyServiceMessage());
-
-            return rs.getFolder();
-
+            FolderSearchMsg msg = new FolderSearchMsg();
+            msg.setOwner(Activator.getDefault().getModel().getSecurityModel().getSubject().getOwner()); 
+			FolderListMsg rs = searchFolderDelegate.getFolderStructure(msg);
+            return rs.getFolderList();
         } catch (ClientException e) {
             Activator.getDefault().logError(e);
         }
@@ -123,13 +123,4 @@ public class FolderPickerDialogContentProvider extends TreePickerDialogContentPr
 		return null;
     }
 
-	/**
-	 * @return the root
-	 */
-	public Folder getRoot() {
-		return root;
-	}
-
-    
-    
 }

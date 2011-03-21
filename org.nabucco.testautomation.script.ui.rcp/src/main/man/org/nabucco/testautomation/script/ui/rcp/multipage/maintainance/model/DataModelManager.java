@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -34,27 +35,16 @@ import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.utils.I18N;
 import org.nabucco.framework.plugin.base.Activator;
+import org.nabucco.framework.plugin.base.component.list.view.NabuccoTableColumnInfo;
+import org.nabucco.framework.plugin.base.component.list.view.NabuccoTableSorter;
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailHelper;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.contextmenu.NewDatatypeMenuItem;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.contextmenu.RemoveDatatypeMenuItem;
+import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.contextmenu.SelectDatatypeMenuItem;
+import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerContentProvider;
+import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerParameter;
 import org.nabucco.framework.plugin.base.layout.ImageProvider;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.TextMessage;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
-import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.ScriptMaintainanceMasterDetailLabelProvider;
-
 import org.nabucco.testautomation.facade.datatype.property.BooleanProperty;
 import org.nabucco.testautomation.facade.datatype.property.DateProperty;
 import org.nabucco.testautomation.facade.datatype.property.DoubleProperty;
@@ -67,6 +57,29 @@ import org.nabucco.testautomation.facade.datatype.property.StringProperty;
 import org.nabucco.testautomation.facade.datatype.property.XPathProperty;
 import org.nabucco.testautomation.facade.datatype.property.XmlProperty;
 import org.nabucco.testautomation.facade.datatype.property.base.Property;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TextMessage;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+import org.nabucco.testautomation.script.ui.rcp.images.ScriptImageRegistry;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.masterdetails.ScriptMaintainanceMasterDetailLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptSelectKeyColumnDialogLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptSelectNameColumnDialogLabelProvider;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptSelectTableFilter;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptSelectTableSorter;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.embedded.TestScriptSelectionPickerContentProvider;
 
 /**
  * DataModelManager
@@ -77,6 +90,7 @@ public class DataModelManager {
 
 	private static final String NEW_ELEMENT = ".NewElement";
 	private static final String REMOVE = ".Remove";
+	private static final String EMBEDDED_SCRIPT = ".EmbeddedScript";
 
 	// FIXME: Replace else-if by switch
 
@@ -87,9 +101,11 @@ public class DataModelManager {
 		Class<? extends Datatype>[] possibleChildrenTypes;
 		if (datatype instanceof TestScript) {
 			possibleChildrenTypes = getPossibleChildrenTypes((TestScript) datatype);
+		} else if (datatype instanceof EmbeddedTestScript) {
+			possibleChildrenTypes = getPossibleChildrenTypes((EmbeddedTestScript) datatype);
 		} else if (datatype instanceof Action) {
 			possibleChildrenTypes = getPossibleChildrenTypes((Action) datatype);
-		} else if (datatype instanceof Assertion) {
+		}else if (datatype instanceof Assertion) {
 			possibleChildrenTypes = getPossibleChildrenTypes((Assertion) datatype);
 		} else if (datatype instanceof BreakLoop) {
 			possibleChildrenTypes = getPossibleChildrenTypes((BreakLoop) datatype);
@@ -157,12 +173,19 @@ public class DataModelManager {
 			MasterDetailTreeNode treeNode = (MasterDetailTreeNode) firstElement;
 			Datatype datatype = treeNode.getDatatype();
 
+			if(!MasterDetailHelper.isDatatypeEditable(datatype)){
+				return null;
+			}
+			
 			Menu newElementMenu = createMenu(result, ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + NEW_ELEMENT, "icons/add.png");
 
 			if (datatype instanceof TestScript) {
 				Class<? extends Datatype>[] possibleChildrenTypes = getPossibleChildrenTypes((TestScript) datatype);
 				addMenuItems(newElementMenu, possibleChildrenTypes, treeNode, treeViewer, modelHandler);
-			} else if (datatype instanceof Action) {
+			} else if (datatype instanceof EmbeddedTestScript) {
+				Class<? extends Datatype>[] possibleChildrenTypes = getPossibleChildrenTypes((EmbeddedTestScript) datatype);
+				addMenuItems(newElementMenu, possibleChildrenTypes, treeNode, treeViewer, modelHandler);
+			}else if (datatype instanceof Action) {
 				Class<? extends Datatype>[] possibleChildrenTypes = getPossibleChildrenTypes((Action) datatype);
 				addMenuItems(newElementMenu, possibleChildrenTypes, treeNode, treeViewer, modelHandler);
 			} else if (datatype instanceof Assertion) {
@@ -236,13 +259,23 @@ public class DataModelManager {
 		// Produce elements
 		for (Class<? extends Datatype> clazz : possibleChildrenTypes) {
 
-			// create menu entries for each allowed class
-			Datatype datatype = ScriptElementFactory.create(clazz);
-			String imagePath = ScriptMaintainanceMasterDetailLabelProvider.getInstance().getImage(datatype);
-			Image image = ImageProvider.createImage(imagePath);
-			
-			new NewDatatypeMenuItem(parentMenu, treeNode, modelHandler, datatype, treeViewer,
-					ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + "." + clazz.getSimpleName(), null, image);
+			// Special Case EmbeddedTestScript
+			if(clazz.equals(EmbeddedTestScript.class)){
+				HashMap<String, String> variableTextMap = new HashMap<String, String>();
+				Image image = ImageProvider.createImage(ScriptImageRegistry.ICON_SCRIPT.getId());
+				// Select
+				new SelectDatatypeMenuItem(parentMenu, treeNode, modelHandler, treeViewer,
+						ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + EMBEDDED_SCRIPT,
+						getElementPickerParameterForSelectAndClone(new TestScriptSelectionPickerContentProvider()),
+						modelHandler.getLabelForDialog(), variableTextMap, image);
+			} else {
+				Datatype datatype = ScriptElementFactory.create(clazz);
+				String imagePath = ScriptMaintainanceMasterDetailLabelProvider.getInstance().getImage(datatype);
+				Image image = ImageProvider.createImage(imagePath);
+				
+				new NewDatatypeMenuItem(parentMenu, treeNode, modelHandler, datatype, treeViewer,
+						ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + "." + clazz.getSimpleName(), null, image);
+			}
 		}
 	}
 
@@ -253,7 +286,7 @@ public class DataModelManager {
 				((TestScriptElement) targetDatatype).setPropertyList((PropertyList) child);
 			}
 			// handle TestScriptElement children for TestScriptComposites
-			if (targetDatatype instanceof TestScriptComposite) {
+			else if (targetDatatype instanceof TestScriptComposite) {
 				TestScriptComposite testScriptComposite = (TestScriptComposite) targetDatatype;
 				List<TestScriptElementContainer> testScriptElementList = testScriptComposite.getTestScriptElementList();
 				TestScriptElementContainer testScriptElementContainerToAdd = (TestScriptElementContainer) child;
@@ -286,12 +319,10 @@ public class DataModelManager {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Datatype>[] getPossibleChildrenTypes(TestScript testScript) {
-
 		if (testScript.getPropertyList() == null) {
 			return new Class[] { PropertyList.class, Assertion.class, Condition.class, Execution.class, Foreach.class, Logger.class, Loop.class,
 					PropertyAction.class };
 		}
-
 		return new Class[] { Assertion.class, Condition.class, Execution.class, Foreach.class, Logger.class, Loop.class, PropertyAction.class };
 	}
 
@@ -334,7 +365,7 @@ public class DataModelManager {
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Datatype>[] getPossibleChildrenTypes(Execution execution) {
 
-		return new Class[] { Action.class };
+		return new Class[] { Action.class, EmbeddedTestScript.class, Logger.class };
 	}
 
 	@SuppressWarnings("unchecked")
@@ -382,6 +413,32 @@ public class DataModelManager {
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Datatype>[] getPossibleChildrenTypes(Property datatype) {
 		return new Class[] {};
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static Class<? extends Datatype>[] getPossibleChildrenTypes(EmbeddedTestScript datatype) {
+		return new Class[] {};
+	}
+	
+	private static ElementPickerParameter getElementPickerParameterForSelectAndClone(ElementPickerContentProvider contentProvider) {
+		ILabelProvider inputFieldLabelProvider = null;
+		NabuccoTableColumnInfo[] tableColumnInfo = createColumnInfoForSelectAndClone();
+		NabuccoTableSorter tableSorter = new TestScriptSelectTableSorter();
+		TestScriptSelectTableFilter tableFilter = new TestScriptSelectTableFilter();
+		ElementPickerParameter result = new ElementPickerParameter(tableSorter, tableFilter, inputFieldLabelProvider, contentProvider, tableColumnInfo);
+
+		return result;
+	}
+	
+	private static NabuccoTableColumnInfo[] createColumnInfoForSelectAndClone() {
+		NabuccoTableColumnInfo[] result = new NabuccoTableColumnInfo[] {
+				new NabuccoTableColumnInfo(ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + ".EmbedTestScriptDialog.column.key.name",
+						ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + ".EmbedTestScriptDialog.column.key.tooltip", 80, SWT.LEFT,
+						SWT.LEFT, new TestScriptSelectKeyColumnDialogLabelProvider()),
+				new NabuccoTableColumnInfo(ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + ".EmbedTestScriptDialog.column.name.name",
+						ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + ".EmbedTestScriptDialog.column.name.tooltip", 150, SWT.LEFT,
+						SWT.LEFT, new TestScriptSelectNameColumnDialogLabelProvider()) };
+		return result;
 	}
 
 }

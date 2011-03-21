@@ -3,17 +3,22 @@
  */
 package org.nabucco.testautomation.script.facade.datatype.metadata;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
-import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoCollectionState;
 import org.nabucco.framework.base.facade.datatype.collection.NabuccoList;
-import org.nabucco.framework.base.facade.datatype.property.BasetypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.DatatypeProperty;
-import org.nabucco.framework.base.facade.datatype.property.ListProperty;
+import org.nabucco.framework.base.facade.datatype.collection.NabuccoListImpl;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
+import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
+import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
+import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
+import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
 import org.nabucco.testautomation.facade.datatype.property.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
@@ -25,15 +30,28 @@ import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-07
  */
-public class Metadata extends NabuccoDatatype implements Datatype {
+public class Metadata extends ExportDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_NAMES = { "name", "description", "subEngine",
-            "operation", "labelList", "children", "propertyList", "parent" };
-
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m1,1;", "l0,n;m0,1;", "m0,1;",
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,255;m0,1;", "m0,1;",
             "m0,1;", "m0,n;", "m0,n;", "m0,1;", "m0,1;" };
+
+    public static final String NAME = "name";
+
+    public static final String DESCRIPTION = "description";
+
+    public static final String SUBENGINE = "subEngine";
+
+    public static final String OPERATION = "operation";
+
+    public static final String LABELLIST = "labelList";
+
+    public static final String CHILDREN = "children";
+
+    public static final String PROPERTYLIST = "propertyList";
+
+    public static final String PARENT = "parent";
 
     private Name name;
 
@@ -43,9 +61,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
 
     private SubEngineOperationCode operation;
 
-    private List<MetadataLabel> labelList;
+    private NabuccoList<MetadataLabel> labelList;
 
-    private List<Metadata> children;
+    private NabuccoList<Metadata> children;
 
     private PropertyList propertyList;
 
@@ -82,11 +100,11 @@ public class Metadata extends NabuccoDatatype implements Datatype {
         if ((this.getOperation() != null)) {
             clone.setOperation(this.getOperation().cloneObject());
         }
-        if ((this.labelList instanceof NabuccoList<?>)) {
-            clone.labelList = ((NabuccoList<MetadataLabel>) this.labelList).cloneCollection();
+        if ((this.labelList != null)) {
+            clone.labelList = this.labelList.cloneCollection();
         }
-        if ((this.children instanceof NabuccoList<?>)) {
-            clone.children = ((NabuccoList<Metadata>) this.children).cloneCollection();
+        if ((this.children != null)) {
+            clone.children = this.children.cloneCollection();
         }
         if ((this.getPropertyList() != null)) {
             clone.setPropertyList(this.getPropertyList().cloneObject());
@@ -106,9 +124,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     List<MetadataLabel> getLabelListJPA() {
         if ((this.labelList == null)) {
-            this.labelList = new NabuccoList<MetadataLabel>(NabuccoCollectionState.LAZY);
+            this.labelList = new NabuccoListImpl<MetadataLabel>(NabuccoCollectionState.LAZY);
         }
-        return ((NabuccoList<MetadataLabel>) this.labelList).getDelegate();
+        return ((NabuccoListImpl<MetadataLabel>) this.labelList).getDelegate();
     }
 
     /**
@@ -118,9 +136,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     void setLabelListJPA(List<MetadataLabel> labelList) {
         if ((this.labelList == null)) {
-            this.labelList = new NabuccoList<MetadataLabel>(NabuccoCollectionState.LAZY);
+            this.labelList = new NabuccoListImpl<MetadataLabel>(NabuccoCollectionState.LAZY);
         }
-        ((NabuccoList<MetadataLabel>) this.labelList).setDelegate(labelList);
+        ((NabuccoListImpl<MetadataLabel>) this.labelList).setDelegate(labelList);
     }
 
     /**
@@ -130,9 +148,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     List<Metadata> getChildrenJPA() {
         if ((this.children == null)) {
-            this.children = new NabuccoList<Metadata>(NabuccoCollectionState.LAZY);
+            this.children = new NabuccoListImpl<Metadata>(NabuccoCollectionState.LAZY);
         }
-        return ((NabuccoList<Metadata>) this.children).getDelegate();
+        return ((NabuccoListImpl<Metadata>) this.children).getDelegate();
     }
 
     /**
@@ -142,9 +160,42 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     void setChildrenJPA(List<Metadata> children) {
         if ((this.children == null)) {
-            this.children = new NabuccoList<Metadata>(NabuccoCollectionState.LAZY);
+            this.children = new NabuccoListImpl<Metadata>(NabuccoCollectionState.LAZY);
         }
-        ((NabuccoList<Metadata>) this.children).setDelegate(children);
+        ((NabuccoListImpl<Metadata>) this.children).setDelegate(children);
+    }
+
+    /**
+     * CreatePropertyContainer.
+     *
+     * @return the NabuccoPropertyContainer.
+     */
+    protected static NabuccoPropertyContainer createPropertyContainer() {
+        Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(ExportDatatype.class)
+                .getPropertyMap());
+        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
+                Description.class, 5, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(SUBENGINE, PropertyDescriptorSupport.createDatatype(SUBENGINE,
+                SubEngineCode.class, 6, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.AGGREGATION));
+        propertyMap.put(OPERATION, PropertyDescriptorSupport.createDatatype(OPERATION,
+                SubEngineOperationCode.class, 7, PROPERTY_CONSTRAINTS[3], false,
+                PropertyAssociationType.AGGREGATION));
+        propertyMap.put(LABELLIST, PropertyDescriptorSupport.createCollection(LABELLIST,
+                MetadataLabel.class, 8, PROPERTY_CONSTRAINTS[4], false,
+                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(CHILDREN, PropertyDescriptorSupport.createCollection(CHILDREN,
+                Metadata.class, 9, PROPERTY_CONSTRAINTS[5], false,
+                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST,
+                PropertyList.class, 10, PROPERTY_CONSTRAINTS[6], false,
+                PropertyAssociationType.COMPONENT));
+        propertyMap.put(PARENT, PropertyDescriptorSupport.createDatatype(PARENT, Metadata.class,
+                11, PROPERTY_CONSTRAINTS[7], false, PropertyAssociationType.COMPOSITION));
+        return new NabuccoPropertyContainer(propertyMap);
     }
 
     @Override
@@ -153,25 +204,58 @@ public class Metadata extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty<?>> getProperties() {
-        List<NabuccoProperty<?>> properties = super.getProperties();
-        properties.add(new BasetypeProperty<Name>(PROPERTY_NAMES[0], Name.class,
-                PROPERTY_CONSTRAINTS[0], this.name));
-        properties.add(new BasetypeProperty<Description>(PROPERTY_NAMES[1], Description.class,
-                PROPERTY_CONSTRAINTS[1], this.description));
-        properties.add(new DatatypeProperty<SubEngineCode>(PROPERTY_NAMES[2], SubEngineCode.class,
-                PROPERTY_CONSTRAINTS[2], this.subEngine));
-        properties.add(new DatatypeProperty<SubEngineOperationCode>(PROPERTY_NAMES[3],
-                SubEngineOperationCode.class, PROPERTY_CONSTRAINTS[3], this.operation));
-        properties.add(new ListProperty<MetadataLabel>(PROPERTY_NAMES[4], MetadataLabel.class,
-                PROPERTY_CONSTRAINTS[4], this.labelList));
-        properties.add(new ListProperty<Metadata>(PROPERTY_NAMES[5], Metadata.class,
-                PROPERTY_CONSTRAINTS[5], this.children));
-        properties.add(new DatatypeProperty<PropertyList>(PROPERTY_NAMES[6], PropertyList.class,
-                PROPERTY_CONSTRAINTS[6], this.propertyList));
-        properties.add(new DatatypeProperty<Metadata>(PROPERTY_NAMES[7], Metadata.class,
-                PROPERTY_CONSTRAINTS[7], this.parent));
+    public List<NabuccoProperty> getProperties() {
+        List<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(NAME), this.name, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(DESCRIPTION),
+                this.description, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(SUBENGINE),
+                this.subEngine, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(OPERATION),
+                this.operation, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(LABELLIST),
+                this.labelList, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(CHILDREN),
+                this.children, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(PROPERTYLIST),
+                this.propertyList, this.propertyListRefId));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(PARENT), this.parent,
+                null));
         return properties;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean setProperty(NabuccoProperty property) {
+        if (super.setProperty(property)) {
+            return true;
+        }
+        if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
+            this.setName(((Name) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(DESCRIPTION) && (property.getType() == Description.class))) {
+            this.setDescription(((Description) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(SUBENGINE) && (property.getType() == SubEngineCode.class))) {
+            this.setSubEngine(((SubEngineCode) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(OPERATION) && (property.getType() == SubEngineOperationCode.class))) {
+            this.setOperation(((SubEngineOperationCode) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(LABELLIST) && (property.getType() == MetadataLabel.class))) {
+            this.labelList = ((NabuccoList<MetadataLabel>) property.getInstance());
+            return true;
+        } else if ((property.getName().equals(CHILDREN) && (property.getType() == Metadata.class))) {
+            this.children = ((NabuccoList<Metadata>) property.getInstance());
+            return true;
+        } else if ((property.getName().equals(PROPERTYLIST) && (property.getType() == PropertyList.class))) {
+            this.setPropertyList(((PropertyList) property.getInstance()));
+            return true;
+        } else if ((property.getName().equals(PARENT) && (property.getType() == Metadata.class))) {
+            this.setParent(((Metadata) property.getInstance()));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -244,23 +328,6 @@ public class Metadata extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public String toString() {
-        StringBuilder appendable = new StringBuilder();
-        appendable.append("<Metadata>\n");
-        appendable.append(super.toString());
-        appendable.append((("<name>" + this.name) + "</name>\n"));
-        appendable.append((("<description>" + this.description) + "</description>\n"));
-        appendable.append((("<subEngine>" + this.subEngine) + "</subEngine>\n"));
-        appendable.append((("<operation>" + this.operation) + "</operation>\n"));
-        appendable.append((("<propertyList>" + this.propertyList) + "</propertyList>\n"));
-        appendable
-                .append((("<propertyListRefId>" + this.propertyListRefId) + "</propertyListRefId>\n"));
-        appendable.append((("<parent>" + this.parent) + "</parent>\n"));
-        appendable.append("</Metadata>\n");
-        return appendable.toString();
-    }
-
-    @Override
     public Metadata cloneObject() {
         Metadata clone = new Metadata();
         this.cloneObject(clone);
@@ -292,6 +359,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     public void setName(String name) {
         if ((this.name == null)) {
+            if ((name == null)) {
+                return;
+            }
             this.name = new Name();
         }
         this.name.setValue(name);
@@ -322,6 +392,9 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     public void setDescription(String description) {
         if ((this.description == null)) {
+            if ((description == null)) {
+                return;
+            }
             this.description = new Description();
         }
         this.description.setValue(description);
@@ -366,11 +439,11 @@ public class Metadata extends NabuccoDatatype implements Datatype {
     /**
      * Missing description at method getLabelList.
      *
-     * @return the List<MetadataLabel>.
+     * @return the NabuccoList<MetadataLabel>.
      */
-    public List<MetadataLabel> getLabelList() {
+    public NabuccoList<MetadataLabel> getLabelList() {
         if ((this.labelList == null)) {
-            this.labelList = new NabuccoList<MetadataLabel>(NabuccoCollectionState.INITIALIZED);
+            this.labelList = new NabuccoListImpl<MetadataLabel>(NabuccoCollectionState.INITIALIZED);
         }
         return this.labelList;
     }
@@ -378,11 +451,11 @@ public class Metadata extends NabuccoDatatype implements Datatype {
     /**
      * Missing description at method getChildren.
      *
-     * @return the List<Metadata>.
+     * @return the NabuccoList<Metadata>.
      */
-    public List<Metadata> getChildren() {
+    public NabuccoList<Metadata> getChildren() {
         if ((this.children == null)) {
-            this.children = new NabuccoList<Metadata>(NabuccoCollectionState.INITIALIZED);
+            this.children = new NabuccoListImpl<Metadata>(NabuccoCollectionState.INITIALIZED);
         }
         return this.children;
     }
@@ -444,5 +517,24 @@ public class Metadata extends NabuccoDatatype implements Datatype {
      */
     public Metadata getParent() {
         return this.parent;
+    }
+
+    /**
+     * Getter for the PropertyDescriptor.
+     *
+     * @param propertyName the String.
+     * @return the NabuccoPropertyDescriptor.
+     */
+    public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return PropertyCache.getInstance().retrieve(Metadata.class).getProperty(propertyName);
+    }
+
+    /**
+     * Getter for the PropertyDescriptorList.
+     *
+     * @return the List<NabuccoPropertyDescriptor>.
+     */
+    public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
+        return PropertyCache.getInstance().retrieve(Metadata.class).getAllProperties();
     }
 }

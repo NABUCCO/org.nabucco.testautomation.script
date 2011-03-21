@@ -23,7 +23,11 @@ import org.nabucco.framework.plugin.base.component.multipage.model.MasterDetailA
 import org.nabucco.framework.plugin.base.component.multipage.model.XmlAble;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 
-
+/**
+ * MetadataMaintenanceMultiPageEditViewModelHandler
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public interface MetadataMaintenanceMultiPageEditViewModelHandler extends CommandHandler,
         MasterDetailAble<Datatype>, XmlAble<Datatype> {
 
