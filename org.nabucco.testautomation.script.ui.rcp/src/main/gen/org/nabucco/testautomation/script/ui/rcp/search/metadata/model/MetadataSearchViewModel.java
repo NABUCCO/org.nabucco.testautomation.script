@@ -1,10 +1,21 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.ui.rcp.search.metadata.model;
 
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
-import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchParameter;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchViewModel;
@@ -25,7 +36,7 @@ public class MetadataSearchViewModel extends NabuccoComponentSearchViewModel<Met
 
     public static final String PROPERTY_METADATA_NAME = "metadataName";
 
-    public static final String PROPERTY_METADATA_DESCRIPTION = "metadataDescription";
+    public static final String PROPERTY_METADATA_IDENTIFICATIONKEY = "metadataIdentificationKey";
 
     public static String TITLE = (ID + "Title");
 
@@ -72,8 +83,7 @@ public class MetadataSearchViewModel extends NabuccoComponentSearchViewModel<Met
         String oldVal = metadata.getName().getValue();
         metadata.getName().setValue(newName);
         this.updateProperty(PROPERTY_METADATA_NAME, oldVal, newName);
-        if (((!oldVal.equals(newName)) && metadata.getDatatypeState().equals(
-                DatatypeState.PERSISTENT))) {
+        if (((!oldVal.equals(newName)) && metadata.getDatatypeState().equals(DatatypeState.PERSISTENT))) {
             metadata.setDatatypeState(DatatypeState.MODIFIED);
         }
     }
@@ -91,35 +101,34 @@ public class MetadataSearchViewModel extends NabuccoComponentSearchViewModel<Met
     }
 
     /**
-     * Setter for the MetadataDescription.
+     * Setter for the MetadataIdentificationKey.
      *
-     * @param newDescription the String.
+     * @param newIdentificationKey the String.
      */
-    public void setMetadataDescription(String newDescription) {
-        if (((metadata != null) && (metadata.getDescription() == null))) {
-            Description description = new Description();
-            metadata.setDescription(description);
+    public void setMetadataIdentificationKey(String newIdentificationKey) {
+        if (((metadata != null) && (metadata.getIdentificationKey() == null))) {
+            Key identificationKey = new Key();
+            metadata.setIdentificationKey(identificationKey);
         }
-        String oldVal = metadata.getDescription().getValue();
-        metadata.getDescription().setValue(newDescription);
-        this.updateProperty(PROPERTY_METADATA_DESCRIPTION, oldVal, newDescription);
-        if (((!oldVal.equals(newDescription)) && metadata.getDatatypeState().equals(
-                DatatypeState.PERSISTENT))) {
+        String oldVal = metadata.getIdentificationKey().getValue();
+        metadata.getIdentificationKey().setValue(newIdentificationKey);
+        this.updateProperty(PROPERTY_METADATA_IDENTIFICATIONKEY, oldVal, newIdentificationKey);
+        if (((!oldVal.equals(newIdentificationKey)) && metadata.getDatatypeState().equals(DatatypeState.PERSISTENT))) {
             metadata.setDatatypeState(DatatypeState.MODIFIED);
         }
     }
 
     /**
-     * Getter for the MetadataDescription.
+     * Getter for the MetadataIdentificationKey.
      *
      * @return the String.
      */
-    public String getMetadataDescription() {
-        if ((((metadata == null) || (metadata.getDescription() == null)) || (metadata
-                .getDescription().getValue() == null))) {
+    public String getMetadataIdentificationKey() {
+        if ((((metadata == null) || (metadata.getIdentificationKey() == null)) || (metadata.getIdentificationKey()
+                .getValue() == null))) {
             return "";
         }
-        return metadata.getDescription().getValue();
+        return metadata.getIdentificationKey().getValue();
     }
 
     @Override

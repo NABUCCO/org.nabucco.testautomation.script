@@ -33,7 +33,6 @@ public Datatype Action extends TestScriptComponent {
 	
 	private Basetype Duration[0..1] delay;
 
-	@Mandatory
 	@AssociationStrategy AGGREGATION
 	@FetchStrategy EAGER
 	private Datatype Metadata[0..1] metadata;

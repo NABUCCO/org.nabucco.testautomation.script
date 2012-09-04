@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.base;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.Name;
@@ -18,7 +30,7 @@ import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescri
 import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
+import org.nabucco.testautomation.property.facade.datatype.base.TestAutomationDatatype;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 
@@ -27,12 +39,11 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-08-07
  */
-public class Folder extends ExportDatatype implements Datatype {
+public class Folder extends TestAutomationDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,n;m1,1;", "m0,n;",
-            "m0,n;" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;u0,n;m1,1;", "l0,n;u0,n;m1,1;", "m0,n;", "m0,n;" };
 
     public static final String NAME = "name";
 
@@ -112,18 +123,15 @@ public class Folder extends ExportDatatype implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(ExportDatatype.class)
-                .getPropertyMap());
-        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4,
-                PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(ROOT, PropertyDescriptorSupport.createBasetype(ROOT, Flag.class, 5,
-                PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(SUBFOLDERLIST, PropertyDescriptorSupport.createCollection(SUBFOLDERLIST,
-                Folder.class, 6, PROPERTY_CONSTRAINTS[2], false,
-                PropertyAssociationType.COMPOSITION));
-        propertyMap.put(TESTSCRIPTLIST, PropertyDescriptorSupport.createCollection(TESTSCRIPTLIST,
-                TestScript.class, 7, PROPERTY_CONSTRAINTS[3], false,
-                PropertyAssociationType.COMPOSITION));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestAutomationDatatype.class).getPropertyMap());
+        propertyMap.put(NAME,
+                PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(ROOT,
+                PropertyDescriptorSupport.createBasetype(ROOT, Flag.class, 5, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(SUBFOLDERLIST, PropertyDescriptorSupport.createCollection(SUBFOLDERLIST, Folder.class, 6,
+                PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPOSITION));
+        propertyMap.put(TESTSCRIPTLIST, PropertyDescriptorSupport.createCollection(TESTSCRIPTLIST, TestScript.class, 7,
+                PROPERTY_CONSTRAINTS[3], false, PropertyAssociationType.COMPOSITION));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -133,14 +141,12 @@ public class Folder extends ExportDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
         properties.add(super.createProperty(Folder.getPropertyDescriptor(NAME), this.name, null));
         properties.add(super.createProperty(Folder.getPropertyDescriptor(ROOT), this.root, null));
-        properties.add(super.createProperty(Folder.getPropertyDescriptor(SUBFOLDERLIST),
-                this.subFolderList, null));
-        properties.add(super.createProperty(Folder.getPropertyDescriptor(TESTSCRIPTLIST),
-                this.testScriptList, null));
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(SUBFOLDERLIST), this.subFolderList, null));
+        properties.add(super.createProperty(Folder.getPropertyDescriptor(TESTSCRIPTLIST), this.testScriptList, null));
         return properties;
     }
 
@@ -295,8 +301,7 @@ public class Folder extends ExportDatatype implements Datatype {
      */
     public NabuccoList<TestScript> getTestScriptList() {
         if ((this.testScriptList == null)) {
-            this.testScriptList = new NabuccoListImpl<TestScript>(
-                    NabuccoCollectionState.INITIALIZED);
+            this.testScriptList = new NabuccoListImpl<TestScript>(NabuccoCollectionState.INITIALIZED);
         }
         return this.testScriptList;
     }

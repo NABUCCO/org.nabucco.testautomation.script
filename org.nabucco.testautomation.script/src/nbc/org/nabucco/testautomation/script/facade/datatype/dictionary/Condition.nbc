@@ -17,8 +17,8 @@
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.testautomation.facade.datatype.base.Value;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.Value;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.type.ConditionType;
@@ -30,26 +30,20 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.type.Operato
 @Description	A condition
 public Datatype Condition extends TestScriptComposite {
 
-	@Optional
 	private Basetype PropertyReference[0..1] propertyRef;
 
-	@Optional
 	private Basetype Value[0..1] value;
 	
-	@Optional
 	private Basetype PropertyReference[0..1] valueRef;
 	
-	@Optional
 	private Enumeration ConditionType[0..1] conditionType;
 
-	@Optional
 	private Enumeration OperatorType[0..1] operator;
 	
 	@Redefined
 	@Default CONDITION
-	private Enumeration TestScriptElementType[1] type;
+	protected Enumeration TestScriptElementType[1] type;
 	
-	@Mandatory
 	private Basetype Flag[1] isBreakCondition;
 	
 }

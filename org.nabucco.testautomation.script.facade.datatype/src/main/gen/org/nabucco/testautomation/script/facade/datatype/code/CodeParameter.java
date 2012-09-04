@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.code;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Flag;
@@ -16,8 +28,8 @@ import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContai
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.base.Value;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyType;
+import org.nabucco.testautomation.property.facade.datatype.base.Value;
 
 /**
  * CodeParameter<p/>Parameter information for an Operation or Action<p/>
@@ -28,8 +40,8 @@ public class CodeParameter extends NabuccoDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,255;m0,1;", "m1,1;",
-            "l0,n;m0,1;", "l0,n;m1,1;" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;u0,n;m1,1;", "l0,255;u0,n;m0,1;", "m1,1;",
+            "l0,n;u0,n;m0,1;", "l0,n;u0,n;m1,1;" };
 
     public static final String NAME = "name";
 
@@ -90,18 +102,17 @@ public class CodeParameter extends NabuccoDatatype implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class)
-                .getPropertyMap());
-        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 2,
-                PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
-                Description.class, 3, PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(TYPE, PropertyDescriptorSupport.createEnumeration(TYPE, PropertyType.class,
-                4, PROPERTY_CONSTRAINTS[2], false));
-        propertyMap.put(DEFAULTVALUE, PropertyDescriptorSupport.createBasetype(DEFAULTVALUE,
-                Value.class, 5, PROPERTY_CONSTRAINTS[3], false));
-        propertyMap.put(MANDATORY, PropertyDescriptorSupport.createBasetype(MANDATORY, Flag.class,
-                6, PROPERTY_CONSTRAINTS[4], false));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class).getPropertyMap());
+        propertyMap.put(NAME,
+                PropertyDescriptorSupport.createBasetype(NAME, Name.class, 3, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION, Description.class, 4,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(TYPE, PropertyDescriptorSupport.createEnumeration(TYPE, PropertyType.class, 5,
+                PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(DEFAULTVALUE,
+                PropertyDescriptorSupport.createBasetype(DEFAULTVALUE, Value.class, 6, PROPERTY_CONSTRAINTS[3], false));
+        propertyMap.put(MANDATORY,
+                PropertyDescriptorSupport.createBasetype(MANDATORY, Flag.class, 7, PROPERTY_CONSTRAINTS[4], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -111,18 +122,14 @@ public class CodeParameter extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(NAME), this.name,
-                null));
-        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(DESCRIPTION),
-                this.description, null));
-        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(TYPE), this.type,
-                null));
-        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(DEFAULTVALUE),
-                this.defaultValue, null));
-        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(MANDATORY),
-                this.mandatory, null));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(NAME), this.name, null));
+        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(DESCRIPTION), this.description, null));
+        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(TYPE), this.getType(), null));
+        properties
+                .add(super.createProperty(CodeParameter.getPropertyDescriptor(DEFAULTVALUE), this.defaultValue, null));
+        properties.add(super.createProperty(CodeParameter.getPropertyDescriptor(MANDATORY), this.mandatory, null));
         return properties;
     }
 
@@ -200,8 +207,7 @@ public class CodeParameter extends NabuccoDatatype implements Datatype {
         result = ((PRIME * result) + ((this.name == null) ? 0 : this.name.hashCode()));
         result = ((PRIME * result) + ((this.description == null) ? 0 : this.description.hashCode()));
         result = ((PRIME * result) + ((this.type == null) ? 0 : this.type.hashCode()));
-        result = ((PRIME * result) + ((this.defaultValue == null) ? 0 : this.defaultValue
-                .hashCode()));
+        result = ((PRIME * result) + ((this.defaultValue == null) ? 0 : this.defaultValue.hashCode()));
         result = ((PRIME * result) + ((this.mandatory == null) ? 0 : this.mandatory.hashCode()));
         return result;
     }

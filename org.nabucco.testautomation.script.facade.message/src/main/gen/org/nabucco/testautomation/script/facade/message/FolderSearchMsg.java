@@ -1,13 +1,24 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.message;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
@@ -26,19 +37,20 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l3,12;m0,1;", "l0,n;m0,1;" };
-
-    public static final String OWNER = "owner";
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;u0,n;m0,1;" };
 
     public static final String ROOT = "root";
-
-    private Owner owner;
 
     private Flag root;
 
     /** Constructs a new FolderSearchMsg instance. */
     public FolderSearchMsg() {
         super();
+        this.initDefaults();
+    }
+
+    /** InitDefaults. */
+    private void initDefaults() {
     }
 
     /**
@@ -48,20 +60,20 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.put(OWNER, PropertyDescriptorSupport.createBasetype(OWNER, Owner.class, 0,
-                PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(ROOT, PropertyDescriptorSupport.createBasetype(ROOT, Flag.class, 1,
-                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(ROOT,
+                PropertyDescriptorSupport.createBasetype(ROOT, Flag.class, 0, PROPERTY_CONSTRAINTS[0], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
+    /** Init. */
+    public void init() {
+        this.initDefaults();
+    }
+
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(FolderSearchMsg.getPropertyDescriptor(OWNER),
-                this.owner));
-        properties
-                .add(super.createProperty(FolderSearchMsg.getPropertyDescriptor(ROOT), this.root));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(FolderSearchMsg.getPropertyDescriptor(ROOT), this.root));
         return properties;
     }
 
@@ -70,10 +82,7 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
         if (super.setProperty(property)) {
             return true;
         }
-        if ((property.getName().equals(OWNER) && (property.getType() == Owner.class))) {
-            this.setOwner(((Owner) property.getInstance()));
-            return true;
-        } else if ((property.getName().equals(ROOT) && (property.getType() == Flag.class))) {
+        if ((property.getName().equals(ROOT) && (property.getType() == Flag.class))) {
             this.setRoot(((Flag) property.getInstance()));
             return true;
         }
@@ -95,11 +104,6 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
             return false;
         }
         final FolderSearchMsg other = ((FolderSearchMsg) obj);
-        if ((this.owner == null)) {
-            if ((other.owner != null))
-                return false;
-        } else if ((!this.owner.equals(other.owner)))
-            return false;
         if ((this.root == null)) {
             if ((other.root != null))
                 return false;
@@ -112,7 +116,6 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.owner == null) ? 0 : this.owner.hashCode()));
         result = ((PRIME * result) + ((this.root == null) ? 0 : this.root.hashCode()));
         return result;
     }
@@ -120,24 +123,6 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
     @Override
     public ServiceMessage cloneObject() {
         return this;
-    }
-
-    /**
-     * Missing description at method getOwner.
-     *
-     * @return the Owner.
-     */
-    public Owner getOwner() {
-        return this.owner;
-    }
-
-    /**
-     * Missing description at method setOwner.
-     *
-     * @param owner the Owner.
-     */
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 
     /**
@@ -165,8 +150,7 @@ public class FolderSearchMsg extends ServiceMessageSupport implements ServiceMes
      * @return the NabuccoPropertyDescriptor.
      */
     public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return PropertyCache.getInstance().retrieve(FolderSearchMsg.class)
-                .getProperty(propertyName);
+        return PropertyCache.getInstance().retrieve(FolderSearchMsg.class).getProperty(propertyName);
     }
 
     /**

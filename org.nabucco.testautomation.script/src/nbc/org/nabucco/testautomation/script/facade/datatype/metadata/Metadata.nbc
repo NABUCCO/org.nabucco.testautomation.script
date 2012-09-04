@@ -18,8 +18,8 @@ package org.nabucco.testautomation.script.facade.datatype.metadata;
 
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.Description;
-import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.base.TestAutomationDatatype;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
@@ -29,7 +29,7 @@ import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 @Company		PRODYNA AG
 @Date			2010-04-07
 @Description	The Metadata-class
-public Datatype Metadata extends ExportDatatype {
+public Datatype Metadata extends TestAutomationDatatype {
 
 	private Basetype Name[1] name;
 	

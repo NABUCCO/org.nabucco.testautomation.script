@@ -33,9 +33,9 @@ public SearchView MetadataSearchView {
 	@FieldLabelDefault 	"Name"
 	private LabeledInputField metadataName;
 	
-	@MappedField 		metadata.description
-	@FieldLabelId		metadata.description
-	@FieldLabelDefault 	"Description"
-	private LabeledInputField metadataDescription;
+	@MappedField 		metadata.identificationKey
+	@FieldLabelId		metadata.identificationKey
+	@FieldLabelDefault 	"Metadata Key"
+	private LabeledInputField metadataKey;
 	
 }

@@ -1,27 +1,27 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.command.script;
 
 import org.nabucco.framework.base.facade.component.injector.NabuccoInjector;
 import org.nabucco.framework.plugin.base.command.create.AbstractCreateViewHandler;
 import org.nabucco.testautomation.script.ui.rcp.command.script.CreateTestScriptCommandHandler;
-import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.ScriptMaintainanceMultiplePageEditView;
-import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModel;
-import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModelHandler;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintenance.ScriptMaintenanceMultiplePageEditView;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintenance.model.ScriptMaintenanceMultiplePageEditViewModel;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintenance.model.ScriptMaintenanceMultiplePageEditViewModelHandler;
 
 
 /**
@@ -31,12 +31,12 @@ import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.Scr
  */
 public class CreateTestScriptCommandHandlerImpl
         extends
-        AbstractCreateViewHandler<ScriptMaintainanceMultiplePageEditViewModel, ScriptMaintainanceMultiplePageEditView>
+        AbstractCreateViewHandler<ScriptMaintenanceMultiplePageEditViewModel, ScriptMaintenanceMultiplePageEditView>
         implements CreateTestScriptCommandHandler {
 
-    ScriptMaintainanceMultiplePageEditViewModelHandler handler = NabuccoInjector.getInstance(
-            ScriptMaintainanceMultiplePageEditViewModel.class).inject(
-            ScriptMaintainanceMultiplePageEditViewModelHandler.class);
+    ScriptMaintenanceMultiplePageEditViewModelHandler handler = NabuccoInjector.getInstance(
+            ScriptMaintenanceMultiplePageEditViewModel.class).inject(
+            ScriptMaintenanceMultiplePageEditViewModelHandler.class);
 
     @Override
     public void createTestScriptCommand() {
@@ -50,11 +50,11 @@ public class CreateTestScriptCommandHandlerImpl
 
     @Override
     protected String getEditViewId() {
-        return ScriptMaintainanceMultiplePageEditView.ID;
+        return ScriptMaintenanceMultiplePageEditView.ID;
     }
 
     @Override
-    protected void updateModel(ScriptMaintainanceMultiplePageEditViewModel model) {
+    protected void updateModel(ScriptMaintenanceMultiplePageEditViewModel model) {
         model.setTestScript(handler.createDefaultDatatype());
     }
 }

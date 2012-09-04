@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.folder.model;
 
 import java.io.Serializable;
@@ -25,12 +25,18 @@ import org.eclipse.swt.widgets.Menu;
 import org.nabucco.framework.base.facade.component.injector.NabuccoInjectionReciever;
 import org.nabucco.framework.base.facade.component.injector.NabuccoInjector;
 import org.nabucco.framework.base.facade.datatype.Datatype;
+import org.nabucco.framework.base.facade.exception.client.ClientException;
+import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
 import org.nabucco.framework.plugin.base.component.multipage.model.MultiPageEditViewModel;
 import org.nabucco.framework.plugin.base.component.multipage.xml.XMLEditorTextPart;
 import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerParameter;
 import org.nabucco.framework.plugin.base.component.picker.dialog.LabelForDialog;
+import org.nabucco.testautomation.property.ui.rcp.util.DatatypeUtility;
+import org.nabucco.testautomation.property.ui.rcp.util.LoggingUtility;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
 
 
 public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewModel implements
@@ -45,6 +51,30 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
             FolderMaintenanceMultiPageEditViewModelHandler.class);
 
 	private Folder rootFolder;
+	
+	static {
+	    LoggingUtility.addUtility(TestScriptElement.class, new DatatypeUtility() {
+            @Override
+            public String toString(Datatype data) {
+                if(data instanceof TestScript) {
+                    TestScript m = (TestScript)data;
+                    return m.getName().getValueAsString();
+                }
+                return null;
+            }
+        });
+	    
+	    LoggingUtility.addUtility(TestScriptElement.class, new DatatypeUtility() {
+            @Override
+            public String toString(Datatype data) {
+                if(data instanceof Folder) {
+                    Folder m = (Folder)data;
+                    return m.getName().getValueAsString();
+                }
+                return null;
+            }
+        });
+	}
 
     /**
      * @param workflowCondition
@@ -58,7 +88,7 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      * {@inheritDoc}
      */
     @Override
-    public MasterDetailTreeNode add(MasterDetailTreeNode parent, Datatype newChild) {
+    public MasterDetailTreeNode add(MasterDetailTreeNode parent, Datatype newChild) throws ClientException {
         MasterDetailTreeNode result = handler.addChild(parent, newChild);
         updateProperty(getPropertyDatatype(), "", "*");
         return result;
@@ -74,7 +104,7 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      */
     @Override
     public MasterDetailTreeNode createNewAndAdd(final MasterDetailTreeNode parent,
-            final Datatype newChild) {
+            final Datatype newChild) throws ClientException {
         // observers will be already informed in the node is added (which is
         // relevant for view)
         MasterDetailTreeNode result = add(parent, newChild);
@@ -85,7 +115,7 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      * {@inheritDoc}
      */
     @Override
-    public void remove(ISelection child) {
+    public void remove(ISelection child) throws ClientException {
         handler.remove(child);
         updateProperty(getPropertyDatatype(), "", "*");
     }
@@ -102,7 +132,7 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Datatype[]> getPossibleChildren(Datatype datatype) {
+    public Map<String, Datatype[]> getPossibleChildren(Datatype datatype) throws ClientException {
         return handler.getPossibleChildren(datatype);
     }
 
@@ -136,11 +166,15 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      *            value
      */
     public void setRootFolder(final Folder rootFolder) {
-        this.rootFolder = rootFolder;
-        treeStructure = handler.createMasterDetailRepresentation(this.rootFolder);
-        xmlStructure = handler.createXmlRepresentation(this.rootFolder);
+        try {
+            this.rootFolder = rootFolder;
+            treeStructure = handler.createMasterDetailRepresentation(this.rootFolder);
+            xmlStructure = handler.createXmlRepresentation(this.rootFolder);
 
-        updateProperty(getPropertyDatatype(), "", "*");
+            updateProperty(getPropertyDatatype(), "", "*");
+        } catch (ClientException e) {
+            Activator.getDefault().logError(e);
+        }
     }
 
     /**
@@ -165,7 +199,7 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      * getElementPickerParameter(org.nabucco.framework.base.facade.datatype.Datatype)
      */
     @Override
-    public ElementPickerParameter getElementPickerParameter(Datatype parentDatatype) {
+    public ElementPickerParameter getElementPickerParameter(Datatype parentDatatype) throws ClientException {
         return handler.getElementPickerParameter(parentDatatype);
     }
 
@@ -176,12 +210,12 @@ public class FolderMaintenanceMultiPageEditViewModel extends MultiPageEditViewMo
      * getLabelForDialog()
      */
     @Override
-    public LabelForDialog getLabelForDialog() {
+    public LabelForDialog getLabelForDialog() throws ClientException {
         return handler.getLabelForDialog();
     }
 
     @Override
-    public Menu getContextMenu(ISelection selection, TreeViewer parent) {
+    public Menu getContextMenu(ISelection selection, TreeViewer parent) throws ClientException {
         return this.handler.getContextMenu(selection, parent);
     }
 

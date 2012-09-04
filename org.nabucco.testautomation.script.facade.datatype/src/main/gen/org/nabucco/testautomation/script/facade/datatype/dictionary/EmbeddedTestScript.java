@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Key;
@@ -29,8 +41,10 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "m0,1;", "l0,n;m0,1;", "l0,255;m0,1;",
-            "l0,255;m0,1;" };
+    private static final TestScriptElementType TYPE_DEFAULT = TestScriptElementType.EMBEDDED_SCRIPT;
+
+    private static final String[] PROPERTY_CONSTRAINTS = { "m0,1;", "l0,n;u0,n;m0,1;", "l0,255;u0,n;m0,1;",
+            "l0,255;u0,n;m0,1;" };
 
     public static final String TESTSCRIPT = "testScript";
 
@@ -56,7 +70,7 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
 
     /** InitDefaults. */
     private void initDefaults() {
-        type = TestScriptElementType.EMBEDDED_SCRIPT;
+        type = TYPE_DEFAULT;
     }
 
     /**
@@ -88,17 +102,15 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
-                .getPropertyMap());
-        propertyMap.put(TESTSCRIPT, PropertyDescriptorSupport.createDatatype(TESTSCRIPT,
-                TestScript.class, 7, PROPERTY_CONSTRAINTS[0], false,
-                PropertyAssociationType.AGGREGATION));
-        propertyMap.put(TESTSCRIPTKEY, PropertyDescriptorSupport.createBasetype(TESTSCRIPTKEY,
-                Key.class, 8, PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
-                Description.class, 9, PROPERTY_CONSTRAINTS[2], false));
-        propertyMap.put(FOLDER, PropertyDescriptorSupport.createBasetype(FOLDER, Name.class, 10,
-                PROPERTY_CONSTRAINTS[3], false));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class).getPropertyMap());
+        propertyMap.put(TESTSCRIPT, PropertyDescriptorSupport.createDatatype(TESTSCRIPT, TestScript.class, 7,
+                PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.AGGREGATION));
+        propertyMap.put(TESTSCRIPTKEY,
+                PropertyDescriptorSupport.createBasetype(TESTSCRIPTKEY, Key.class, 8, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION, Description.class, 9,
+                PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(FOLDER,
+                PropertyDescriptorSupport.createBasetype(FOLDER, Name.class, 10, PROPERTY_CONSTRAINTS[3], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -108,16 +120,15 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(TESTSCRIPT),
-                this.testScript, null));
-        properties.add(super.createProperty(
-                EmbeddedTestScript.getPropertyDescriptor(TESTSCRIPTKEY), this.testScriptKey, null));
-        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(DESCRIPTION),
-                this.description, null));
-        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(FOLDER),
-                this.folder, null));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(TESTSCRIPT), this.getTestScript(),
+                null));
+        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(TESTSCRIPTKEY),
+                this.testScriptKey, null));
+        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(DESCRIPTION), this.description,
+                null));
+        properties.add(super.createProperty(EmbeddedTestScript.getPropertyDescriptor(FOLDER), this.folder, null));
         return properties;
     }
 
@@ -185,8 +196,7 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
         final int PRIME = 31;
         int result = super.hashCode();
         result = ((PRIME * result) + ((this.testScript == null) ? 0 : this.testScript.hashCode()));
-        result = ((PRIME * result) + ((this.testScriptKey == null) ? 0 : this.testScriptKey
-                .hashCode()));
+        result = ((PRIME * result) + ((this.testScriptKey == null) ? 0 : this.testScriptKey.hashCode()));
         result = ((PRIME * result) + ((this.description == null) ? 0 : this.description.hashCode()));
         result = ((PRIME * result) + ((this.folder == null) ? 0 : this.folder.hashCode()));
         return result;
@@ -323,8 +333,7 @@ public class EmbeddedTestScript extends TestScriptComponent implements Datatype 
      * @return the NabuccoPropertyDescriptor.
      */
     public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return PropertyCache.getInstance().retrieve(EmbeddedTestScript.class)
-                .getProperty(propertyName);
+        return PropertyCache.getInstance().retrieve(EmbeddedTestScript.class).getProperty(propertyName);
     }
 
     /**

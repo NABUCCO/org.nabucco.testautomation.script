@@ -16,11 +16,11 @@
 */
 package org.nabucco.testautomation.script.facade.message;
 
-import org.nabucco.framework.base.facade.datatype.Owner;
-import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.Description;
-import org.nabucco.framework.base.facade.datatype.Identifier;
 import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Key;
+import org.nabucco.framework.base.facade.datatype.Name;
 
 @Author			Steffen Schmidt
 @Company		PRODYNA AG
@@ -29,13 +29,11 @@ import org.nabucco.framework.base.facade.datatype.Flag;
 @Description	Message for searching TestScripts
 public Message TestScriptSearchMsg {
 
-	private Basetype Owner[0..1] owner;
-	
 	private Basetype Identifier[0..1] identifier;
 
 	private Basetype Name[0..1] name;
 	
-	private Basetype Name[0..1] testScriptKey;
+	private Basetype Key[0..1] testScriptKey;
 	
 	private Basetype Description[0..1] description;
 	

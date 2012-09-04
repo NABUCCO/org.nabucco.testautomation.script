@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.metadata;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Name;
@@ -18,8 +30,8 @@ import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescri
 import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.base.ExportDatatype;
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.base.TestAutomationDatatype;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
@@ -30,12 +42,12 @@ import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-07
  */
-public class Metadata extends ExportDatatype implements Datatype {
+public class Metadata extends TestAutomationDatatype implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m1,1;", "l0,255;m0,1;", "m0,1;",
-            "m0,1;", "m0,n;", "m0,n;", "m0,1;", "m0,1;" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;u0,n;m1,1;", "l0,255;u0,n;m0,1;", "m0,1;", "m0,1;",
+            "m0,n;", "m0,n;", "m0,1;", "m0,1;" };
 
     public static final String NAME = "name";
 
@@ -66,8 +78,6 @@ public class Metadata extends ExportDatatype implements Datatype {
     private NabuccoList<Metadata> children;
 
     private PropertyList propertyList;
-
-    private Long propertyListRefId;
 
     private Metadata parent;
 
@@ -108,9 +118,6 @@ public class Metadata extends ExportDatatype implements Datatype {
         }
         if ((this.getPropertyList() != null)) {
             clone.setPropertyList(this.getPropertyList().cloneObject());
-        }
-        if ((this.getPropertyListRefId() != null)) {
-            clone.setPropertyListRefId(this.getPropertyListRefId());
         }
         if ((this.getParent() != null)) {
             clone.setParent(this.getParent().cloneObject());
@@ -172,29 +179,23 @@ public class Metadata extends ExportDatatype implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(ExportDatatype.class)
-                .getPropertyMap());
-        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4,
-                PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
-                Description.class, 5, PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(SUBENGINE, PropertyDescriptorSupport.createDatatype(SUBENGINE,
-                SubEngineCode.class, 6, PROPERTY_CONSTRAINTS[2], false,
-                PropertyAssociationType.AGGREGATION));
-        propertyMap.put(OPERATION, PropertyDescriptorSupport.createDatatype(OPERATION,
-                SubEngineOperationCode.class, 7, PROPERTY_CONSTRAINTS[3], false,
-                PropertyAssociationType.AGGREGATION));
-        propertyMap.put(LABELLIST, PropertyDescriptorSupport.createCollection(LABELLIST,
-                MetadataLabel.class, 8, PROPERTY_CONSTRAINTS[4], false,
-                PropertyAssociationType.COMPOSITION));
-        propertyMap.put(CHILDREN, PropertyDescriptorSupport.createCollection(CHILDREN,
-                Metadata.class, 9, PROPERTY_CONSTRAINTS[5], false,
-                PropertyAssociationType.COMPOSITION));
-        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST,
-                PropertyList.class, 10, PROPERTY_CONSTRAINTS[6], false,
-                PropertyAssociationType.COMPONENT));
-        propertyMap.put(PARENT, PropertyDescriptorSupport.createDatatype(PARENT, Metadata.class,
-                11, PROPERTY_CONSTRAINTS[7], false, PropertyAssociationType.COMPOSITION));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestAutomationDatatype.class).getPropertyMap());
+        propertyMap.put(NAME,
+                PropertyDescriptorSupport.createBasetype(NAME, Name.class, 4, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION, Description.class, 5,
+                PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(SUBENGINE, PropertyDescriptorSupport.createDatatype(SUBENGINE, SubEngineCode.class, 6,
+                PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.AGGREGATION));
+        propertyMap.put(OPERATION, PropertyDescriptorSupport.createDatatype(OPERATION, SubEngineOperationCode.class, 7,
+                PROPERTY_CONSTRAINTS[3], false, PropertyAssociationType.AGGREGATION));
+        propertyMap.put(LABELLIST, PropertyDescriptorSupport.createCollection(LABELLIST, MetadataLabel.class, 8,
+                PROPERTY_CONSTRAINTS[4], false, PropertyAssociationType.COMPOSITION));
+        propertyMap.put(CHILDREN, PropertyDescriptorSupport.createCollection(CHILDREN, Metadata.class, 9,
+                PROPERTY_CONSTRAINTS[5], false, PropertyAssociationType.COMPOSITION));
+        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST, PropertyList.class, 10,
+                PROPERTY_CONSTRAINTS[6], false, PropertyAssociationType.COMPONENT));
+        propertyMap.put(PARENT, PropertyDescriptorSupport.createDatatype(PARENT, Metadata.class, 11,
+                PROPERTY_CONSTRAINTS[7], false, PropertyAssociationType.COMPOSITION));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -204,23 +205,17 @@ public class Metadata extends ExportDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
         properties.add(super.createProperty(Metadata.getPropertyDescriptor(NAME), this.name, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(DESCRIPTION),
-                this.description, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(SUBENGINE),
-                this.subEngine, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(OPERATION),
-                this.operation, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(LABELLIST),
-                this.labelList, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(CHILDREN),
-                this.children, null));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(PROPERTYLIST),
-                this.propertyList, this.propertyListRefId));
-        properties.add(super.createProperty(Metadata.getPropertyDescriptor(PARENT), this.parent,
-                null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(DESCRIPTION), this.description, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(SUBENGINE), this.getSubEngine(), null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(OPERATION), this.getOperation(), null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(LABELLIST), this.labelList, null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(CHILDREN), this.children, null));
+        properties
+                .add(super.createProperty(Metadata.getPropertyDescriptor(PROPERTYLIST), this.getPropertyList(), null));
+        properties.add(super.createProperty(Metadata.getPropertyDescriptor(PARENT), this.getParent(), null));
         return properties;
     }
 
@@ -298,11 +293,6 @@ public class Metadata extends ExportDatatype implements Datatype {
                 return false;
         } else if ((!this.propertyList.equals(other.propertyList)))
             return false;
-        if ((this.propertyListRefId == null)) {
-            if ((other.propertyListRefId != null))
-                return false;
-        } else if ((!this.propertyListRefId.equals(other.propertyListRefId)))
-            return false;
         if ((this.parent == null)) {
             if ((other.parent != null))
                 return false;
@@ -319,10 +309,7 @@ public class Metadata extends ExportDatatype implements Datatype {
         result = ((PRIME * result) + ((this.description == null) ? 0 : this.description.hashCode()));
         result = ((PRIME * result) + ((this.subEngine == null) ? 0 : this.subEngine.hashCode()));
         result = ((PRIME * result) + ((this.operation == null) ? 0 : this.operation.hashCode()));
-        result = ((PRIME * result) + ((this.propertyList == null) ? 0 : this.propertyList
-                .hashCode()));
-        result = ((PRIME * result) + ((this.propertyListRefId == null) ? 0 : this.propertyListRefId
-                .hashCode()));
+        result = ((PRIME * result) + ((this.propertyList == null) ? 0 : this.propertyList.hashCode()));
         result = ((PRIME * result) + ((this.parent == null) ? 0 : this.parent.hashCode()));
         return result;
     }
@@ -467,11 +454,6 @@ public class Metadata extends ExportDatatype implements Datatype {
      */
     public void setPropertyList(PropertyList propertyList) {
         this.propertyList = propertyList;
-        if ((propertyList != null)) {
-            this.setPropertyListRefId(propertyList.getId());
-        } else {
-            this.setPropertyListRefId(null);
-        }
     }
 
     /**
@@ -481,24 +463,6 @@ public class Metadata extends ExportDatatype implements Datatype {
      */
     public PropertyList getPropertyList() {
         return this.propertyList;
-    }
-
-    /**
-     * Getter for the PropertyListRefId.
-     *
-     * @return the Long.
-     */
-    public Long getPropertyListRefId() {
-        return this.propertyListRefId;
-    }
-
-    /**
-     * Setter for the PropertyListRefId.
-     *
-     * @param propertyListRefId the Long.
-     */
-    public void setPropertyListRefId(Long propertyListRefId) {
-        this.propertyListRefId = propertyListRefId;
     }
 
     /**

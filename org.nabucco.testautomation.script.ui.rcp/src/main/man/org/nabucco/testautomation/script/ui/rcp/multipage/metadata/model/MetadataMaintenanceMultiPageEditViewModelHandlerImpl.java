@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model;
 
 import java.util.List;
@@ -22,11 +22,13 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Menu;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.plugin.base.Activator;
+import org.nabucco.testautomation.property.ui.rcp.util.LoggingUtility;
 import org.nabucco.framework.plugin.base.component.list.view.NabuccoTableColumnInfo;
 import org.nabucco.framework.plugin.base.component.list.view.NabuccoTableSorter;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
@@ -39,13 +41,13 @@ import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerDe
 import org.nabucco.framework.plugin.base.component.picker.dialog.ElementPickerParameter;
 import org.nabucco.framework.plugin.base.component.picker.dialog.LabelForDialog;
 import org.nabucco.framework.plugin.base.logging.NabuccoLogMessage;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.base.Property;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyComposite;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyContainer;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
-
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.Property;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyComposite;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
+import org.nabucco.testautomation.script.ui.rcp.command.metadata.FindAndReplaceCommand;
 
 /**
  * MetadataMaintenanceMultiplePageEditViewModelHandlerImpl
@@ -89,6 +91,7 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
         // Only to composites children should be added
         if (newChild instanceof Metadata) {
             Metadata newMetadata = (Metadata) newChild;
+
             if (parentDatatype instanceof Metadata) {
                 Metadata parentMetadata = (Metadata) parentDatatype;
                 result = addChildToTree(parent, newMetadata);
@@ -96,6 +99,7 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
             }
         } else if (newChild instanceof MetadataLabel) {
             MetadataLabel newMetadataLabel = (MetadataLabel) newChild;
+
             if (parentDatatype instanceof Metadata) {
                 Metadata parentMetadata = (Metadata) parentDatatype;
                 result = addChildToTree(parent, newMetadataLabel);
@@ -103,6 +107,7 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
             }
         } else if (newChild instanceof PropertyContainer) {
             PropertyContainer newPropertyContainer = (PropertyContainer) newChild;
+
             if (parentDatatype instanceof PropertyComposite) {
                 PropertyComposite parentPropertyList = (PropertyComposite) parentDatatype;
                 // New Datatypes have to get an order
@@ -119,34 +124,33 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
         }
         if (result == null) {
             Activator.getDefault().logError(
-                    new NabuccoLogMessage(
-                            MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
+                    new NabuccoLogMessage(MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
                             "FAILED to add new child!"));
         }
         return result;
     }
 
-    private MasterDetailTreeNode addChildToTree(final MasterDetailTreeNode parent,
-            final Datatype newChild) {
-        MasterDetailTreeNode result = MasterDetailTreeNodeCreatorForAllDatatypes.getInstance()
-                .create(newChild, parent);
+    private MasterDetailTreeNode addChildToTree(final MasterDetailTreeNode parent, final Datatype newChild) {
+
+        MasterDetailTreeNode result = MasterDetailTreeNodeCreatorForAllDatatypes.getInstance().create(newChild, parent);
+
         if (newChild instanceof MetadataLabel) {
             Datatype parentDatatype = parent.getDatatype();
+
             if (parentDatatype instanceof Metadata) {
                 Metadata parentMetadata = (Metadata) parentDatatype;
                 parent.getChildren().add(parentMetadata.getLabelList().size(), result);
             } else {
-                Activator
-                        .getDefault()
-                        .logError(
-                                new NabuccoLogMessage(
-                                        MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
-                                        "FAILED to add new child. MetadataLabel can only be added to Metadata!"));
+                Activator.getDefault().logError(
+                        new NabuccoLogMessage(MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
+                                "FAILED to add new child. MetadataLabel can only be added to Metadata!"));
             }
         } else {
             parent.getChildren().add(result);
         }
+
         Datatype datatype = parent.getDatatype();
+
         if (datatype.getDatatypeState() == DatatypeState.PERSISTENT) {
             datatype.setDatatypeState(DatatypeState.MODIFIED);
         }
@@ -158,6 +162,7 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
      */
     @Override
     public void remove(ISelection child) {
+        
         StructuredSelection ssel = (StructuredSelection) child;
         MasterDetailTreeNode nodeToRemove = (MasterDetailTreeNode) ssel.getFirstElement();
         Datatype datatypeToRemove = nodeToRemove.getDatatype();
@@ -165,65 +170,75 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
         Datatype parentDatatype = parentNode.getDatatype();
         boolean removedFromBusinessModel = false;
         int indexOfNodeToDelete = parentNode.getChildren().indexOf(nodeToRemove);
+
         if (parentDatatype instanceof Metadata) {
             Metadata parentMetadata = (Metadata) parentDatatype;
+
             if (datatypeToRemove instanceof Metadata) {
                 removedFromBusinessModel = parentMetadata.getChildren().remove(datatypeToRemove);
             }
+
             if (datatypeToRemove instanceof MetadataLabel) {
                 removedFromBusinessModel = parentMetadata.getLabelList().remove(datatypeToRemove);
             }
         } else if (parentDatatype instanceof MetadataLabel) {
             MetadataLabel parentMetadataLabel = (MetadataLabel) parentDatatype;
+
             if (datatypeToRemove instanceof PropertyList) {
                 parentMetadataLabel.setPropertyList(null);
                 removedFromBusinessModel = true;
             }
         } else if (parentDatatype instanceof PropertyComposite) {
+
             if (datatypeToRemove instanceof Property) {
                 PropertyComposite propertyList = (PropertyComposite) parentDatatype;
                 List<PropertyContainer> propertyListProperyList = propertyList.getPropertyList();
                 PropertyContainer containerToBeDeleted = propertyListProperyList.get(indexOfNodeToDelete);
-                decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(
-                        indexOfNodeToDelete, propertyListProperyList);
+                decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(indexOfNodeToDelete,
+                        propertyListProperyList);
                 propertyListProperyList.remove(indexOfNodeToDelete);
                 removedFromBusinessModel = true;
                 DatatypeState datatypeState = containerToBeDeleted.getDatatypeState();
-				if(datatypeState == DatatypeState.PERSISTENT || datatypeState == DatatypeState.MODIFIED){
-            		containerToBeDeleted.setDatatypeState(DatatypeState.DELETED);
-            	}
+
+                if (datatypeState == DatatypeState.PERSISTENT || datatypeState == DatatypeState.MODIFIED) {
+                    containerToBeDeleted.setDatatypeState(DatatypeState.DELETED);
+                }
             }
         }
         if (removedFromBusinessModel) {
-            if (datatypeToRemove.getDatatypeState() == DatatypeState.PERSISTENT 
-            		|| datatypeToRemove.getDatatypeState() == DatatypeState.MODIFIED) {
+            LoggingUtility.logRemove(nodeToRemove, parentNode);
+            if (datatypeToRemove.getDatatypeState() == DatatypeState.PERSISTENT
+                    || datatypeToRemove.getDatatypeState() == DatatypeState.MODIFIED) {
                 datatypeToRemove.setDatatypeState(DatatypeState.DELETED);
             }
+
             if (parentDatatype.getDatatypeState() == DatatypeState.PERSISTENT) {
                 parentDatatype.setDatatypeState(DatatypeState.MODIFIED);
             }
-            if (!parentNode.getChildren().remove(nodeToRemove)){
+
+            if (!parentNode.getChildren().remove(nodeToRemove)) {
                 Activator.getDefault().logError(
-                        new NabuccoLogMessage(
-                                MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
+                        new NabuccoLogMessage(MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
                                 "FAILED to remove datatype from tree!"));
             }
         } else {
             Activator.getDefault().logError(
-                    new NabuccoLogMessage(
-                            MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
+                    new NabuccoLogMessage(MetadataMaintenanceMultiPageEditViewModelHandlerImpl.class,
                             "FAILED to remove datatype from business model!"));
         }
     }
 
-    private void decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(
-            int indexOfNodeToDelete, List<PropertyContainer> propertyListProperyList) {
+    private void decreaseOrderOfAllElementWithOrderIndexHigherThanIndexOfNodeToDelete(int indexOfNodeToDelete,
+            List<PropertyContainer> propertyListProperyList) {
+
         for (PropertyContainer propertyContainer : propertyListProperyList) {
             Integer order = propertyContainer.getOrderIndex().getValue();
+
             if (order > indexOfNodeToDelete) {
                 propertyContainer.setOrderIndex(--order);
+
                 if (propertyContainer.getDatatypeState() == DatatypeState.PERSISTENT) {
-                	propertyContainer.setDatatypeState(DatatypeState.MODIFIED);
+                    propertyContainer.setDatatypeState(DatatypeState.MODIFIED);
                 }
             }
         }
@@ -276,16 +291,16 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
         ILabelProvider inputFieldLabelProvider = null;
         ElementPickerContentProvider contentProvider = new ElementPickerDefaultContentProvider(
                 getPossibleChildren(parentDatatype));
-        ElementPickerParameter result = new ElementPickerParameter(tableSorter,
-                inputFieldLabelProvider, contentProvider, tableColumnInfo);
+        ElementPickerParameter result = new ElementPickerParameter(tableSorter, inputFieldLabelProvider,
+                contentProvider, tableColumnInfo);
         return result;
     }
 
     private NabuccoTableColumnInfo[] createColumnInfo() {
         NabuccoTableColumnInfo[] result = new NabuccoTableColumnInfo[] { new NabuccoTableColumnInfo(
                 "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.title",
-                "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.tooltip",
-                200, new MetadataMaintenanceMasterDetailAddDialogLabelProvider()) };
+                "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.tooltip", 200,
+                new MetadataMaintenanceMasterDetailAddDialogLabelProvider()) };
         return result;
     }
 
@@ -297,7 +312,7 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
                 "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.shellTitle",
                 "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.messageTable",
                 "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.messageCombo",
-                "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintainance.model.pathLabel");
+                "org.nabucco.testautomation.metadata.ui.rcp.multipage.maintenance.model.pathLabel");
         return result;
     }
 
@@ -309,6 +324,17 @@ public class MetadataMaintenanceMultiPageEditViewModelHandlerImpl implements
     @Override
     public boolean down(ISelection selection) {
         return false;
+    }
+    
+    @Override
+    public boolean replace(ISelection selection) {
+        TreeSelection treeSelection = (TreeSelection) selection;
+        Object firstElement = treeSelection.getFirstElement();
+        if (firstElement instanceof MasterDetailTreeNode) {
+        	new FindAndReplaceCommand((MasterDetailTreeNode) firstElement).run();
+        	return true;
+        }
+    	return false;
     }
 
 }

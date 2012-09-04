@@ -16,43 +16,34 @@
 */
 package org.nabucco.testautomation.script.facade.component;
 
-import org.nabucco.testautomation.facade.component.TestautomationComponent;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
+import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
+import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Function;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TextMessage;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainTestScript;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceTestScriptElement;
-import org.nabucco.testautomation.script.facade.service.search.SearchTestScript;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceMetadata;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceFolder;
-import org.nabucco.testautomation.script.facade.service.search.SearchMetadata;
-import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
-import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
-import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
-import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
-import org.nabucco.testautomation.script.facade.datatype.code.SubEngineActionCode;
-import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
-import org.nabucco.testautomation.script.facade.service.export.ExportScript;
-import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainScript;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceScript;
+import org.nabucco.testautomation.script.facade.service.report.ReportScript;
+import org.nabucco.testautomation.script.facade.service.resolve.ResolveScript;
+import org.nabucco.testautomation.script.facade.service.search.SearchScript;
 
 @Author			Steffen Schmidt
 @Company		PRODYNA AG
@@ -61,8 +52,6 @@ import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
 @Description	TestScript component
 @ComponentPrefix scpt
 public Component ScriptComponent {
-
-	public Component TestautomationComponent testautomation;
 
 	private persistent Datatype TestScriptElement[1] testScriptElement;
 	
@@ -86,11 +75,11 @@ public Component ScriptComponent {
 
 	private persistent Datatype Foreach[1] foreach;
 
-	private persistent Datatype Lock[1] lock;
-
 	private persistent Datatype Logger[1] logger;
 
 	private persistent Datatype Loop[1] loop;
+
+	private persistent Datatype Function[1] function;
 	
 	private persistent Datatype PropertyAction[1] propertyAction;
 
@@ -110,30 +99,14 @@ public Component ScriptComponent {
 
 	private persistent Datatype CodeParameter[1] codeParameter;
 
-	public Service MaintainTestScript;
+	public Service MaintainScript;
 	
-	public Service ProduceTestScriptElement;
+	public Service ProduceScript;
 	
-	public Service SearchTestScript;
+	public Service SearchScript;
 	
-	public Service MaintainMetadata;
+	public Service ResolveScript;
 	
-	public Service ProduceMetadata;
+	public Service ReportScript;
 	
-	public Service SearchMetadata;
-
-	public Service SearchFolder;
-	
-	public Service MaintainFolder;
-
-	public Service MaintainSubEngineCode;
-	
-	public Service SearchSubEngineCode;
-	
-	public Service ProduceFolder;
-	
-	public Service ExportScript;
-
-	public Service ImportScript;
-
 }

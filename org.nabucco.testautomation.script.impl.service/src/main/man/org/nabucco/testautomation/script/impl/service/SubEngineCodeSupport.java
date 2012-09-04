@@ -1,25 +1,25 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.impl.service;
 
 import java.util.List;
 
 import org.nabucco.framework.base.facade.datatype.logger.NabuccoLoggingFactory;
-import org.nabucco.framework.base.facade.exception.service.SearchException;
+import org.nabucco.framework.base.facade.exception.service.ResolveException;
 import org.nabucco.framework.base.facade.message.ServiceRequest;
 import org.nabucco.framework.base.facade.message.context.ServiceMessageContext;
 import org.nabucco.testautomation.script.facade.component.ScriptComponentLocator;
@@ -28,7 +28,7 @@ import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperation
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.message.SubEngineCodeListMsg;
 import org.nabucco.testautomation.script.facade.message.SubEngineCodeSearchMsg;
-import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
+import org.nabucco.testautomation.script.facade.service.search.SearchScript;
 import org.nabucco.testautomation.script.impl.service.cache.SubEngineCodeCache;
 
 
@@ -51,7 +51,7 @@ public class SubEngineCodeSupport {
 		return instance;
 	}
 	
-	public void resolveSubEngineCodeShallow(Metadata metadata) throws SearchException {
+	public void resolveSubEngineCodeShallow(Metadata metadata) throws ResolveException {
 		
 		SubEngineCode subEngine = metadata.getSubEngine();
 		SubEngineOperationCode operation = metadata.getOperation();
@@ -68,7 +68,7 @@ public class SubEngineCodeSupport {
 		}
 	}
 	
-	public void resolveSubEngineCodeDeep(Metadata metadata) throws SearchException {
+	public void resolveSubEngineCodeDeep(Metadata metadata) throws ResolveException {
 		
 		resolveSubEngineCodeShallow(metadata);
 		
@@ -80,8 +80,8 @@ public class SubEngineCodeSupport {
 	public void initCache(ServiceMessageContext ctx) {
 		
 		try {
-			SearchSubEngineCode search = ScriptComponentLocator.getInstance()
-					.getComponent().getSearchSubEngineCode();
+			SearchScript search = ScriptComponentLocator.getInstance()
+					.getComponent().getSearchScript();
 			ServiceRequest<SubEngineCodeSearchMsg> rq = new ServiceRequest<SubEngineCodeSearchMsg>(
 					ctx);
 			rq.setRequestMessage(new SubEngineCodeSearchMsg());

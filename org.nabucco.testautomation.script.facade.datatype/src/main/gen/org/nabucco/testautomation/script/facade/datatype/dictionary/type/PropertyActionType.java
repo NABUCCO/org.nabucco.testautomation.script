@@ -1,10 +1,21 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary.type;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Enumeration;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.visitor.Visitor;
@@ -33,7 +44,19 @@ public enum PropertyActionType implements Enumeration {
     /** Subtracts the values of numeric properties */
     SUBTRACT("SU"),
     /** Calculates the length of the string representation of the value */
-    LENGTH("LE"), ;
+    LENGTH("LE"),
+    /** Multiplies the values of numeric properties */
+    MULTIPLY("MU"),
+    /** Divides the values of numeric properties */
+    DIVIDE("DI"),
+    /** Calculates the modulo of numeric properties */
+    MODULO("MO"),
+    /** Removes whitespaces at the beginning and the end of text properties */
+    TRIM("TR"),
+    /** Returns a substring of text properties */
+    SUBSTRING("SS"),
+    /** Returns a part of text properties */
+    SPLIT("SP"), ;
 
     private String id;
 
@@ -66,7 +89,22 @@ public enum PropertyActionType implements Enumeration {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        return Collections.emptyList();
+    public Set<NabuccoProperty> getProperties() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * ValueOfId.
+     *
+     * @param literalId the String.
+     * @return the PropertyActionType.
+     */
+    public static PropertyActionType valueOfId(String literalId) {
+        for (PropertyActionType enumeration : PropertyActionType.values()) {
+            if (enumeration.getId().equalsIgnoreCase(literalId)) {
+                return enumeration;
+            }
+        }
+        return null;
     }
 }

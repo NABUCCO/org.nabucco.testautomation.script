@@ -1,26 +1,33 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.impl.component;
 
+import org.nabucco.framework.base.facade.component.handler.PostConstructHandler;
+import org.nabucco.framework.base.facade.component.handler.PreDestroyHandler;
 import org.nabucco.framework.base.facade.exception.service.ServiceException;
 import org.nabucco.framework.base.facade.service.componentrelation.ComponentRelationService;
+import org.nabucco.framework.base.facade.service.injection.InjectionProvider;
+import org.nabucco.framework.base.facade.service.queryfilter.QueryFilterService;
 import org.nabucco.framework.base.impl.component.ComponentSupport;
-import org.nabucco.testautomation.facade.component.TestautomationComponent;
-import org.nabucco.testautomation.script.facade.component.ScriptComponent;
-import org.nabucco.testautomation.script.facade.service.export.ExportScript;
-import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainTestScript;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceFolder;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceMetadata;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceTestScriptElement;
-import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
-import org.nabucco.testautomation.script.facade.service.search.SearchMetadata;
-import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
-import org.nabucco.testautomation.script.facade.service.search.SearchTestScript;
+import org.nabucco.testautomation.script.facade.component.ScriptComponentLocal;
+import org.nabucco.testautomation.script.facade.component.ScriptComponentRemote;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainScript;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceScript;
+import org.nabucco.testautomation.script.facade.service.report.ReportScript;
+import org.nabucco.testautomation.script.facade.service.resolve.ResolveScript;
+import org.nabucco.testautomation.script.facade.service.search.SearchScript;
 
 /**
  * ScriptComponentImpl<p/>TestScript component<p/>
@@ -28,39 +35,11 @@ import org.nabucco.testautomation.script.facade.service.search.SearchTestScript;
  * @version 1.0
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-09
  */
-public class ScriptComponentImpl extends ComponentSupport implements ScriptComponent {
+public class ScriptComponentImpl extends ComponentSupport implements ScriptComponentLocal, ScriptComponentRemote {
 
     private static final long serialVersionUID = 1L;
 
-    private ComponentRelationService componentRelationService;
-
-    private TestautomationComponent testautomationComponent;
-
-    private MaintainTestScript maintainTestScript;
-
-    private ProduceTestScriptElement produceTestScriptElement;
-
-    private SearchTestScript searchTestScript;
-
-    private MaintainMetadata maintainMetadata;
-
-    private ProduceMetadata produceMetadata;
-
-    private SearchMetadata searchMetadata;
-
-    private SearchFolder searchFolder;
-
-    private MaintainFolder maintainFolder;
-
-    private MaintainSubEngineCode maintainSubEngineCode;
-
-    private SearchSubEngineCode searchSubEngineCode;
-
-    private ProduceFolder produceFolder;
-
-    private ExportScript exportScript;
-
-    private ImportScript importScript;
+    private static final String ID = "ScriptComponent";
 
     /** Constructs a new ScriptComponentImpl instance. */
     public ScriptComponentImpl() {
@@ -68,133 +47,119 @@ public class ScriptComponentImpl extends ComponentSupport implements ScriptCompo
     }
 
     @Override
+    public void postConstruct() {
+        super.postConstruct();
+        InjectionProvider injector = InjectionProvider.getInstance(ID);
+        PostConstructHandler handler = injector.inject(PostConstructHandler.getId());
+        if ((handler == null)) {
+            if (super.getLogger().isDebugEnabled()) {
+                super.getLogger().debug("No post construct handler configured for \'", ID, "\'.");
+            }
+            return;
+        }
+        handler.setLocatable(this);
+        handler.setLogger(super.getLogger());
+        handler.invoke();
+    }
+
+    @Override
+    public void preDestroy() {
+        super.preDestroy();
+        InjectionProvider injector = InjectionProvider.getInstance(ID);
+        PreDestroyHandler handler = injector.inject(PreDestroyHandler.getId());
+        if ((handler == null)) {
+            if (super.getLogger().isDebugEnabled()) {
+                super.getLogger().debug("No pre destroy handler configured for \'", ID, "\'.");
+            }
+            return;
+        }
+        handler.setLocatable(this);
+        handler.setLogger(super.getLogger());
+        handler.invoke();
+    }
+
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public String getName() {
+        return COMPONENT_NAME;
+    }
+
+    @Override
+    public String getJndiName() {
+        return JNDI_NAME;
+    }
+
+    @Override
     public ComponentRelationService getComponentRelationService() throws ServiceException {
-        return this.componentRelationService;
+        return super.lookup(ScriptComponentJndiNames.COMPONENT_RELATION_SERVICE_REMOTE, ComponentRelationService.class);
     }
 
-    /**
-     * Getter for the TestautomationComponent.
-     *
-     * @return the TestautomationComponent.
-     */
-    public TestautomationComponent getTestautomationComponent() {
-        return this.testautomationComponent;
+    @Override
+    public ComponentRelationService getComponentRelationServiceLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.COMPONENT_RELATION_SERVICE_LOCAL, ComponentRelationService.class);
     }
 
-    /**
-     * Getter for the MaintainTestScript.
-     *
-     * @return the MaintainTestScript.
-     */
-    public MaintainTestScript getMaintainTestScript() {
-        return this.maintainTestScript;
+    @Override
+    public QueryFilterService getQueryFilterService() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.QUERY_FILTER_SERVICE_REMOTE, QueryFilterService.class);
     }
 
-    /**
-     * Getter for the ProduceTestScriptElement.
-     *
-     * @return the ProduceTestScriptElement.
-     */
-    public ProduceTestScriptElement getProduceTestScriptElement() {
-        return this.produceTestScriptElement;
+    @Override
+    public QueryFilterService getQueryFilterServiceLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.QUERY_FILTER_SERVICE_LOCAL, QueryFilterService.class);
     }
 
-    /**
-     * Getter for the SearchTestScript.
-     *
-     * @return the SearchTestScript.
-     */
-    public SearchTestScript getSearchTestScript() {
-        return this.searchTestScript;
+    @Override
+    public MaintainScript getMaintainScriptLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.MAINTAIN_SCRIPT_LOCAL, MaintainScript.class);
     }
 
-    /**
-     * Getter for the MaintainMetadata.
-     *
-     * @return the MaintainMetadata.
-     */
-    public MaintainMetadata getMaintainMetadata() {
-        return this.maintainMetadata;
+    @Override
+    public MaintainScript getMaintainScript() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.MAINTAIN_SCRIPT_REMOTE, MaintainScript.class);
     }
 
-    /**
-     * Getter for the ProduceMetadata.
-     *
-     * @return the ProduceMetadata.
-     */
-    public ProduceMetadata getProduceMetadata() {
-        return this.produceMetadata;
+    @Override
+    public ProduceScript getProduceScriptLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.PRODUCE_SCRIPT_LOCAL, ProduceScript.class);
     }
 
-    /**
-     * Getter for the SearchMetadata.
-     *
-     * @return the SearchMetadata.
-     */
-    public SearchMetadata getSearchMetadata() {
-        return this.searchMetadata;
+    @Override
+    public ProduceScript getProduceScript() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.PRODUCE_SCRIPT_REMOTE, ProduceScript.class);
     }
 
-    /**
-     * Getter for the SearchFolder.
-     *
-     * @return the SearchFolder.
-     */
-    public SearchFolder getSearchFolder() {
-        return this.searchFolder;
+    @Override
+    public SearchScript getSearchScriptLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.SEARCH_SCRIPT_LOCAL, SearchScript.class);
     }
 
-    /**
-     * Getter for the MaintainFolder.
-     *
-     * @return the MaintainFolder.
-     */
-    public MaintainFolder getMaintainFolder() {
-        return this.maintainFolder;
+    @Override
+    public SearchScript getSearchScript() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.SEARCH_SCRIPT_REMOTE, SearchScript.class);
     }
 
-    /**
-     * Getter for the MaintainSubEngineCode.
-     *
-     * @return the MaintainSubEngineCode.
-     */
-    public MaintainSubEngineCode getMaintainSubEngineCode() {
-        return this.maintainSubEngineCode;
+    @Override
+    public ResolveScript getResolveScriptLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.RESOLVE_SCRIPT_LOCAL, ResolveScript.class);
     }
 
-    /**
-     * Getter for the SearchSubEngineCode.
-     *
-     * @return the SearchSubEngineCode.
-     */
-    public SearchSubEngineCode getSearchSubEngineCode() {
-        return this.searchSubEngineCode;
+    @Override
+    public ResolveScript getResolveScript() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.RESOLVE_SCRIPT_REMOTE, ResolveScript.class);
     }
 
-    /**
-     * Getter for the ProduceFolder.
-     *
-     * @return the ProduceFolder.
-     */
-    public ProduceFolder getProduceFolder() {
-        return this.produceFolder;
+    @Override
+    public ReportScript getReportScriptLocal() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.REPORT_SCRIPT_LOCAL, ReportScript.class);
     }
 
-    /**
-     * Getter for the ExportScript.
-     *
-     * @return the ExportScript.
-     */
-    public ExportScript getExportScript() {
-        return this.exportScript;
-    }
-
-    /**
-     * Getter for the ImportScript.
-     *
-     * @return the ImportScript.
-     */
-    public ImportScript getImportScript() {
-        return this.importScript;
+    @Override
+    public ReportScript getReportScript() throws ServiceException {
+        return super.lookup(ScriptComponentJndiNames.REPORT_SCRIPT_REMOTE, ReportScript.class);
     }
 }

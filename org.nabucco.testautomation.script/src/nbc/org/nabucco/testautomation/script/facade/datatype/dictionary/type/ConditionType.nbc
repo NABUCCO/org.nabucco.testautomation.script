@@ -81,5 +81,17 @@ public Enumeration ConditionType {
     @LiteralId	"V"
     @Description contains
     CONTAINS
+
+    @LiteralId	"W"
+    @Description starts with
+    NOT_STARTS_WITH
+    
+    @LiteralId	"X"
+    @Description ends with
+    NOT_ENDS_WITH
+    
+    @LiteralId	"Y"
+    @Description contains
+    NOT_CONTAINS
     
 }

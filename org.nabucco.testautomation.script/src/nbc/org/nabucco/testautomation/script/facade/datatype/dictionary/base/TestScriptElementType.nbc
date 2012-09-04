@@ -46,8 +46,8 @@ public Enumeration TestScriptElementType {
     @LiteralId	"I"
     ASSERTION
     
-    @LiteralId	"K"
-    LOCK
+	@LiteralId  "K"
+    FUNCTION
     
     @LiteralId	"L"
     LOGGER
@@ -60,4 +60,5 @@ public Enumeration TestScriptElementType {
 
 	@LiteralId  "R"
     EMBEDDED_SCRIPT    
+    
 }

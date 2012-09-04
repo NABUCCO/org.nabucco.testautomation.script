@@ -16,8 +16,8 @@
 */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
-import org.nabucco.testautomation.facade.datatype.base.Text;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.Text;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 
@@ -27,10 +27,8 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScr
 @Description	A log message
 public Datatype TextMessage extends TestScriptComponent {
 
-	@Mandatory
 	private Basetype Text[0..1] text;
 	
-	@Optional
 	private Basetype PropertyReference[0..1] propertyRef;
 	
 	@Redefined

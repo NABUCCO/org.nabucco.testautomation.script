@@ -1,19 +1,31 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.base.StringValue;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.Text;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.type.PropertyActionType;
@@ -27,8 +39,10 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;",
-            "l0,n;m0,1;", "m1,1;" };
+    private static final TestScriptElementType TYPE_DEFAULT = TestScriptElementType.PROPERTY_ACTION;
+
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;u0,n;m0,1;", "l0,n;u0,n;m0,1;", "l0,n;u0,n;m0,1;",
+            "m1,1;" };
 
     public static final String PROPERTYREF = "propertyRef";
 
@@ -42,7 +56,7 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
     private PropertyReference propertyRef;
 
     /** The value to set into the referenced Property (Needed for: SET) */
-    private StringValue value;
+    private Text value;
 
     /** the reference to the target property in the context (Needed for: COPY) */
     private PropertyReference target;
@@ -58,7 +72,7 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
 
     /** InitDefaults. */
     private void initDefaults() {
-        type = TestScriptElementType.PROPERTY_ACTION;
+        type = TYPE_DEFAULT;
     }
 
     /**
@@ -88,16 +102,15 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
-                .getPropertyMap());
-        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
-                PropertyReference.class, 7, PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(VALUE, PropertyDescriptorSupport.createBasetype(VALUE, StringValue.class,
-                8, PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(TARGET, PropertyDescriptorSupport.createBasetype(TARGET,
-                PropertyReference.class, 9, PROPERTY_CONSTRAINTS[2], false));
-        propertyMap.put(ACTION, PropertyDescriptorSupport.createEnumeration(ACTION,
-                PropertyActionType.class, 10, PROPERTY_CONSTRAINTS[3], false));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class).getPropertyMap());
+        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF, PropertyReference.class, 7,
+                PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(VALUE,
+                PropertyDescriptorSupport.createBasetype(VALUE, Text.class, 8, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(TARGET, PropertyDescriptorSupport.createBasetype(TARGET, PropertyReference.class, 9,
+                PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(ACTION, PropertyDescriptorSupport.createEnumeration(ACTION, PropertyActionType.class, 10,
+                PROPERTY_CONSTRAINTS[3], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -107,16 +120,12 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(PROPERTYREF),
-                this.propertyRef, null));
-        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(VALUE),
-                this.value, null));
-        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(TARGET),
-                this.target, null));
-        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(ACTION),
-                this.action, null));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(PROPERTYREF), this.propertyRef, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(VALUE), this.value, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(TARGET), this.target, null));
+        properties.add(super.createProperty(PropertyAction.getPropertyDescriptor(ACTION), this.getAction(), null));
         return properties;
     }
 
@@ -128,8 +137,8 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
         if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
             this.setPropertyRef(((PropertyReference) property.getInstance()));
             return true;
-        } else if ((property.getName().equals(VALUE) && (property.getType() == StringValue.class))) {
-            this.setValue(((StringValue) property.getInstance()));
+        } else if ((property.getName().equals(VALUE) && (property.getType() == Text.class))) {
+            this.setValue(((Text) property.getInstance()));
             return true;
         } else if ((property.getName().equals(TARGET) && (property.getType() == PropertyReference.class))) {
             this.setTarget(((PropertyReference) property.getInstance()));
@@ -233,18 +242,18 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
     /**
      * The value to set into the referenced Property (Needed for: SET)
      *
-     * @return the StringValue.
+     * @return the Text.
      */
-    public StringValue getValue() {
+    public Text getValue() {
         return this.value;
     }
 
     /**
      * The value to set into the referenced Property (Needed for: SET)
      *
-     * @param value the StringValue.
+     * @param value the Text.
      */
-    public void setValue(StringValue value) {
+    public void setValue(Text value) {
         this.value = value;
     }
 
@@ -258,7 +267,7 @@ public class PropertyAction extends TestScriptComponent implements Datatype {
             if ((value == null)) {
                 return;
             }
-            this.value = new StringValue();
+            this.value = new Text();
         }
         this.value.setValue(value);
     }

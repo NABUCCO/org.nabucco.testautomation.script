@@ -1,26 +1,25 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.search.script.model;
 
 import java.util.List;
 
-import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchModel;
@@ -30,9 +29,7 @@ import org.nabucco.testautomation.script.facade.message.TestScriptListMsg;
 import org.nabucco.testautomation.script.facade.message.TestScriptSearchMsg;
 import org.nabucco.testautomation.script.ui.rcp.browser.script.TestScriptListViewBrowserElement;
 import org.nabucco.testautomation.script.ui.rcp.communication.ScriptComponentServiceDelegateFactory;
-import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchTestScriptDelegate;
-import org.nabucco.testautomation.script.ui.rcp.search.script.model.TestScriptSearchViewModel;
-
+import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchScriptDelegate;
 
 /**
  * Does the search for TestScript.
@@ -45,10 +42,10 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
 
     @Override
     public TestScriptListViewBrowserElement search(NabuccoComponentSearchParameter parameter) {
-        
-    	TestScriptListViewBrowserElement result = null;
-        
-    	if (parameter instanceof TestScriptSearchViewModel) {
+
+        TestScriptListViewBrowserElement result = null;
+
+        if (parameter instanceof TestScriptSearchViewModel) {
             TestScriptSearchViewModel testScriptSearchViewModel = (TestScriptSearchViewModel) parameter;
             TestScriptSearchMsg rq = createTestScriptSearchMsg(testScriptSearchViewModel);
             result = new TestScriptListViewBrowserElement(search(rq).toArray(new TestScript[0]));
@@ -58,12 +55,11 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
     }
 
     private List<TestScript> search(final TestScriptSearchMsg rq) {
-        
-    	List<TestScript> result = null;
-        
-    	try {
-            SearchTestScriptDelegate searchDelegate = ScriptComponentServiceDelegateFactory
-                    .getInstance().getSearchTestScript();
+
+        List<TestScript> result = null;
+
+        try {
+            SearchScriptDelegate searchDelegate = ScriptComponentServiceDelegateFactory.getInstance().getSearchScript();
             TestScriptListMsg response = searchDelegate.searchTestScript(rq);
             result = response.getTestScriptList();
         } catch (ClientException e) {
@@ -73,31 +69,26 @@ public class TestScriptSearchBusinessModel implements NabuccoComponentSearchMode
     }
 
     private TestScriptSearchMsg createTestScriptSearchMsg(TestScriptSearchViewModel searchViewModel) {
-        
-    	TestScriptSearchMsg result = new TestScriptSearchMsg();
-        String owner = searchViewModel.getOwner();
 
-        if (owner != null && owner.length() > 0) {
-        	result.setOwner(new Owner(owner));
-        }
+        TestScriptSearchMsg result = new TestScriptSearchMsg();
         result.setName(getName(searchViewModel));
-        result.setDescription(getDescription(searchViewModel));
+        result.setTestScriptKey(getElementKey(searchViewModel));
 
         return result;
     }
 
-    private Description getDescription(final TestScriptSearchViewModel searchViewModel) {
-       
-    	Description result = new Description();
-        String description = searchViewModel.getTestScriptDescription();
+    private Key getElementKey(final TestScriptSearchViewModel searchViewModel) {
 
-        result.setValue((description == null || description.length() == 0) ? null : description);
+        Key result = new Key();
+        String key = searchViewModel.getTestScriptIdentificationKey();
+
+        result.setValue((key == null || key.length() == 0) ? null : key);
         return result;
     }
 
     private Name getName(TestScriptSearchViewModel searchViewModel) {
-        
-    	Name result = new Name();
+
+        Name result = new Name();
         String name = searchViewModel.getTestScriptName();
 
         result.setValue((name == null || name.length() == 0) ? null : name);

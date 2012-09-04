@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.metadata;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.code.Code;
@@ -16,7 +28,7 @@ import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescri
 import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
 
 /**
  * MetadataLabel<p/>A qualifier for a Metadata-instance<p/>
@@ -42,21 +54,21 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
 
     private Long environmentTypeRefId;
 
-    private static final String ENVIRONMENTTYPE_CODEPATH = "nabucco.testautomation.environment";
+    protected static final String ENVIRONMENTTYPE_CODEPATH = "nabucco.testautomation.environment";
 
     /** Release of the TestConfiguration */
     private Code releaseType;
 
     private Long releaseTypeRefId;
 
-    private static final String RELEASETYPE_CODEPATH = "nabucco.testautomation.release";
+    protected static final String RELEASETYPE_CODEPATH = "nabucco.testautomation.release";
 
     /** Brand of the TestConfiguration */
     private Code brandType;
 
     private Long brandTypeRefId;
 
-    private static final String BRANDTYPE_CODEPATH = "nabucco.testautomation.brand";
+    protected static final String BRANDTYPE_CODEPATH = "nabucco.testautomation.brand";
 
     private PropertyList propertyList;
 
@@ -112,17 +124,15 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class)
-                .getPropertyMap());
-        propertyMap.put(ENVIRONMENTTYPE, PropertyDescriptorSupport.createDatatype(ENVIRONMENTTYPE,
-                Code.class, 2, PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.COMPONENT));
-        propertyMap.put(RELEASETYPE, PropertyDescriptorSupport.createDatatype(RELEASETYPE,
-                Code.class, 3, PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.COMPONENT));
-        propertyMap.put(BRANDTYPE, PropertyDescriptorSupport.createDatatype(BRANDTYPE, Code.class,
-                4, PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPONENT));
-        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST,
-                PropertyList.class, 5, PROPERTY_CONSTRAINTS[3], false,
-                PropertyAssociationType.COMPONENT));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(NabuccoDatatype.class).getPropertyMap());
+        propertyMap.put(ENVIRONMENTTYPE, PropertyDescriptorSupport.createDatatype(ENVIRONMENTTYPE, Code.class, 3,
+                PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.COMPONENT, ENVIRONMENTTYPE_CODEPATH));
+        propertyMap.put(RELEASETYPE, PropertyDescriptorSupport.createDatatype(RELEASETYPE, Code.class, 4,
+                PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.COMPONENT, RELEASETYPE_CODEPATH));
+        propertyMap.put(BRANDTYPE, PropertyDescriptorSupport.createDatatype(BRANDTYPE, Code.class, 5,
+                PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPONENT, BRANDTYPE_CODEPATH));
+        propertyMap.put(PROPERTYLIST, PropertyDescriptorSupport.createDatatype(PROPERTYLIST, PropertyList.class, 6,
+                PROPERTY_CONSTRAINTS[3], false, PropertyAssociationType.COMPONENT));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -132,16 +142,16 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
         properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(ENVIRONMENTTYPE),
-                this.environmentType, this.environmentTypeRefId));
-        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(RELEASETYPE),
-                this.releaseType, this.releaseTypeRefId));
-        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(BRANDTYPE),
-                this.brandType, this.brandTypeRefId));
-        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(PROPERTYLIST),
-                this.propertyList, this.propertyListRefId));
+                this.getEnvironmentType(), this.environmentTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(RELEASETYPE), this.getReleaseType(),
+                this.releaseTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(BRANDTYPE), this.getBrandType(),
+                this.brandTypeRefId));
+        properties.add(super.createProperty(MetadataLabel.getPropertyDescriptor(PROPERTYLIST), this.getPropertyList(),
+                this.propertyListRefId));
         return properties;
     }
 
@@ -228,20 +238,14 @@ public class MetadataLabel extends NabuccoDatatype implements Datatype {
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.environmentType == null) ? 0 : this.environmentType
-                .hashCode()));
-        result = ((PRIME * result) + ((this.environmentTypeRefId == null) ? 0
-                : this.environmentTypeRefId.hashCode()));
+        result = ((PRIME * result) + ((this.environmentType == null) ? 0 : this.environmentType.hashCode()));
+        result = ((PRIME * result) + ((this.environmentTypeRefId == null) ? 0 : this.environmentTypeRefId.hashCode()));
         result = ((PRIME * result) + ((this.releaseType == null) ? 0 : this.releaseType.hashCode()));
-        result = ((PRIME * result) + ((this.releaseTypeRefId == null) ? 0 : this.releaseTypeRefId
-                .hashCode()));
+        result = ((PRIME * result) + ((this.releaseTypeRefId == null) ? 0 : this.releaseTypeRefId.hashCode()));
         result = ((PRIME * result) + ((this.brandType == null) ? 0 : this.brandType.hashCode()));
-        result = ((PRIME * result) + ((this.brandTypeRefId == null) ? 0 : this.brandTypeRefId
-                .hashCode()));
-        result = ((PRIME * result) + ((this.propertyList == null) ? 0 : this.propertyList
-                .hashCode()));
-        result = ((PRIME * result) + ((this.propertyListRefId == null) ? 0 : this.propertyListRefId
-                .hashCode()));
+        result = ((PRIME * result) + ((this.brandTypeRefId == null) ? 0 : this.brandTypeRefId.hashCode()));
+        result = ((PRIME * result) + ((this.propertyList == null) ? 0 : this.propertyList.hashCode()));
+        result = ((PRIME * result) + ((this.propertyListRefId == null) ? 0 : this.propertyListRefId.hashCode()));
         return result;
     }
 

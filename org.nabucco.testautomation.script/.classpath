@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/nbc"/>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.nabucco.testautomation.script.facade.datatype"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.nabucco.testautomation.script.facade.exception"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.nabucco.testautomation.script.facade.message"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.nabucco.testautomation.script.facade.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.nabucco.testautomation.script.facade.component"/>
+	<classpathentry kind="lib" path="lib/test/org.nabucco.common.cache.jar"/>
+	<classpathentry kind="lib" path="lib/test/org.nabucco.common.extension.jar"/>
+	<classpathentry kind="lib" path="lib/test/org.nabucco.framework.base.facade.jar"/>
+	<classpathentry kind="lib" path="lib/test/org.nabucco.framework.base.test.jar"/>
+	<classpathentry kind="lib" path="lib/facade/org.nabucco.testautomation.property.facade.jar"/>
+	<classpathentry kind="lib" path="lib/facade/org.nabucco.common.scripting.jar"/>
+	<classpathentry kind="lib" path="lib/facade/org.nabucco.framework.support.scripting.facade.jar"/>
+	<classpathentry kind="output" path="out/ide"/>
+</classpath>

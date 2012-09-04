@@ -57,5 +57,33 @@ public Enumeration PropertyActionType {
     @LiteralId	"LE"
     @Description Calculates the length of the string representation of the value
     LENGTH
+
+    @LiteralId	"MU"
+    @Description Multiplies the values of numeric properties
+    MULTIPLY
+
+    @LiteralId	"DI"
+    @Description Divides the values of numeric properties
+    DIVIDE
+
+    @LiteralId	"MO"
+    @Description Calculates the modulo of numeric properties
+    MODULO
+
+    @LiteralId	"TR"
+    @Description Removes whitespaces at the beginning and the end of text properties
+    TRIM
+
+    @LiteralId	"SS"
+    @Description Returns a substring of text properties
+    SUBSTRING
+
+    @LiteralId	"SP"
+    @Description Returns a part of text properties
+    SPLIT
+
+    @LiteralId	"RE"
+    @Description Returns a part of text properties
+    REPLACE
     
 }

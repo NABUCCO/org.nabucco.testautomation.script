@@ -1,24 +1,26 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.component;
 
 import org.nabucco.framework.base.facade.component.Component;
 import org.nabucco.framework.base.facade.exception.service.ServiceException;
-import org.nabucco.testautomation.facade.component.TestautomationComponent;
-import org.nabucco.testautomation.script.facade.service.export.ExportScript;
-import org.nabucco.testautomation.script.facade.service.importing.ImportScript;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainFolder;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainMetadata;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainSubEngineCode;
-import org.nabucco.testautomation.script.facade.service.maintain.MaintainTestScript;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceFolder;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceMetadata;
-import org.nabucco.testautomation.script.facade.service.produce.ProduceTestScriptElement;
-import org.nabucco.testautomation.script.facade.service.search.SearchFolder;
-import org.nabucco.testautomation.script.facade.service.search.SearchMetadata;
-import org.nabucco.testautomation.script.facade.service.search.SearchSubEngineCode;
-import org.nabucco.testautomation.script.facade.service.search.SearchTestScript;
+import org.nabucco.testautomation.script.facade.service.maintain.MaintainScript;
+import org.nabucco.testautomation.script.facade.service.produce.ProduceScript;
+import org.nabucco.testautomation.script.facade.service.report.ReportScript;
+import org.nabucco.testautomation.script.facade.service.resolve.ResolveScript;
+import org.nabucco.testautomation.script.facade.service.search.SearchScript;
 
 /**
  * ScriptComponent<p/>TestScript component<p/>
@@ -30,115 +32,47 @@ public interface ScriptComponent extends Component {
 
     final String COMPONENT_NAME = "org.nabucco.testautomation.script";
 
-    /**
-     * Getter for the TestautomationComponent.
-     *
-     * @return the TestautomationComponent.
-     * @throws ServiceException
-     */
-    TestautomationComponent getTestautomationComponent() throws ServiceException;
+    final String COMPONENT_PREFIX = "scpt";
+
+    final String JNDI_NAME = ((((JNDI_PREFIX + "/") + COMPONENT_NAME) + "/") + "org.nabucco.testautomation.script.facade.component.ScriptComponent");
 
     /**
-     * Getter for the MaintainTestScript.
+     * Getter for the MaintainScript.
      *
-     * @return the MaintainTestScript.
+     * @return the MaintainScript.
      * @throws ServiceException
      */
-    MaintainTestScript getMaintainTestScript() throws ServiceException;
+    MaintainScript getMaintainScript() throws ServiceException;
 
     /**
-     * Getter for the ProduceTestScriptElement.
+     * Getter for the ProduceScript.
      *
-     * @return the ProduceTestScriptElement.
+     * @return the ProduceScript.
      * @throws ServiceException
      */
-    ProduceTestScriptElement getProduceTestScriptElement() throws ServiceException;
+    ProduceScript getProduceScript() throws ServiceException;
 
     /**
-     * Getter for the SearchTestScript.
+     * Getter for the SearchScript.
      *
-     * @return the SearchTestScript.
+     * @return the SearchScript.
      * @throws ServiceException
      */
-    SearchTestScript getSearchTestScript() throws ServiceException;
+    SearchScript getSearchScript() throws ServiceException;
 
     /**
-     * Getter for the MaintainMetadata.
+     * Getter for the ResolveScript.
      *
-     * @return the MaintainMetadata.
+     * @return the ResolveScript.
      * @throws ServiceException
      */
-    MaintainMetadata getMaintainMetadata() throws ServiceException;
+    ResolveScript getResolveScript() throws ServiceException;
 
     /**
-     * Getter for the ProduceMetadata.
+     * Getter for the ReportScript.
      *
-     * @return the ProduceMetadata.
+     * @return the ReportScript.
      * @throws ServiceException
      */
-    ProduceMetadata getProduceMetadata() throws ServiceException;
-
-    /**
-     * Getter for the SearchMetadata.
-     *
-     * @return the SearchMetadata.
-     * @throws ServiceException
-     */
-    SearchMetadata getSearchMetadata() throws ServiceException;
-
-    /**
-     * Getter for the SearchFolder.
-     *
-     * @return the SearchFolder.
-     * @throws ServiceException
-     */
-    SearchFolder getSearchFolder() throws ServiceException;
-
-    /**
-     * Getter for the MaintainFolder.
-     *
-     * @return the MaintainFolder.
-     * @throws ServiceException
-     */
-    MaintainFolder getMaintainFolder() throws ServiceException;
-
-    /**
-     * Getter for the MaintainSubEngineCode.
-     *
-     * @return the MaintainSubEngineCode.
-     * @throws ServiceException
-     */
-    MaintainSubEngineCode getMaintainSubEngineCode() throws ServiceException;
-
-    /**
-     * Getter for the SearchSubEngineCode.
-     *
-     * @return the SearchSubEngineCode.
-     * @throws ServiceException
-     */
-    SearchSubEngineCode getSearchSubEngineCode() throws ServiceException;
-
-    /**
-     * Getter for the ProduceFolder.
-     *
-     * @return the ProduceFolder.
-     * @throws ServiceException
-     */
-    ProduceFolder getProduceFolder() throws ServiceException;
-
-    /**
-     * Getter for the ExportScript.
-     *
-     * @return the ExportScript.
-     * @throws ServiceException
-     */
-    ExportScript getExportScript() throws ServiceException;
-
-    /**
-     * Getter for the ImportScript.
-     *
-     * @return the ImportScript.
-     * @throws ServiceException
-     */
-    ImportScript getImportScript() throws ServiceException;
+    ReportScript getReportScript() throws ServiceException;
 }

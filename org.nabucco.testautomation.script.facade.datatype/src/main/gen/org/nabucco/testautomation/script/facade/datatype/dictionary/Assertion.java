@@ -1,26 +1,38 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
-import org.nabucco.framework.base.facade.datatype.Name;
+import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
+import org.nabucco.framework.base.facade.datatype.property.PropertyAssociationType;
 import org.nabucco.framework.base.facade.datatype.property.PropertyCache;
 import org.nabucco.framework.base.facade.datatype.property.PropertyDescriptorSupport;
-import org.nabucco.testautomation.facade.datatype.base.BooleanValue;
-import org.nabucco.testautomation.facade.datatype.base.Text;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.framework.support.scripting.facade.datatype.Script;
+import org.nabucco.testautomation.property.facade.datatype.base.Text;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 
 /**
- * Assertion<p/>A log message<p/>
+ * Assertion<p/>An assertion<p/>
  *
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-07
  */
@@ -28,24 +40,23 @@ public class Assertion extends TestScriptComponent implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;m0,1;", "l0,n;m0,1;",
-            "l0,n;m0,1;", "l0,255;m0,1;" };
+    private static final TestScriptElementType TYPE_DEFAULT = TestScriptElementType.ASSERTION;
 
-    public static final String PROPERTYREF = "propertyRef";
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;u0,n;m0,1;", "l0,n;u0,n;m0,1;", "m0,1;" };
 
     public static final String MESSAGE = "message";
 
     public static final String FAIL = "fail";
 
-    public static final String CLASSNAME = "className";
-
-    private PropertyReference propertyRef;
+    public static final String ASSERTIONSCRIPT = "assertionScript";
 
     private Text message;
 
-    private BooleanValue fail;
+    private Flag fail;
 
-    private Name className;
+    private Script assertionScript;
+
+    private Long assertionScriptRefId;
 
     /** Constructs a new Assertion instance. */
     public Assertion() {
@@ -55,7 +66,7 @@ public class Assertion extends TestScriptComponent implements Datatype {
 
     /** InitDefaults. */
     private void initDefaults() {
-        type = TestScriptElementType.ASSERTION;
+        type = TYPE_DEFAULT;
     }
 
     /**
@@ -65,17 +76,17 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     protected void cloneObject(Assertion clone) {
         super.cloneObject(clone);
-        if ((this.getPropertyRef() != null)) {
-            clone.setPropertyRef(this.getPropertyRef().cloneObject());
-        }
         if ((this.getMessage() != null)) {
             clone.setMessage(this.getMessage().cloneObject());
         }
         if ((this.getFail() != null)) {
             clone.setFail(this.getFail().cloneObject());
         }
-        if ((this.getClassName() != null)) {
-            clone.setClassName(this.getClassName().cloneObject());
+        if ((this.getAssertionScript() != null)) {
+            clone.setAssertionScript(this.getAssertionScript().cloneObject());
+        }
+        if ((this.getAssertionScriptRefId() != null)) {
+            clone.setAssertionScriptRefId(this.getAssertionScriptRefId());
         }
         clone.setType(this.getType());
     }
@@ -87,16 +98,13 @@ public class Assertion extends TestScriptComponent implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class)
-                .getPropertyMap());
-        propertyMap.put(PROPERTYREF, PropertyDescriptorSupport.createBasetype(PROPERTYREF,
-                PropertyReference.class, 7, PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(MESSAGE, PropertyDescriptorSupport.createBasetype(MESSAGE, Text.class, 8,
-                PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(FAIL, PropertyDescriptorSupport.createBasetype(FAIL, BooleanValue.class, 9,
-                PROPERTY_CONSTRAINTS[2], false));
-        propertyMap.put(CLASSNAME, PropertyDescriptorSupport.createBasetype(CLASSNAME, Name.class,
-                10, PROPERTY_CONSTRAINTS[3], false));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComponent.class).getPropertyMap());
+        propertyMap.put(MESSAGE,
+                PropertyDescriptorSupport.createBasetype(MESSAGE, Text.class, 7, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(FAIL,
+                PropertyDescriptorSupport.createBasetype(FAIL, Flag.class, 8, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(ASSERTIONSCRIPT, PropertyDescriptorSupport.createDatatype(ASSERTIONSCRIPT, Script.class, 9,
+                PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPONENT));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -106,16 +114,12 @@ public class Assertion extends TestScriptComponent implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(Assertion.getPropertyDescriptor(PROPERTYREF),
-                this.propertyRef, null));
-        properties.add(super.createProperty(Assertion.getPropertyDescriptor(MESSAGE), this.message,
-                null));
-        properties
-                .add(super.createProperty(Assertion.getPropertyDescriptor(FAIL), this.fail, null));
-        properties.add(super.createProperty(Assertion.getPropertyDescriptor(CLASSNAME),
-                this.className, null));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(MESSAGE), this.message, null));
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(FAIL), this.fail, null));
+        properties.add(super.createProperty(Assertion.getPropertyDescriptor(ASSERTIONSCRIPT),
+                this.getAssertionScript(), this.assertionScriptRefId));
         return properties;
     }
 
@@ -124,17 +128,14 @@ public class Assertion extends TestScriptComponent implements Datatype {
         if (super.setProperty(property)) {
             return true;
         }
-        if ((property.getName().equals(PROPERTYREF) && (property.getType() == PropertyReference.class))) {
-            this.setPropertyRef(((PropertyReference) property.getInstance()));
-            return true;
-        } else if ((property.getName().equals(MESSAGE) && (property.getType() == Text.class))) {
+        if ((property.getName().equals(MESSAGE) && (property.getType() == Text.class))) {
             this.setMessage(((Text) property.getInstance()));
             return true;
-        } else if ((property.getName().equals(FAIL) && (property.getType() == BooleanValue.class))) {
-            this.setFail(((BooleanValue) property.getInstance()));
+        } else if ((property.getName().equals(FAIL) && (property.getType() == Flag.class))) {
+            this.setFail(((Flag) property.getInstance()));
             return true;
-        } else if ((property.getName().equals(CLASSNAME) && (property.getType() == Name.class))) {
-            this.setClassName(((Name) property.getInstance()));
+        } else if ((property.getName().equals(ASSERTIONSCRIPT) && (property.getType() == Script.class))) {
+            this.setAssertionScript(((Script) property.getInstance()));
             return true;
         }
         return false;
@@ -155,11 +156,6 @@ public class Assertion extends TestScriptComponent implements Datatype {
             return false;
         }
         final Assertion other = ((Assertion) obj);
-        if ((this.propertyRef == null)) {
-            if ((other.propertyRef != null))
-                return false;
-        } else if ((!this.propertyRef.equals(other.propertyRef)))
-            return false;
         if ((this.message == null)) {
             if ((other.message != null))
                 return false;
@@ -170,10 +166,15 @@ public class Assertion extends TestScriptComponent implements Datatype {
                 return false;
         } else if ((!this.fail.equals(other.fail)))
             return false;
-        if ((this.className == null)) {
-            if ((other.className != null))
+        if ((this.assertionScript == null)) {
+            if ((other.assertionScript != null))
                 return false;
-        } else if ((!this.className.equals(other.className)))
+        } else if ((!this.assertionScript.equals(other.assertionScript)))
+            return false;
+        if ((this.assertionScriptRefId == null)) {
+            if ((other.assertionScriptRefId != null))
+                return false;
+        } else if ((!this.assertionScriptRefId.equals(other.assertionScriptRefId)))
             return false;
         return true;
     }
@@ -182,10 +183,10 @@ public class Assertion extends TestScriptComponent implements Datatype {
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.propertyRef == null) ? 0 : this.propertyRef.hashCode()));
         result = ((PRIME * result) + ((this.message == null) ? 0 : this.message.hashCode()));
         result = ((PRIME * result) + ((this.fail == null) ? 0 : this.fail.hashCode()));
-        result = ((PRIME * result) + ((this.className == null) ? 0 : this.className.hashCode()));
+        result = ((PRIME * result) + ((this.assertionScript == null) ? 0 : this.assertionScript.hashCode()));
+        result = ((PRIME * result) + ((this.assertionScriptRefId == null) ? 0 : this.assertionScriptRefId.hashCode()));
         return result;
     }
 
@@ -194,39 +195,6 @@ public class Assertion extends TestScriptComponent implements Datatype {
         Assertion clone = new Assertion();
         this.cloneObject(clone);
         return clone;
-    }
-
-    /**
-     * Missing description at method getPropertyRef.
-     *
-     * @return the PropertyReference.
-     */
-    public PropertyReference getPropertyRef() {
-        return this.propertyRef;
-    }
-
-    /**
-     * Missing description at method setPropertyRef.
-     *
-     * @param propertyRef the PropertyReference.
-     */
-    public void setPropertyRef(PropertyReference propertyRef) {
-        this.propertyRef = propertyRef;
-    }
-
-    /**
-     * Missing description at method setPropertyRef.
-     *
-     * @param propertyRef the String.
-     */
-    public void setPropertyRef(String propertyRef) {
-        if ((this.propertyRef == null)) {
-            if ((propertyRef == null)) {
-                return;
-            }
-            this.propertyRef = new PropertyReference();
-        }
-        this.propertyRef.setValue(propertyRef);
     }
 
     /**
@@ -265,18 +233,18 @@ public class Assertion extends TestScriptComponent implements Datatype {
     /**
      * Missing description at method getFail.
      *
-     * @return the BooleanValue.
+     * @return the Flag.
      */
-    public BooleanValue getFail() {
+    public Flag getFail() {
         return this.fail;
     }
 
     /**
      * Missing description at method setFail.
      *
-     * @param fail the BooleanValue.
+     * @param fail the Flag.
      */
-    public void setFail(BooleanValue fail) {
+    public void setFail(Flag fail) {
         this.fail = fail;
     }
 
@@ -290,42 +258,50 @@ public class Assertion extends TestScriptComponent implements Datatype {
             if ((fail == null)) {
                 return;
             }
-            this.fail = new BooleanValue();
+            this.fail = new Flag();
         }
         this.fail.setValue(fail);
     }
 
     /**
-     * Missing description at method getClassName.
+     * Missing description at method setAssertionScript.
      *
-     * @return the Name.
+     * @param assertionScript the Script.
      */
-    public Name getClassName() {
-        return this.className;
-    }
-
-    /**
-     * Missing description at method setClassName.
-     *
-     * @param className the Name.
-     */
-    public void setClassName(Name className) {
-        this.className = className;
-    }
-
-    /**
-     * Missing description at method setClassName.
-     *
-     * @param className the String.
-     */
-    public void setClassName(String className) {
-        if ((this.className == null)) {
-            if ((className == null)) {
-                return;
-            }
-            this.className = new Name();
+    public void setAssertionScript(Script assertionScript) {
+        this.assertionScript = assertionScript;
+        if ((assertionScript != null)) {
+            this.setAssertionScriptRefId(assertionScript.getId());
+        } else {
+            this.setAssertionScriptRefId(null);
         }
-        this.className.setValue(className);
+    }
+
+    /**
+     * Missing description at method getAssertionScript.
+     *
+     * @return the Script.
+     */
+    public Script getAssertionScript() {
+        return this.assertionScript;
+    }
+
+    /**
+     * Getter for the AssertionScriptRefId.
+     *
+     * @return the Long.
+     */
+    public Long getAssertionScriptRefId() {
+        return this.assertionScriptRefId;
+    }
+
+    /**
+     * Setter for the AssertionScriptRefId.
+     *
+     * @param assertionScriptRefId the Long.
+     */
+    public void setAssertionScriptRefId(Long assertionScriptRefId) {
+        this.assertionScriptRefId = assertionScriptRefId;
     }
 
     /**

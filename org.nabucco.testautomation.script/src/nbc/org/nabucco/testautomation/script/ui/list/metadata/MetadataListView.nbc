@@ -42,9 +42,4 @@ public ListView MetadataListView {
 	@ColumnLabelDefault 	"Metadata Description"
 	private Column metadataDescription;
 	
-	@MappedField 			metadata.owner
-	@ColumnLabelId			metadata.owner 
-	@ColumnLabelDefault 	"Owner"
-	private Column owner;
-	
 }

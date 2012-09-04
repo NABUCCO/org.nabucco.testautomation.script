@@ -18,7 +18,7 @@ package org.nabucco.testautomation.script.facade.datatype.metadata;
 
 import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.code.Code;
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
 
 @Author			Steffen Schmidt
 @Company		PRODYNA AG

@@ -1,29 +1,30 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.ui.rcp.communication;
 
-import org.nabucco.framework.base.facade.component.connection.Connection;
 import org.nabucco.framework.base.facade.component.connection.ConnectionException;
-import org.nabucco.framework.base.facade.component.connection.ConnectionFactory;
-import org.nabucco.framework.base.facade.component.connection.ConnectionSpecification;
 import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.base.facade.exception.service.ServiceException;
+import org.nabucco.framework.plugin.base.component.communication.ServiceDelegateFactorySupport;
 import org.nabucco.testautomation.script.facade.component.ScriptComponent;
 import org.nabucco.testautomation.script.facade.component.ScriptComponentLocator;
-import org.nabucco.testautomation.script.ui.rcp.communication.export.ExportScriptDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.importing.ImportScriptDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainFolderDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainMetadataDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainSubEngineCodeDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainTestScriptDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceFolderDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceMetadataDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceTestScriptElementDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchFolderDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchMetadataDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchSubEngineCodeDelegate;
-import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchTestScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.maintain.MaintainScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.produce.ProduceScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.report.ReportScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.resolve.ResolveScriptDelegate;
+import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchScriptDelegate;
 
 /**
  * ServiceDelegateFactoryTemplate<p/>TestScript component<p/>
@@ -31,324 +32,117 @@ import org.nabucco.testautomation.script.ui.rcp.communication.search.SearchTestS
  * @version 1.0
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-09
  */
-public class ScriptComponentServiceDelegateFactory {
+public class ScriptComponentServiceDelegateFactory extends ServiceDelegateFactorySupport<ScriptComponent> {
 
     private static ScriptComponentServiceDelegateFactory instance = new ScriptComponentServiceDelegateFactory();
 
-    private ScriptComponent component;
+    private MaintainScriptDelegate maintainScriptDelegate;
 
-    private MaintainTestScriptDelegate maintainTestScriptDelegate;
+    private ProduceScriptDelegate produceScriptDelegate;
 
-    private ProduceTestScriptElementDelegate produceTestScriptElementDelegate;
+    private SearchScriptDelegate searchScriptDelegate;
 
-    private SearchTestScriptDelegate searchTestScriptDelegate;
+    private ResolveScriptDelegate resolveScriptDelegate;
 
-    private MaintainMetadataDelegate maintainMetadataDelegate;
-
-    private ProduceMetadataDelegate produceMetadataDelegate;
-
-    private SearchMetadataDelegate searchMetadataDelegate;
-
-    private SearchFolderDelegate searchFolderDelegate;
-
-    private MaintainFolderDelegate maintainFolderDelegate;
-
-    private MaintainSubEngineCodeDelegate maintainSubEngineCodeDelegate;
-
-    private SearchSubEngineCodeDelegate searchSubEngineCodeDelegate;
-
-    private ProduceFolderDelegate produceFolderDelegate;
-
-    private ExportScriptDelegate exportScriptDelegate;
-
-    private ImportScriptDelegate importScriptDelegate;
+    private ReportScriptDelegate reportScriptDelegate;
 
     /** Constructs a new ScriptComponentServiceDelegateFactory instance. */
     private ScriptComponentServiceDelegateFactory() {
-        super();
+        super(ScriptComponentLocator.getInstance());
     }
 
     /**
-     * Getter for the Component.
+     * Getter for the MaintainScript.
      *
-     * @return the ScriptComponent.
-     * @throws ConnectionException
-     */
-    private ScriptComponent getComponent() throws ConnectionException {
-        if ((this.component == null)) {
-            this.initComponent();
-        }
-        return this.component;
-    }
-
-    /**
-     * InitComponent.
-     *
-     * @throws ConnectionException
-     */
-    private void initComponent() throws ConnectionException {
-        ConnectionSpecification specification = ConnectionSpecification.getCurrentSpecification();
-        Connection connection = ConnectionFactory.getInstance().createConnection(specification);
-        this.component = ScriptComponentLocator.getInstance().getComponent(connection);
-    }
-
-    /**
-     * Getter for the MaintainTestScript.
-     *
-     * @return the MaintainTestScriptDelegate.
+     * @return the MaintainScriptDelegate.
      * @throws ClientException
      */
-    public MaintainTestScriptDelegate getMaintainTestScript() throws ClientException {
+    public MaintainScriptDelegate getMaintainScript() throws ClientException {
         try {
-            if ((this.maintainTestScriptDelegate == null)) {
-                this.maintainTestScriptDelegate = new MaintainTestScriptDelegate(this
-                        .getComponent().getMaintainTestScript());
+            if ((this.maintainScriptDelegate == null)) {
+                this.maintainScriptDelegate = new MaintainScriptDelegate(this.getComponent().getMaintainScript());
             }
-            return this.maintainTestScriptDelegate;
+            return this.maintainScriptDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot connect to component: ScriptComponent", e);
         } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: MaintainTestScript", e);
+            throw new ClientException("Cannot locate service: MaintainScript", e);
         }
     }
 
     /**
-     * Getter for the ProduceTestScriptElement.
+     * Getter for the ProduceScript.
      *
-     * @return the ProduceTestScriptElementDelegate.
+     * @return the ProduceScriptDelegate.
      * @throws ClientException
      */
-    public ProduceTestScriptElementDelegate getProduceTestScriptElement() throws ClientException {
+    public ProduceScriptDelegate getProduceScript() throws ClientException {
         try {
-            if ((this.produceTestScriptElementDelegate == null)) {
-                this.produceTestScriptElementDelegate = new ProduceTestScriptElementDelegate(this
-                        .getComponent().getProduceTestScriptElement());
+            if ((this.produceScriptDelegate == null)) {
+                this.produceScriptDelegate = new ProduceScriptDelegate(this.getComponent().getProduceScript());
             }
-            return this.produceTestScriptElementDelegate;
+            return this.produceScriptDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot connect to component: ScriptComponent", e);
         } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: ProduceTestScriptElement", e);
+            throw new ClientException("Cannot locate service: ProduceScript", e);
         }
     }
 
     /**
-     * Getter for the SearchTestScript.
+     * Getter for the SearchScript.
      *
-     * @return the SearchTestScriptDelegate.
+     * @return the SearchScriptDelegate.
      * @throws ClientException
      */
-    public SearchTestScriptDelegate getSearchTestScript() throws ClientException {
+    public SearchScriptDelegate getSearchScript() throws ClientException {
         try {
-            if ((this.searchTestScriptDelegate == null)) {
-                this.searchTestScriptDelegate = new SearchTestScriptDelegate(this.getComponent()
-                        .getSearchTestScript());
+            if ((this.searchScriptDelegate == null)) {
+                this.searchScriptDelegate = new SearchScriptDelegate(this.getComponent().getSearchScript());
             }
-            return this.searchTestScriptDelegate;
+            return this.searchScriptDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot connect to component: ScriptComponent", e);
         } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: SearchTestScript", e);
+            throw new ClientException("Cannot locate service: SearchScript", e);
         }
     }
 
     /**
-     * Getter for the MaintainMetadata.
+     * Getter for the ResolveScript.
      *
-     * @return the MaintainMetadataDelegate.
+     * @return the ResolveScriptDelegate.
      * @throws ClientException
      */
-    public MaintainMetadataDelegate getMaintainMetadata() throws ClientException {
+    public ResolveScriptDelegate getResolveScript() throws ClientException {
         try {
-            if ((this.maintainMetadataDelegate == null)) {
-                this.maintainMetadataDelegate = new MaintainMetadataDelegate(this.getComponent()
-                        .getMaintainMetadata());
+            if ((this.resolveScriptDelegate == null)) {
+                this.resolveScriptDelegate = new ResolveScriptDelegate(this.getComponent().getResolveScript());
             }
-            return this.maintainMetadataDelegate;
+            return this.resolveScriptDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot connect to component: ScriptComponent", e);
         } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: MaintainMetadata", e);
+            throw new ClientException("Cannot locate service: ResolveScript", e);
         }
     }
 
     /**
-     * Getter for the ProduceMetadata.
+     * Getter for the ReportScript.
      *
-     * @return the ProduceMetadataDelegate.
+     * @return the ReportScriptDelegate.
      * @throws ClientException
      */
-    public ProduceMetadataDelegate getProduceMetadata() throws ClientException {
+    public ReportScriptDelegate getReportScript() throws ClientException {
         try {
-            if ((this.produceMetadataDelegate == null)) {
-                this.produceMetadataDelegate = new ProduceMetadataDelegate(this.getComponent()
-                        .getProduceMetadata());
+            if ((this.reportScriptDelegate == null)) {
+                this.reportScriptDelegate = new ReportScriptDelegate(this.getComponent().getReportScript());
             }
-            return this.produceMetadataDelegate;
+            return this.reportScriptDelegate;
         } catch (ConnectionException e) {
             throw new ClientException("Cannot connect to component: ScriptComponent", e);
         } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: ProduceMetadata", e);
-        }
-    }
-
-    /**
-     * Getter for the SearchMetadata.
-     *
-     * @return the SearchMetadataDelegate.
-     * @throws ClientException
-     */
-    public SearchMetadataDelegate getSearchMetadata() throws ClientException {
-        try {
-            if ((this.searchMetadataDelegate == null)) {
-                this.searchMetadataDelegate = new SearchMetadataDelegate(this.getComponent()
-                        .getSearchMetadata());
-            }
-            return this.searchMetadataDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: SearchMetadata", e);
-        }
-    }
-
-    /**
-     * Getter for the SearchFolder.
-     *
-     * @return the SearchFolderDelegate.
-     * @throws ClientException
-     */
-    public SearchFolderDelegate getSearchFolder() throws ClientException {
-        try {
-            if ((this.searchFolderDelegate == null)) {
-                this.searchFolderDelegate = new SearchFolderDelegate(this.getComponent()
-                        .getSearchFolder());
-            }
-            return this.searchFolderDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: SearchFolder", e);
-        }
-    }
-
-    /**
-     * Getter for the MaintainFolder.
-     *
-     * @return the MaintainFolderDelegate.
-     * @throws ClientException
-     */
-    public MaintainFolderDelegate getMaintainFolder() throws ClientException {
-        try {
-            if ((this.maintainFolderDelegate == null)) {
-                this.maintainFolderDelegate = new MaintainFolderDelegate(this.getComponent()
-                        .getMaintainFolder());
-            }
-            return this.maintainFolderDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: MaintainFolder", e);
-        }
-    }
-
-    /**
-     * Getter for the MaintainSubEngineCode.
-     *
-     * @return the MaintainSubEngineCodeDelegate.
-     * @throws ClientException
-     */
-    public MaintainSubEngineCodeDelegate getMaintainSubEngineCode() throws ClientException {
-        try {
-            if ((this.maintainSubEngineCodeDelegate == null)) {
-                this.maintainSubEngineCodeDelegate = new MaintainSubEngineCodeDelegate(this
-                        .getComponent().getMaintainSubEngineCode());
-            }
-            return this.maintainSubEngineCodeDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: MaintainSubEngineCode", e);
-        }
-    }
-
-    /**
-     * Getter for the SearchSubEngineCode.
-     *
-     * @return the SearchSubEngineCodeDelegate.
-     * @throws ClientException
-     */
-    public SearchSubEngineCodeDelegate getSearchSubEngineCode() throws ClientException {
-        try {
-            if ((this.searchSubEngineCodeDelegate == null)) {
-                this.searchSubEngineCodeDelegate = new SearchSubEngineCodeDelegate(this
-                        .getComponent().getSearchSubEngineCode());
-            }
-            return this.searchSubEngineCodeDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: SearchSubEngineCode", e);
-        }
-    }
-
-    /**
-     * Getter for the ProduceFolder.
-     *
-     * @return the ProduceFolderDelegate.
-     * @throws ClientException
-     */
-    public ProduceFolderDelegate getProduceFolder() throws ClientException {
-        try {
-            if ((this.produceFolderDelegate == null)) {
-                this.produceFolderDelegate = new ProduceFolderDelegate(this.getComponent()
-                        .getProduceFolder());
-            }
-            return this.produceFolderDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: ProduceFolder", e);
-        }
-    }
-
-    /**
-     * Getter for the ExportScript.
-     *
-     * @return the ExportScriptDelegate.
-     * @throws ClientException
-     */
-    public ExportScriptDelegate getExportScript() throws ClientException {
-        try {
-            if ((this.exportScriptDelegate == null)) {
-                this.exportScriptDelegate = new ExportScriptDelegate(this.getComponent()
-                        .getExportScript());
-            }
-            return this.exportScriptDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: ExportScript", e);
-        }
-    }
-
-    /**
-     * Getter for the ImportScript.
-     *
-     * @return the ImportScriptDelegate.
-     * @throws ClientException
-     */
-    public ImportScriptDelegate getImportScript() throws ClientException {
-        try {
-            if ((this.importScriptDelegate == null)) {
-                this.importScriptDelegate = new ImportScriptDelegate(this.getComponent()
-                        .getImportScript());
-            }
-            return this.importScriptDelegate;
-        } catch (ConnectionException e) {
-            throw new ClientException("Cannot connect to component: ScriptComponent", e);
-        } catch (ServiceException e) {
-            throw new ClientException("Cannot locate service: ImportScript", e);
+            throw new ClientException("Cannot locate service: ReportScript", e);
         }
     }
 

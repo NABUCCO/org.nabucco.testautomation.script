@@ -1,25 +1,23 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.impl.service.produce;
 
-import org.nabucco.framework.base.facade.component.NabuccoInstance;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.base.facade.datatype.Flag;
-import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.exception.service.ProduceException;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
@@ -28,7 +26,7 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
+import org.nabucco.testautomation.script.facade.datatype.dictionary.Function;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
@@ -48,186 +46,194 @@ import org.nabucco.testautomation.script.facade.message.ProduceTestScriptElement
  */
 public class ProduceTestScriptElementServiceHandlerImpl extends ProduceTestScriptElementServiceHandler {
 
-	public static final String TEST_SCRIPT_ELEMENT = "TSE";
-	
-	private static final long serialVersionUID = 1L;
+    public static final String TEST_SCRIPT_ELEMENT = "TSE";
 
-	@Override
-	public ProduceTestScriptElementMsg produceTestScriptElement(
-			ProduceTestScriptElementMsg msg) throws ProduceException {
-		
-		if (msg.getTestScriptElementType() == null) {
-			msg.setTestScriptElement(null);
-			return msg;
-		}
-		
-		TestScriptElement testScriptElement = null;
-		
-		switch (msg.getTestScriptElementType()) {
-		case ACTION:
-			testScriptElement = produceAction();
-			break;
-		case ASSERTION:
-			testScriptElement = produceAssertion();
-			break;
-		case BREAK_LOOP:
-			testScriptElement = produceBreakLoop();
-			break;
-		case CONDITION:
-			testScriptElement = produceCondition();
-			break;
-		case EXECUTION:
-			testScriptElement = produceExecution();
-			break;
-		case FOREACH:
-			testScriptElement = produceForeach();
-			break;
-		case LOCK:
-			testScriptElement = produceLock();
-			break;
-		case LOGGER:
-			testScriptElement = produceLogger();
-			break;
-		case LOOP:
-			testScriptElement = produceLoop();
-			break;
-		case SCRIPT:
-			testScriptElement = produceTestScript();
-			break;
-		case TEXT_MESSAGE:
-			testScriptElement = produceTextMessage();
-			break;
-		case PROPERTY_ACTION:
-			testScriptElement = producePropertyAction();
-			break;
-		case EMBEDDED_SCRIPT:
-			testScriptElement = produceEmbeddedTestScript();
-			break;
-		}
-		
-		if (testScriptElement != null) {
-			testScriptElement.setDatatypeState(DatatypeState.INITIALIZED);
-			testScriptElement.setOwner(NabuccoInstance.getInstance().getOwner());
-			testScriptElement.setIdentificationKey(new Key(TEST_SCRIPT_ELEMENT));
-			msg.setTestScriptElement(testScriptElement);
-			
-			TestScriptElementContainer container = new TestScriptElementContainer();
-			container.setDatatypeState(DatatypeState.INITIALIZED);
-			container.setElement(testScriptElement);
-			msg.setTestScriptElementContainer(container);
-		}
-		return msg;
-	}
-	
-	private PropertyAction producePropertyAction() {
-		PropertyAction action = new PropertyAction();
-		action.setName("PropertyAction");
-		action.setDatatypeState(DatatypeState.INITIALIZED);
-		return action;
-	}
+    private static final long serialVersionUID = 1L;
 
-	private TextMessage produceTextMessage() {
-		TextMessage msg = new TextMessage();
-		msg.setName("TextMessage");
-		msg.setDatatypeState(DatatypeState.INITIALIZED);
-		return msg;
-	}
+    @Override
+    public ProduceTestScriptElementMsg produceTestScriptElement(ProduceTestScriptElementMsg msg)
+            throws ProduceException {
 
-	private TestScript produceTestScript() {
-		TestScript script = new TestScript();
-		script.setName("TestScript");
-		script.setDatatypeState(DatatypeState.INITIALIZED);
-		return script;
-	}
+        if (msg.getTestScriptElementType() == null) {
+            msg.setTestScriptElement(null);
+            return msg;
+        }
 
-	private EmbeddedTestScript produceEmbeddedTestScript() {
-		EmbeddedTestScript script = new EmbeddedTestScript();
-		script.setName("TestScript");
-		script.setDatatypeState(DatatypeState.INITIALIZED);
-		return script;
-	}
+        TestScriptElement testScriptElement = null;
 
-	private Loop produceLoop() {
-		Loop loop = new Loop();
-		loop.setName("Loop");
-		loop.setDatatypeState(DatatypeState.INITIALIZED);
-		return loop;
-	}
+        switch (msg.getTestScriptElementType()) {
+        case ACTION:
+            testScriptElement = produceAction();
+            break;
+        case ASSERTION:
+            testScriptElement = produceAssertion();
+            break;
+        case BREAK_LOOP:
+            testScriptElement = produceBreakLoop();
+            break;
+        case CONDITION:
+            testScriptElement = produceCondition();
+            break;
+        case EXECUTION:
+            testScriptElement = produceExecution();
+            break;
+        case FOREACH:
+            testScriptElement = produceForeach();
+            break;
+        case FUNCTION:
+            testScriptElement = produceFunction();
+            break;
+        case LOGGER:
+            testScriptElement = produceLogger();
+            break;
+        case LOOP:
+            testScriptElement = produceLoop();
+            break;
+        case SCRIPT:
+            testScriptElement = produceTestScript();
+            break;
+        case TEXT_MESSAGE:
+            testScriptElement = produceTextMessage();
+            break;
+        case PROPERTY_ACTION:
+            testScriptElement = producePropertyAction();
+            break;
+        case EMBEDDED_SCRIPT:
+            testScriptElement = produceEmbeddedTestScript();
+            break;
+        }
 
-	private Lock produceLock() {
-		Lock lock = new Lock();
-		lock.setName("Lock");
-		lock.setDatatypeState(DatatypeState.INITIALIZED);
-		return lock;
-	}
+        if (testScriptElement != null) {
+            testScriptElement.setDatatypeState(DatatypeState.INITIALIZED);
+            testScriptElement.setIdentificationKey("");
+            msg.setTestScriptElement(testScriptElement);
 
-	private Foreach produceForeach() {
-		Foreach foreach = new Foreach();
-		foreach.setName("Foreach");
-		foreach.setDatatypeState(DatatypeState.INITIALIZED);
-		return foreach;
-	}
+            TestScriptElementContainer container = new TestScriptElementContainer();
+            container.setDatatypeState(DatatypeState.INITIALIZED);
+            container.setElement(testScriptElement);
+            msg.setTestScriptElementContainer(container);
+        }
+        return msg;
+    }
 
-	private Condition produceCondition() {
-		Condition condition = new Condition();
-		condition.setName("Condition");
-		condition.setDatatypeState(DatatypeState.INITIALIZED);
-		condition.setIsBreakCondition(new Flag(Boolean.FALSE));
-		condition.setOperator(OperatorType.NONE);
-		return condition;
-	}
+    private PropertyAction producePropertyAction() {
+        PropertyAction action = new PropertyAction();
+        action.setName("PropertyAction");
+        action.setDatatypeState(DatatypeState.INITIALIZED);
+        action.setIdentificationKey("");
+        return action;
+    }
 
-	private BreakLoop produceBreakLoop() {
-		BreakLoop breakLoop = new BreakLoop();
-		breakLoop.setName("BreakLoop");
-		breakLoop.setDatatypeState(DatatypeState.INITIALIZED);
-		return breakLoop;
-	}
+    private TextMessage produceTextMessage() {
+        TextMessage msg = new TextMessage();
+        msg.setName("TextMessage");
+        msg.setDatatypeState(DatatypeState.INITIALIZED);
+        msg.setIdentificationKey("");
+        return msg;
+    }
 
-	private Assertion produceAssertion() {
-		Assertion assertion = new Assertion();
-		assertion.setName("Assertion");
-		assertion.setDatatypeState(DatatypeState.INITIALIZED);
-		return assertion;
-	}
+    private TestScript produceTestScript() {
+        TestScript script = new TestScript();
+        script.setName("TestScript");
+        script.setDatatypeState(DatatypeState.INITIALIZED);
+        script.setIdentificationKey("");
+        return script;
+    }
 
-	private Execution produceExecution() {
-		Execution execution = new Execution();
-		execution.setName("Execution");
-		execution.setDatatypeState(DatatypeState.INITIALIZED);
-		Action action = produceAction();
-		action.setOwner(NabuccoInstance.getInstance().getOwner());
-		action.setIdentificationKey(new Key());
-		add(action, execution);
-		return execution;
-	}
+    private EmbeddedTestScript produceEmbeddedTestScript() {
+        EmbeddedTestScript script = new EmbeddedTestScript();
+        script.setName("TestScript");
+        script.setDatatypeState(DatatypeState.INITIALIZED);
+        script.setIdentificationKey("");
+        return script;
+    }
 
-	private Action produceAction() {
-		Action action = new Action();
-		action.setName("Action");
-		action.setTrace(Boolean.FALSE);
-		action.setDatatypeState(DatatypeState.INITIALIZED);
-		return action;
-	}
-	
-	private Logger produceLogger() {
-		Logger logger = new Logger();
-		logger.setLevel(LoggerLevelType.INFO);
-		logger.setName("Logger");
-		logger.setDatatypeState(DatatypeState.INITIALIZED);
-		TextMessage msg = produceTextMessage();
-		msg.setOwner(NabuccoInstance.getInstance().getOwner());
-		msg.setIdentificationKey(new Key());
-		add(msg, logger);
-		return logger;
-	}
-	
-	private void add(TestScriptElement element, TestScriptComposite to) {
-		TestScriptElementContainer container = new TestScriptElementContainer();
-		container.setDatatypeState(DatatypeState.INITIALIZED);
-		container.setElement(element);
-		container.setOrderIndex(to.getTestScriptElementList().size());
-		to.getTestScriptElementList().add(container);
-	}
-	
+    private Loop produceLoop() {
+        Loop loop = new Loop();
+        loop.setName("Loop");
+        loop.setDatatypeState(DatatypeState.INITIALIZED);
+        loop.setIdentificationKey("");
+        return loop;
+    }
+
+    private Foreach produceForeach() {
+        Foreach foreach = new Foreach();
+        foreach.setName("Foreach");
+        foreach.setDatatypeState(DatatypeState.INITIALIZED);
+        foreach.setIdentificationKey("");
+        return foreach;
+    }
+
+    private Function produceFunction() {
+        Function function = new Function();
+        function.setName("Function");
+        function.setDatatypeState(DatatypeState.INITIALIZED);
+        function.setIdentificationKey("");
+        return function;
+    }
+
+    private Condition produceCondition() {
+        Condition condition = new Condition();
+        condition.setName("Condition");
+        condition.setDatatypeState(DatatypeState.INITIALIZED);
+        condition.setIsBreakCondition(new Flag(Boolean.FALSE));
+        condition.setOperator(OperatorType.NONE);
+        condition.setIdentificationKey("");
+        return condition;
+    }
+
+    private BreakLoop produceBreakLoop() {
+        BreakLoop breakLoop = new BreakLoop();
+        breakLoop.setName("BreakLoop");
+        breakLoop.setDatatypeState(DatatypeState.INITIALIZED);
+        breakLoop.setIdentificationKey("");
+        return breakLoop;
+    }
+
+    private Assertion produceAssertion() {
+        Assertion assertion = new Assertion();
+        assertion.setName("Assertion");
+        assertion.setDatatypeState(DatatypeState.INITIALIZED);
+        assertion.setIdentificationKey("");
+        return assertion;
+    }
+
+    private Execution produceExecution() {
+        Execution execution = new Execution();
+        execution.setName("Execution");
+        execution.setDatatypeState(DatatypeState.INITIALIZED);
+        Action action = produceAction();
+        action.setIdentificationKey("");
+        add(action, execution);
+        return execution;
+    }
+
+    private Action produceAction() {
+        Action action = new Action();
+        action.setName("Action");
+        action.setTrace(Boolean.FALSE);
+        action.setDatatypeState(DatatypeState.INITIALIZED);
+        action.setIdentificationKey("");
+        return action;
+    }
+
+    private Logger produceLogger() {
+        Logger logger = new Logger();
+        logger.setLevel(LoggerLevelType.INFO);
+        logger.setName("Logger");
+        logger.setDatatypeState(DatatypeState.INITIALIZED);
+        TextMessage msg = produceTextMessage();
+        msg.setIdentificationKey("");
+        add(msg, logger);
+        return logger;
+    }
+
+    private void add(TestScriptElement element, TestScriptComposite to) {
+        TestScriptElementContainer container = new TestScriptElementContainer();
+        container.setDatatypeState(DatatypeState.INITIALIZED);
+        container.setElement(element);
+        container.setOrderIndex(to.getTestScriptElementList().size());
+        to.getTestScriptElementList().add(container);
+    }
+
 }

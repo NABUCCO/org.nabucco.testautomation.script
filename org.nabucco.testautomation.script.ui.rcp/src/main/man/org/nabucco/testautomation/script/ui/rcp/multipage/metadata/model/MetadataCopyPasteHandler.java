@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model;
 
 import java.util.Arrays;
@@ -23,13 +23,13 @@ import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailTreeNode;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.copypaste.AbstractCopyPasteHandler;
-import org.nabucco.testautomation.facade.datatype.property.PropertyList;
-import org.nabucco.testautomation.facade.datatype.property.base.Property;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
+import org.nabucco.testautomation.property.facade.datatype.PropertyList;
+import org.nabucco.testautomation.property.facade.datatype.base.Property;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyContainer;
+import org.nabucco.testautomation.property.ui.rcp.model.property.PropertyElementFactory;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.facade.datatype.metadata.MetadataLabel;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.MetadataMaintenanceMasterDetailTreeNodeCreator;
-import org.nabucco.testautomation.ui.rcp.model.property.TestautomationElementFactory;
 
 /**
  * MetadataCopyPasteHandler
@@ -75,7 +75,7 @@ public class MetadataCopyPasteHandler extends AbstractCopyPasteHandler {
 					MetadataLabel targetMetadataLabel = (MetadataLabel) targetDatatype;
 					if(targetMetadataLabel.getPropertyList() == null){
 						PropertyList copiedPropertyList = (PropertyList) copiedDatatype;
-						PropertyContainer propertyContainer = TestautomationElementFactory.clone(copiedPropertyList);	
+						PropertyContainer propertyContainer = PropertyElementFactory.clone(copiedPropertyList);	
 						clone = propertyContainer.getProperty();
 						targetMetadataLabel.setPropertyList((PropertyList) clone);
 					} else {
@@ -86,7 +86,7 @@ public class MetadataCopyPasteHandler extends AbstractCopyPasteHandler {
 				}
 			} else if(targetDatatype instanceof PropertyList && copiedDatatype instanceof Property){
 				Property copiedProperty = (Property) copiedDatatype;
-				PropertyContainer propertyContainer = TestautomationElementFactory.clone(copiedProperty);
+				PropertyContainer propertyContainer = PropertyElementFactory.clone(copiedProperty);
 				clone = propertyContainer.getProperty();
 				List<PropertyContainer> targetPropertyList = ((PropertyList) targetDatatype).getPropertyList();
 				propertyContainer.setOrderIndex(targetPropertyList.size());

@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.message;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
@@ -29,7 +41,7 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;", "m1,1;", "m1,1;", "l0,n;m0,1;" };
+    private static final String[] PROPERTY_CONSTRAINTS = { "m1,1;", "m1,1;", "m1,1;", "l0,n;u0,n;m0,1;" };
 
     public static final String TESTSCRIPTELEMENTTYPE = "testScriptElementType";
 
@@ -50,6 +62,11 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
     /** Constructs a new ProduceTestScriptElementMsg instance. */
     public ProduceTestScriptElementMsg() {
         super();
+        this.initDefaults();
+    }
+
+    /** InitDefaults. */
+    private void initDefaults() {
     }
 
     /**
@@ -59,34 +76,34 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.put(TESTSCRIPTELEMENTTYPE, PropertyDescriptorSupport.createEnumeration(
-                TESTSCRIPTELEMENTTYPE, TestScriptElementType.class, 0, PROPERTY_CONSTRAINTS[0],
-                false));
-        propertyMap.put(TESTSCRIPTELEMENT, PropertyDescriptorSupport.createDatatype(
-                TESTSCRIPTELEMENT, TestScriptElement.class, 1, PROPERTY_CONSTRAINTS[1], false,
-                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(TESTSCRIPTELEMENTTYPE, PropertyDescriptorSupport.createEnumeration(TESTSCRIPTELEMENTTYPE,
+                TestScriptElementType.class, 0, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.put(TESTSCRIPTELEMENT, PropertyDescriptorSupport.createDatatype(TESTSCRIPTELEMENT,
+                TestScriptElement.class, 1, PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.COMPOSITION));
         propertyMap.put(TESTSCRIPTELEMENTCONTAINER, PropertyDescriptorSupport.createDatatype(
-                TESTSCRIPTELEMENTCONTAINER, TestScriptElementContainer.class, 2,
-                PROPERTY_CONSTRAINTS[2], false, PropertyAssociationType.COMPOSITION));
-        propertyMap.put(IMPORTELEMENT, PropertyDescriptorSupport.createBasetype(IMPORTELEMENT,
-                Flag.class, 3, PROPERTY_CONSTRAINTS[3], false));
+                TESTSCRIPTELEMENTCONTAINER, TestScriptElementContainer.class, 2, PROPERTY_CONSTRAINTS[2], false,
+                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(IMPORTELEMENT,
+                PropertyDescriptorSupport.createBasetype(IMPORTELEMENT, Flag.class, 3, PROPERTY_CONSTRAINTS[3], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
+    /** Init. */
+    public void init() {
+        this.initDefaults();
+    }
+
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(
-                ProduceTestScriptElementMsg.getPropertyDescriptor(TESTSCRIPTELEMENTTYPE),
-                this.testScriptElementType));
-        properties.add(super.createProperty(
-                ProduceTestScriptElementMsg.getPropertyDescriptor(TESTSCRIPTELEMENT),
-                this.testScriptElement));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(ProduceTestScriptElementMsg.getPropertyDescriptor(TESTSCRIPTELEMENTTYPE),
+                this.getTestScriptElementType()));
+        properties.add(super.createProperty(ProduceTestScriptElementMsg.getPropertyDescriptor(TESTSCRIPTELEMENT),
+                this.getTestScriptElement()));
         properties.add(super.createProperty(
                 ProduceTestScriptElementMsg.getPropertyDescriptor(TESTSCRIPTELEMENTCONTAINER),
-                this.testScriptElementContainer));
-        properties.add(super.createProperty(
-                ProduceTestScriptElementMsg.getPropertyDescriptor(IMPORTELEMENT),
+                this.getTestScriptElementContainer()));
+        properties.add(super.createProperty(ProduceTestScriptElementMsg.getPropertyDescriptor(IMPORTELEMENT),
                 this.importElement));
         return properties;
     }
@@ -154,14 +171,11 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.testScriptElementType == null) ? 0
-                : this.testScriptElementType.hashCode()));
-        result = ((PRIME * result) + ((this.testScriptElement == null) ? 0 : this.testScriptElement
+        result = ((PRIME * result) + ((this.testScriptElementType == null) ? 0 : this.testScriptElementType.hashCode()));
+        result = ((PRIME * result) + ((this.testScriptElement == null) ? 0 : this.testScriptElement.hashCode()));
+        result = ((PRIME * result) + ((this.testScriptElementContainer == null) ? 0 : this.testScriptElementContainer
                 .hashCode()));
-        result = ((PRIME * result) + ((this.testScriptElementContainer == null) ? 0
-                : this.testScriptElementContainer.hashCode()));
-        result = ((PRIME * result) + ((this.importElement == null) ? 0 : this.importElement
-                .hashCode()));
+        result = ((PRIME * result) + ((this.importElement == null) ? 0 : this.importElement.hashCode()));
         return result;
     }
 
@@ -249,8 +263,7 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
      * @return the NabuccoPropertyDescriptor.
      */
     public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return PropertyCache.getInstance().retrieve(ProduceTestScriptElementMsg.class)
-                .getProperty(propertyName);
+        return PropertyCache.getInstance().retrieve(ProduceTestScriptElementMsg.class).getProperty(propertyName);
     }
 
     /**
@@ -259,7 +272,6 @@ public class ProduceTestScriptElementMsg extends ServiceMessageSupport implement
      * @return the List<NabuccoPropertyDescriptor>.
      */
     public static List<NabuccoPropertyDescriptor> getPropertyDescriptorList() {
-        return PropertyCache.getInstance().retrieve(ProduceTestScriptElementMsg.class)
-                .getAllProperties();
+        return PropertyCache.getInstance().retrieve(ProduceTestScriptElementMsg.class).getAllProperties();
     }
 }

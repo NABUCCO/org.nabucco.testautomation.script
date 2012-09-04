@@ -1,24 +1,26 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.facade.datatype.visitor;
 
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.visitor.DatatypeVisitor;
 import org.nabucco.framework.base.facade.datatype.visitor.VisitorException;
+import org.nabucco.testautomation.property.facade.datatype.base.Property;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyContainer;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Action;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Assertion;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.BreakLoop;
@@ -26,7 +28,6 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.Condition;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.EmbeddedTestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Execution;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Foreach;
-import org.nabucco.testautomation.script.facade.datatype.dictionary.Lock;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Logger;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.Loop;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.PropertyAction;
@@ -34,9 +35,6 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TextMessage;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElement;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementContainer;
-
-import org.nabucco.testautomation.facade.datatype.property.base.Property;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyContainer;
 
 /**
  * TestScriptVisitor
@@ -97,9 +95,6 @@ public class TestScriptVisitor extends DatatypeVisitor {
     		break;
     	case FOREACH:
     		this.visit((Foreach) element);
-    		break;
-    	case LOCK:
-    		this.visit((Lock) element);
     		break;
     	case LOGGER:
     		this.visit((Logger) element);
@@ -183,15 +178,6 @@ public class TestScriptVisitor extends DatatypeVisitor {
      *            the element to visit
      */
     protected void visit(Foreach element) throws VisitorException {
-    }
-    
-    /**
-     * Visit {@link Lock} instances.
-     * 
-     * @param element
-     *            the element to visit
-     */
-    protected void visit(Lock element) throws VisitorException {
     }
     
     /**

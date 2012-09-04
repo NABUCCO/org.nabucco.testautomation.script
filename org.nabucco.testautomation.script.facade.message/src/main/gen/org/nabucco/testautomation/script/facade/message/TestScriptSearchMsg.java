@@ -1,16 +1,28 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.message;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
@@ -29,10 +41,8 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l3,12;m0,1;", "l0,n;m0,1;",
-            "l0,255;m0,1;", "l0,255;m0,1;", "l0,255;m0,1;", "l0,n;m0,1;", "l0,n;m0,1;" };
-
-    public static final String OWNER = "owner";
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,n;u0,n;m0,1;", "l0,255;u0,n;m0,1;", "l0,n;u0,n;m0,1;",
+            "l0,255;u0,n;m0,1;", "l0,n;u0,n;m0,1;", "l0,n;u0,n;m0,1;" };
 
     public static final String IDENTIFIER = "identifier";
 
@@ -46,13 +56,11 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
 
     public static final String HASFOLDER = "hasFolder";
 
-    private Owner owner;
-
     private Identifier identifier;
 
     private Name name;
 
-    private Name testScriptKey;
+    private Key testScriptKey;
 
     private Description description;
 
@@ -64,6 +72,11 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
     /** Constructs a new TestScriptSearchMsg instance. */
     public TestScriptSearchMsg() {
         super();
+        this.initDefaults();
+    }
+
+    /** InitDefaults. */
+    private void initDefaults() {
     }
 
     /**
@@ -73,40 +86,37 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.put(OWNER, PropertyDescriptorSupport.createBasetype(OWNER, Owner.class, 0,
+        propertyMap.put(IDENTIFIER, PropertyDescriptorSupport.createBasetype(IDENTIFIER, Identifier.class, 0,
                 PROPERTY_CONSTRAINTS[0], false));
-        propertyMap.put(IDENTIFIER, PropertyDescriptorSupport.createBasetype(IDENTIFIER,
-                Identifier.class, 1, PROPERTY_CONSTRAINTS[1], false));
-        propertyMap.put(NAME, PropertyDescriptorSupport.createBasetype(NAME, Name.class, 2,
-                PROPERTY_CONSTRAINTS[2], false));
-        propertyMap.put(TESTSCRIPTKEY, PropertyDescriptorSupport.createBasetype(TESTSCRIPTKEY,
-                Name.class, 3, PROPERTY_CONSTRAINTS[3], false));
-        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
-                Description.class, 4, PROPERTY_CONSTRAINTS[4], false));
-        propertyMap.put(FOLDERID, PropertyDescriptorSupport.createBasetype(FOLDERID,
-                Identifier.class, 5, PROPERTY_CONSTRAINTS[5], false));
-        propertyMap.put(HASFOLDER, PropertyDescriptorSupport.createBasetype(HASFOLDER, Flag.class,
-                6, PROPERTY_CONSTRAINTS[6], false));
+        propertyMap.put(NAME,
+                PropertyDescriptorSupport.createBasetype(NAME, Name.class, 1, PROPERTY_CONSTRAINTS[1], false));
+        propertyMap.put(TESTSCRIPTKEY,
+                PropertyDescriptorSupport.createBasetype(TESTSCRIPTKEY, Key.class, 2, PROPERTY_CONSTRAINTS[2], false));
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION, Description.class, 3,
+                PROPERTY_CONSTRAINTS[3], false));
+        propertyMap
+                .put(FOLDERID, PropertyDescriptorSupport.createBasetype(FOLDERID, Identifier.class, 4,
+                        PROPERTY_CONSTRAINTS[4], false));
+        propertyMap.put(HASFOLDER,
+                PropertyDescriptorSupport.createBasetype(HASFOLDER, Flag.class, 5, PROPERTY_CONSTRAINTS[5], false));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
+    /** Init. */
+    public void init() {
+        this.initDefaults();
+    }
+
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(OWNER),
-                this.owner));
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(IDENTIFIER),
-                this.identifier));
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(NAME),
-                this.name));
-        properties.add(super.createProperty(
-                TestScriptSearchMsg.getPropertyDescriptor(TESTSCRIPTKEY), this.testScriptKey));
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(DESCRIPTION),
-                this.description));
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(FOLDERID),
-                this.folderId));
-        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(HASFOLDER),
-                this.hasFolder));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(IDENTIFIER), this.identifier));
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(NAME), this.name));
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(TESTSCRIPTKEY),
+                this.testScriptKey));
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(DESCRIPTION), this.description));
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(FOLDERID), this.folderId));
+        properties.add(super.createProperty(TestScriptSearchMsg.getPropertyDescriptor(HASFOLDER), this.hasFolder));
         return properties;
     }
 
@@ -115,17 +125,14 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
         if (super.setProperty(property)) {
             return true;
         }
-        if ((property.getName().equals(OWNER) && (property.getType() == Owner.class))) {
-            this.setOwner(((Owner) property.getInstance()));
-            return true;
-        } else if ((property.getName().equals(IDENTIFIER) && (property.getType() == Identifier.class))) {
+        if ((property.getName().equals(IDENTIFIER) && (property.getType() == Identifier.class))) {
             this.setIdentifier(((Identifier) property.getInstance()));
             return true;
         } else if ((property.getName().equals(NAME) && (property.getType() == Name.class))) {
             this.setName(((Name) property.getInstance()));
             return true;
-        } else if ((property.getName().equals(TESTSCRIPTKEY) && (property.getType() == Name.class))) {
-            this.setTestScriptKey(((Name) property.getInstance()));
+        } else if ((property.getName().equals(TESTSCRIPTKEY) && (property.getType() == Key.class))) {
+            this.setTestScriptKey(((Key) property.getInstance()));
             return true;
         } else if ((property.getName().equals(DESCRIPTION) && (property.getType() == Description.class))) {
             this.setDescription(((Description) property.getInstance()));
@@ -155,11 +162,6 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
             return false;
         }
         final TestScriptSearchMsg other = ((TestScriptSearchMsg) obj);
-        if ((this.owner == null)) {
-            if ((other.owner != null))
-                return false;
-        } else if ((!this.owner.equals(other.owner)))
-            return false;
         if ((this.identifier == null)) {
             if ((other.identifier != null))
                 return false;
@@ -197,11 +199,9 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.owner == null) ? 0 : this.owner.hashCode()));
         result = ((PRIME * result) + ((this.identifier == null) ? 0 : this.identifier.hashCode()));
         result = ((PRIME * result) + ((this.name == null) ? 0 : this.name.hashCode()));
-        result = ((PRIME * result) + ((this.testScriptKey == null) ? 0 : this.testScriptKey
-                .hashCode()));
+        result = ((PRIME * result) + ((this.testScriptKey == null) ? 0 : this.testScriptKey.hashCode()));
         result = ((PRIME * result) + ((this.description == null) ? 0 : this.description.hashCode()));
         result = ((PRIME * result) + ((this.folderId == null) ? 0 : this.folderId.hashCode()));
         result = ((PRIME * result) + ((this.hasFolder == null) ? 0 : this.hasFolder.hashCode()));
@@ -211,24 +211,6 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
     @Override
     public ServiceMessage cloneObject() {
         return this;
-    }
-
-    /**
-     * Missing description at method getOwner.
-     *
-     * @return the Owner.
-     */
-    public Owner getOwner() {
-        return this.owner;
-    }
-
-    /**
-     * Missing description at method setOwner.
-     *
-     * @param owner the Owner.
-     */
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 
     /**
@@ -270,18 +252,18 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
     /**
      * Missing description at method getTestScriptKey.
      *
-     * @return the Name.
+     * @return the Key.
      */
-    public Name getTestScriptKey() {
+    public Key getTestScriptKey() {
         return this.testScriptKey;
     }
 
     /**
      * Missing description at method setTestScriptKey.
      *
-     * @param testScriptKey the Name.
+     * @param testScriptKey the Key.
      */
-    public void setTestScriptKey(Name testScriptKey) {
+    public void setTestScriptKey(Key testScriptKey) {
         this.testScriptKey = testScriptKey;
     }
 
@@ -346,8 +328,7 @@ public class TestScriptSearchMsg extends ServiceMessageSupport implements Servic
      * @return the NabuccoPropertyDescriptor.
      */
     public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return PropertyCache.getInstance().retrieve(TestScriptSearchMsg.class)
-                .getProperty(propertyName);
+        return PropertyCache.getInstance().retrieve(TestScriptSearchMsg.class).getProperty(propertyName);
     }
 
     /**

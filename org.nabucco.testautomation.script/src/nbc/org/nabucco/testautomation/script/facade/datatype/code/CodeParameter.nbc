@@ -20,8 +20,8 @@ import org.nabucco.framework.base.facade.datatype.NabuccoDatatype;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.Flag;
 import org.nabucco.framework.base.facade.datatype.Description;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
-import org.nabucco.testautomation.facade.datatype.base.Value;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyType;
+import org.nabucco.testautomation.property.facade.datatype.base.Value;
 
 @Author			Steffen Schmidt
 @Company		PRODYNA AG
@@ -40,3 +40,4 @@ public Datatype CodeParameter extends NabuccoDatatype {
 	private Basetype Flag[1] mandatory;
 	
 }
+	

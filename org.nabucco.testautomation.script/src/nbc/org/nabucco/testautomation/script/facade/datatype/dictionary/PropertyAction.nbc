@@ -16,8 +16,8 @@
 */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
-import org.nabucco.testautomation.facade.datatype.base.StringValue;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.Text;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.type.PropertyActionType;
@@ -32,7 +32,7 @@ public Datatype PropertyAction extends TestScriptComponent {
 	private Basetype PropertyReference[0..1] propertyRef;
 
 	@Description The value to set into the referenced Property (Needed for: SET)
-	private Basetype StringValue[0..1] value;
+	private Basetype Text[0..1] value;
 
 	@Description the reference to the target property in the context (Needed for: COPY)
 	private Basetype PropertyReference[0..1] target;

@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.message;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyDescriptor;
@@ -35,6 +47,11 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
     /** Constructs a new MetadataLabelMsg instance. */
     public MetadataLabelMsg() {
         super();
+        this.initDefaults();
+    }
+
+    /** InitDefaults. */
+    private void initDefaults() {
     }
 
     /**
@@ -44,17 +61,21 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.put(METADATALABEL, PropertyDescriptorSupport.createDatatype(METADATALABEL,
-                MetadataLabel.class, 0, PROPERTY_CONSTRAINTS[0], false,
-                PropertyAssociationType.COMPOSITION));
+        propertyMap.put(METADATALABEL, PropertyDescriptorSupport.createDatatype(METADATALABEL, MetadataLabel.class, 0,
+                PROPERTY_CONSTRAINTS[0], false, PropertyAssociationType.COMPOSITION));
         return new NabuccoPropertyContainer(propertyMap);
     }
 
+    /** Init. */
+    public void init() {
+        this.initDefaults();
+    }
+
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
         properties.add(super.createProperty(MetadataLabelMsg.getPropertyDescriptor(METADATALABEL),
-                this.metadataLabel));
+                this.getMetadataLabel()));
         return properties;
     }
 
@@ -97,8 +118,7 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
     public int hashCode() {
         final int PRIME = 31;
         int result = super.hashCode();
-        result = ((PRIME * result) + ((this.metadataLabel == null) ? 0 : this.metadataLabel
-                .hashCode()));
+        result = ((PRIME * result) + ((this.metadataLabel == null) ? 0 : this.metadataLabel.hashCode()));
         return result;
     }
 
@@ -132,8 +152,7 @@ public class MetadataLabelMsg extends ServiceMessageSupport implements ServiceMe
      * @return the NabuccoPropertyDescriptor.
      */
     public static NabuccoPropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return PropertyCache.getInstance().retrieve(MetadataLabelMsg.class)
-                .getProperty(propertyName);
+        return PropertyCache.getInstance().retrieve(MetadataLabelMsg.class).getProperty(propertyName);
     }
 
     /**

@@ -17,7 +17,7 @@
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyReference;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComposite;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 

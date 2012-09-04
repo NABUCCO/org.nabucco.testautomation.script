@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.folder.masterdetail;
 
 import java.util.HashSet;
@@ -26,12 +26,11 @@ import org.nabucco.framework.plugin.base.component.multipage.masterdetail.Master
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.MasterDetailBlockLayouter;
 import org.nabucco.framework.plugin.base.layout.Layoutable;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
+import org.nabucco.testautomation.property.ui.rcp.multipage.detail.PropertyDetailPageView;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.FolderMaintenanceMultiPageEditView;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.model.FolderMaintenanceMultiPageEditViewModel;
-
-import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageView;
 
 /**
  * FolderMaintenanceMasterDetailBlock
@@ -66,7 +65,7 @@ public class FolderMaintenanceMasterDetailBlock extends
     	invisibleProperties.add("root");
     	invisibleProperties.add("type");
     	
-        detailsPart.registerPage(Folder.class, new TestautomationDetailPageView<FolderMaintenanceMultiPageEditViewModel>(this, getManagedForm(),
+        detailsPart.registerPage(Folder.class, new PropertyDetailPageView<FolderMaintenanceMultiPageEditViewModel>(this, getManagedForm(),
                 getManagedFormViewPart(), nabuccoMessageManager, ID, ID + "Folder",
                 invisibleProperties, readOnlyProperties));
         typeToInvisiblePropertiesMap.put(Folder.class, invisibleProperties);
@@ -77,7 +76,7 @@ public class FolderMaintenanceMasterDetailBlock extends
         readOnlyProperties.add("identificationKey");
         readOnlyProperties.add("description");
 
-        detailsPart.registerPage(TestScript.class, new TestautomationDetailPageView<FolderMaintenanceMultiPageEditViewModel>(this, getManagedForm(),
+        detailsPart.registerPage(TestScript.class, new PropertyDetailPageView<FolderMaintenanceMultiPageEditViewModel>(this, getManagedForm(),
                 getManagedFormViewPart(), nabuccoMessageManager, ID + ".TestScript", ID + "TestScript",
                 invisibleProperties, readOnlyProperties));
         typeToInvisiblePropertiesMap.put(TestScript.class, invisibleProperties);

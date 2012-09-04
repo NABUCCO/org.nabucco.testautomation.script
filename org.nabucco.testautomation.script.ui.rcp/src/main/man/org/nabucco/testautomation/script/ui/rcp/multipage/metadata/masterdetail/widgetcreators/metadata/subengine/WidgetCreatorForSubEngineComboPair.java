@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.metadata.subengine;
 
 import java.lang.reflect.Method;
@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.AbstractBaseTypeWidgetCreator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.master.MasterTreeExternalDatatypeTransfer;
@@ -43,13 +44,13 @@ import org.nabucco.framework.plugin.base.layout.ImageProvider;
 import org.nabucco.framework.plugin.base.model.ViewModel;
 import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyType;
+import org.nabucco.testautomation.property.facade.datatype.base.PropertyType;
+import org.nabucco.testautomation.property.ui.rcp.images.PropertyImageRegistry;
 import org.nabucco.testautomation.script.facade.datatype.code.CodeParameter;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineOperationCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.ObjectListContentProvider;
-import org.nabucco.testautomation.ui.rcp.images.TestautomationImageRegistry;
 
 /**
  * WidgetCreatorForSubEngineActionCode
@@ -58,197 +59,210 @@ import org.nabucco.testautomation.ui.rcp.images.TestautomationImageRegistry;
  */
 public class WidgetCreatorForSubEngineComboPair extends AbstractBaseTypeWidgetCreator<List<SubEngineCode>> {
 
-	private Composite parent;
-	private BaseTypeWidgetFactory widgetFactory;
-	private GridData data;
-	private ViewModel externalViewModel;
-	private String masterBlockId;
-	private Metadata metadata;
-	private List<SubEngineCode> subEngineCodeList;
-	private boolean readOnly;
+    private Composite parent;
 
-	/**
-	 * Creates a new {@link WidgetCreatorForSubEngineComboPair} instance.
-	 * 
-	 * @param nft
-	 *            the nabucco form toolkit
-	 */
-	public WidgetCreatorForSubEngineComboPair(Composite parent, BaseTypeWidgetFactory widgetFactory, GridData data, NabuccoFormToolkit nft,
-			ViewModel externalViewModel, String masterBlockId, Metadata metadata, List<SubEngineCode> subEngineCodeList, boolean readOnly) {
-		super(nft);
-		this.parent = parent;
-		this.widgetFactory = widgetFactory;
-		this.data = data;
-		this.externalViewModel = externalViewModel;
-		this.masterBlockId = masterBlockId;
-		this.metadata = metadata;
-		this.subEngineCodeList = subEngineCodeList;
-		this.readOnly = readOnly;
-	}
+    private BaseTypeWidgetFactory widgetFactory;
 
-	/**
-	 * 
-	 * @param externalViewModel
-	 * @param data
-	 * @param masterBlockId
-	 * @param widgetFactory2
-	 */
-	public Control[] createWidget() {
+    private GridData data;
 
-		Control[] result = new Control[3];
+    private ViewModel externalViewModel;
 
+    private String masterBlockId;
 
-		// Create Content Providers
-		ObjectListContentProvider subEngineCodeContentProvider = new ObjectListContentProvider(subEngineCodeList);
-		ElementPickerComboParameter subEngineCodeParameter = new ElementPickerComboParameter(subEngineCodeContentProvider, new SubEngineCodeLabelProvider());
+    private Metadata metadata;
 
-		List<SubEngineOperationCode> subEngineOperationCodeList;
-		if (metadata.getSubEngine() != null) {
-			subEngineOperationCodeList = metadata.getSubEngine().getOperationList();
-		} else {
-			subEngineOperationCodeList = new ArrayList<SubEngineOperationCode>();
-		}
-		ObjectListContentProvider subEngineOperationCodeContentProvider = new ObjectListContentProvider(subEngineOperationCodeList);
-		ElementPickerComboParameter subEngineOperationCodeParameter = new ElementPickerComboParameter(subEngineOperationCodeContentProvider,
-				new SubEngineOperationCodeLabelProvider());
+    private List<SubEngineCode> subEngineCodeList;
 
-		// Create Labels and Widgets
+    private boolean readOnly;
 
-		ElementPickerCombo subEngineCodeCombo = layoutSubEngineCodeCombo(subEngineCodeParameter);
-		result[0] = subEngineCodeCombo;
+    /**
+     * Creates a new {@link WidgetCreatorForSubEngineComboPair} instance.
+     * 
+     * @param nft
+     *            the nabucco form toolkit
+     */
+    public WidgetCreatorForSubEngineComboPair(Composite parent, BaseTypeWidgetFactory widgetFactory, GridData data,
+            NabuccoFormToolkit nft, ViewModel externalViewModel, String masterBlockId, Metadata metadata,
+            List<SubEngineCode> subEngineCodeList, boolean readOnly) {
+        super(nft);
+        this.parent = parent;
+        this.widgetFactory = widgetFactory;
+        this.data = data;
+        this.externalViewModel = externalViewModel;
+        this.masterBlockId = masterBlockId;
+        this.metadata = metadata;
+        this.subEngineCodeList = subEngineCodeList;
+        this.readOnly = readOnly;
+    }
 
-		ElementPickerCombo subEngineOperationCodeCombo = layoutSubEngineOperationCodeCombo(subEngineOperationCodeParameter);
-		result[1] = subEngineOperationCodeCombo;
+    /**
+     * 
+     * @param externalViewModel
+     * @param data
+     * @param masterBlockId
+     * @param widgetFactory2
+     */
+    public Control[] createWidget() throws ClientException {
 
-		TableViewer propertiesList = layoutPropertiesControl();
-		result[2] = propertiesList.getControl(); 
+        Control[] result = new Control[3];
 
+        // Create Content Providers
+        ObjectListContentProvider subEngineCodeContentProvider = new ObjectListContentProvider(subEngineCodeList);
+        ElementPickerComboParameter subEngineCodeParameter = new ElementPickerComboParameter(
+                subEngineCodeContentProvider, new SubEngineCodeLabelProvider());
 
-		// Create MiniModel
-		SubEngineComboPairMiniModel model = new SubEngineComboPairMiniModel(parent, subEngineCodeContentProvider, subEngineOperationCodeContentProvider,
-				subEngineOperationCodeCombo, propertiesList, externalViewModel, metadata);
+        List<SubEngineOperationCode> subEngineOperationCodeList;
+        if (metadata.getSubEngine() != null) {
+            subEngineOperationCodeList = metadata.getSubEngine().getOperationList();
+        } else {
+            subEngineOperationCodeList = new ArrayList<SubEngineOperationCode>();
+        }
+        ObjectListContentProvider subEngineOperationCodeContentProvider = new ObjectListContentProvider(
+                subEngineOperationCodeList);
+        ElementPickerComboParameter subEngineOperationCodeParameter = new ElementPickerComboParameter(
+                subEngineOperationCodeContentProvider, new SubEngineOperationCodeLabelProvider());
 
-		// Bind
-		DataBindingContext bindingContext = new DataBindingContext();
-		IObservableValue uiElement = SWTObservables.observeSelection(subEngineCodeCombo.getCombo());
-		IObservableValue modelElement = BeansObservables.observeValue(model, SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE);
-		bindingContext.bindValue(uiElement, modelElement, null, null);
+        // Create Labels and Widgets
 
-		bindingContext = new DataBindingContext();
-		uiElement = SWTObservables.observeSelection(subEngineOperationCodeCombo.getCombo());
-		modelElement = BeansObservables.observeValue(model, SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE_OPERATION);
-		bindingContext.bindValue(uiElement, modelElement, null, null);
+        ElementPickerCombo subEngineCodeCombo = layoutSubEngineCodeCombo(subEngineCodeParameter);
+        result[0] = subEngineCodeCombo;
 
-		// Add listeners
-		subEngineCodeCombo.addSelectionListener(new SubEngineCodeComboBoxHandler(model));
-		subEngineOperationCodeCombo.addSelectionListener(new SubEngineOperationCodeComboBoxHandler(model));
-		return result;
-	}
+        ElementPickerCombo subEngineOperationCodeCombo = layoutSubEngineOperationCodeCombo(subEngineOperationCodeParameter);
+        result[1] = subEngineOperationCodeCombo;
 
+        TableViewer propertiesList = layoutPropertiesControl();
+        result[2] = propertiesList.getControl();
 
+        // Create MiniModel
+        SubEngineComboPairMiniModel model = new SubEngineComboPairMiniModel(parent, subEngineCodeContentProvider,
+                subEngineOperationCodeContentProvider, subEngineOperationCodeCombo, propertiesList, externalViewModel,
+                metadata);
 
-	private ElementPickerCombo layoutSubEngineCodeCombo(ElementPickerComboParameter subEngineCodeParameter) {
-		Label label = widgetFactory.createLabel(parent, masterBlockId + "." + SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE);
-		label.setToolTipText(label.getText());
-		label.setLayoutData(data);
-		ElementPickerCombo subEngineCodeCombo = super.getFormToolkit().createElementPickerCombo(parent, subEngineCodeParameter, this.readOnly, false);
-		return subEngineCodeCombo;
-	}
+        // Bind
+        DataBindingContext bindingContext = new DataBindingContext();
+        IObservableValue uiElement = SWTObservables.observeSelection(subEngineCodeCombo.getCombo());
+        IObservableValue modelElement = BeansObservables.observeValue(model,
+                SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE);
+        bindingContext.bindValue(uiElement, modelElement, null, null);
 
-	private ElementPickerCombo layoutSubEngineOperationCodeCombo(ElementPickerComboParameter subEngineOperationCodeParameter) {
-		Label label = widgetFactory.createLabel(parent, masterBlockId + "." + SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE_OPERATION);
-		label.setToolTipText(label.getText());
-		label.setLayoutData(data);
-		boolean readOnly = false;
-		if (this.readOnly || metadata.getSubEngine() == null) {
-			readOnly = true;
-		}
-		ElementPickerCombo subEngineOperationCodeCombo = super.getFormToolkit().createElementPickerCombo(parent, subEngineOperationCodeParameter, readOnly,
-				false);
-		return subEngineOperationCodeCombo;
-	}
+        bindingContext = new DataBindingContext();
+        uiElement = SWTObservables.observeSelection(subEngineOperationCodeCombo.getCombo());
+        modelElement = BeansObservables.observeValue(model,
+                SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE_OPERATION);
+        bindingContext.bindValue(uiElement, modelElement, null, null);
 
-	private TableViewer layoutPropertiesControl() {
-		Label label = widgetFactory.createLabel(parent, masterBlockId + "." + SubEngineComboPairMiniModel.PROPERTY_ACTION_DESCRIPTION);
-		label.setToolTipText(label.getText());
-		label.setLayoutData(data);
+        // Add listeners
+        subEngineCodeCombo.addSelectionListener(new SubEngineCodeComboBoxHandler(model));
+        subEngineOperationCodeCombo.addSelectionListener(new SubEngineOperationCodeComboBoxHandler(model));
+        return result;
+    }
 
-		TableViewer tableViewer = new TableViewer(parent);
-		new FormToolkit(parent.getDisplay()).adapt(tableViewer.getControl(), true, true);
-		tableViewer.getControl().setLayoutData(data);
-		tableViewer.getControl().setEnabled(!this.readOnly);
+    private ElementPickerCombo layoutSubEngineCodeCombo(ElementPickerComboParameter subEngineCodeParameter) {
+        Label label = widgetFactory.createLabel(parent, masterBlockId
+                + "." + SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE);
+        label.setToolTipText(label.getText());
+        label.setLayoutData(data);
+        ElementPickerCombo subEngineCodeCombo = super.getFormToolkit().createElementPickerCombo(parent,
+                subEngineCodeParameter, this.readOnly, false);
+        return subEngineCodeCombo;
+    }
 
-		int ops = DND.DROP_COPY  | DND.DROP_MOVE;
-		Transfer[] transfers = new Transfer[] { MasterTreeExternalDatatypeTransfer.getInstance()};
-		tableViewer.addDragSupport(ops, transfers, new SubEngineOperationParamterDragListener(tableViewer));
+    private ElementPickerCombo layoutSubEngineOperationCodeCombo(
+            ElementPickerComboParameter subEngineOperationCodeParameter) {
+        Label label = widgetFactory.createLabel(parent, masterBlockId
+                + "." + SubEngineComboPairMiniModel.PROPERTY_VALUE_SUB_ENGINE_OPERATION);
+        label.setToolTipText(label.getText());
+        label.setLayoutData(data);
+        boolean readOnly = false;
+        if (this.readOnly || metadata.getSubEngine() == null) {
+            readOnly = true;
+        }
+        ElementPickerCombo subEngineOperationCodeCombo = super.getFormToolkit().createElementPickerCombo(parent,
+                subEngineOperationCodeParameter, readOnly, false);
+        return subEngineOperationCodeCombo;
+    }
 
-		tableViewer.addDoubleClickListener(new CodeParameterListDoubleClickListener(tableViewer));
+    private TableViewer layoutPropertiesControl() {
+        Label label = widgetFactory.createLabel(parent, masterBlockId
+                + "." + SubEngineComboPairMiniModel.PROPERTY_ACTION_DESCRIPTION);
+        label.setToolTipText(label.getText());
+        label.setLayoutData(data);
 
-		List<CodeParameter> parameterList; 
-		if (metadata.getOperation() != null && metadata.getOperation().getParameterList() != null) {
-			parameterList = metadata.getOperation().getParameterList();
-		} else {
-			parameterList = new ArrayList<CodeParameter>();
-		}
-		tableViewer.setContentProvider(new ObjectListContentProvider(parameterList));
-		tableViewer.setInput(parameterList);
+        TableViewer tableViewer = new TableViewer(parent);
+        new FormToolkit(parent.getDisplay()).adapt(tableViewer.getControl(), true, true);
+        tableViewer.getControl().setLayoutData(data);
+        tableViewer.getControl().setEnabled(!this.readOnly);
 
-		tableViewer.setLabelProvider(new LabelProvider() {
-			public Image getImage(Object element) {
-				if(element instanceof CodeParameter){
-					CodeParameter codeParameter = (CodeParameter) element;
-					PropertyType propertyType = codeParameter.getType();
-					String imagePath = null;
-					
-					switch (propertyType) {
-					case LIST:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_LIST.getId();
-						break;
-					case STRING:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_STRING.getId();
-						break;
-					case LONG:
-					case DOUBLE:
-					case INTEGER:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_NUMERIC.getId();
-						break;
-					case XML:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XML.getId();
-						break;
-					case SQL:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_SQL.getId();
-						break;
-					case FILE:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_FILE.getId();
-						break;
-					case DATE:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_DATE.getId();
-						break;
-					case BOOLEAN:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_BOOLEAN.getId();
-						break;
-					case XPATH:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY_XPATH.getId();
-						break;
-					default:
-						imagePath = TestautomationImageRegistry.ICON_PROPERTY.getId();
-						break;
-					}
-					return ImageProvider.createImage(imagePath);
-				}
-				return null;
-			}
+        int ops = DND.DROP_COPY | DND.DROP_MOVE;
+        Transfer[] transfers = new Transfer[] { MasterTreeExternalDatatypeTransfer.getInstance() };
+        tableViewer.addDragSupport(ops, transfers, new SubEngineOperationParamterDragListener(tableViewer));
 
-			public String getText(Object element) {
-				return ((CodeParameter) element).getName().getValue();
-			}
-		});
-		return tableViewer;
-	}
+        tableViewer.addDoubleClickListener(new CodeParameterListDoubleClickListener(tableViewer));
 
-	@Override
-	protected Control createWidget(Composite parent, List<SubEngineCode> specialized, Method method, Object object, boolean readOnly,
-			ViewModel externalViewModel, NabuccoMessageManager messageManager, String propertyName) {
-		throw new UnsupportedOperationException();
-	}
+        List<CodeParameter> parameterList;
+        if (metadata.getOperation() != null && metadata.getOperation().getParameterList() != null) {
+            parameterList = metadata.getOperation().getParameterList();
+        } else {
+            parameterList = new ArrayList<CodeParameter>();
+        }
+        tableViewer.setContentProvider(new ObjectListContentProvider(parameterList));
+        tableViewer.setInput(parameterList);
+
+        tableViewer.setLabelProvider(new LabelProvider() {
+
+            public Image getImage(Object element) {
+                if (element instanceof CodeParameter) {
+                    CodeParameter codeParameter = (CodeParameter) element;
+                    PropertyType propertyType = codeParameter.getType();
+                    String imagePath = null;
+
+                    switch (propertyType) {
+                    case LIST:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_LIST.getId();
+                        break;
+                    case TEXT:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_STRING.getId();
+                        break;
+                    case NUMERIC:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_NUMERIC.getId();
+                        break;
+                    case XML:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_XML.getId();
+                        break;
+                    case SQL:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_SQL.getId();
+                        break;
+                    case FILE:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_FILE.getId();
+                        break;
+                    case DATE:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_DATE.getId();
+                        break;
+                    case BOOLEAN:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_BOOLEAN.getId();
+                        break;
+                    case XPATH:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY_XPATH.getId();
+                        break;
+                    default:
+                        imagePath = PropertyImageRegistry.ICON_PROPERTY.getId();
+                        break;
+                    }
+                    return ImageProvider.createImage(imagePath);
+                }
+                return null;
+            }
+
+            public String getText(Object element) {
+                return ((CodeParameter) element).getName().getValue();
+            }
+        });
+        return tableViewer;
+    }
+
+    @Override
+    protected Control createWidget(Composite parent, List<SubEngineCode> specialized, Method method, Object object,
+            boolean readOnly, ViewModel externalViewModel, NabuccoMessageManager messageManager, String propertyName) {
+        throw new UnsupportedOperationException();
+    }
 }

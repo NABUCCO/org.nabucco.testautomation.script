@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.detail.fileproperty;
 
 import java.util.List;
@@ -24,15 +24,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.model.ViewModel;
 import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
+import org.nabucco.testautomation.property.facade.datatype.FileProperty;
+import org.nabucco.testautomation.property.ui.rcp.multipage.detail.PropertyDetailPageViewLayouter;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.fileproperty.NameContentCombinationWidgetCreator;
-
-import org.nabucco.testautomation.facade.datatype.property.FileProperty;
-import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageViewLayouter;
 
 /**
  * MetadataDetailPageViewLayouter
@@ -40,7 +40,7 @@ import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPa
  * @author Markus Jorroch, PRODYNA AG
  */
 public class FilePropertyDetailPageViewLayouter extends
-TestautomationDetailPageViewLayouter {
+PropertyDetailPageViewLayouter {
 
 	private static final String PROPERTY_NAME = "name";
 	
@@ -129,17 +129,21 @@ TestautomationDetailPageViewLayouter {
 		FileProperty fileProperty = (FileProperty) datatype;
 		NabuccoFormToolkit nft = widgetFactory.getNabuccoFormToolKit();
 		NameContentCombinationWidgetCreator widgetCreator = new NameContentCombinationWidgetCreator(nft);
-		Control[] newWidget = widgetCreator.createWidget(parent, data, fileProperty, externalViewModel, widgetFactory, masterBlockId, readOnly);
-		
-		if (newWidget.length > 0 && newWidget[0] == null) {
-			Activator.getDefault().logError(
-					"Cannot create FileProperty Widget [null].");
-			newWidget[0] = nft.createRealLabel(parent, "INVALID");
-		} else {
-			for (Control control : newWidget) {
-				super.setDataForWidget(data, control);
-			}
-		}
+		try {
+            Control[] newWidget = widgetCreator.createWidget(parent, data, fileProperty, externalViewModel, widgetFactory, masterBlockId, readOnly);
+            
+            if (newWidget.length > 0 && newWidget[0] == null) {
+            	Activator.getDefault().logError(
+            			"Cannot create FileProperty Widget [null].");
+            	newWidget[0] = nft.createRealLabel(parent, "INVALID");
+            } else {
+            	for (Control control : newWidget) {
+            		super.setDataForWidget(data, control);
+            	}
+            }
+        } catch (ClientException e) {
+           Activator.getDefault().logError(e);
+        }
 		return null;
 	}
 }

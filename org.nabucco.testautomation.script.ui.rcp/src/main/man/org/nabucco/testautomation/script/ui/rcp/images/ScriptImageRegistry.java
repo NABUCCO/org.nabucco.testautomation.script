@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.images;
 
 /**
@@ -40,7 +40,7 @@ public enum ScriptImageRegistry {
 	
 	ICON_LABEL("icons/script/label.png", "/icons/label.png"),
 	
-	ICON_LOCK("icons/script/lock.png", "/icons/lock.png"),
+	ICON_FUNCTION("icons/script/function.png", "/icons/function.png"),
 	
 	ICON_LOOP("icons/script/loop.png", "/icons/loop.png"),
 	
@@ -49,12 +49,16 @@ public enum ScriptImageRegistry {
 	ICON_METADATA("icons/script/metadata.png", "/icons/metadata.png"),
 	
 	ICON_SCRIPT("icons/script/script.png", "/icons/script.png"),
+    
+    ICON_REUSED("icons/script/reused.png", "/icons/reused.png"),
 
 	ICON_EMBEDDED("icons/script/embedded_script.png", "/icons/embedded_script.png"),
 	
 	ICON_PROPERTY_ACTION("icons/script/property_action.png", "/icons/property_action.png"),
 	
-	ICON_FOLDER("icons/script/folder.png", "icons/folder.png");
+	ICON_FOLDER("icons/script/folder.png", "icons/folder.png"),
+	
+	ICON_FIND("icons/script/find.png", "/icons/find.png");
 	
 	/**
 	 * The unique symbolic name of the image used to identify the image in the
@@ -79,7 +83,7 @@ public enum ScriptImageRegistry {
 	 * @return the id
 	 */
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	/**
@@ -88,6 +92,6 @@ public enum ScriptImageRegistry {
 	 * @return the resourcePath
 	 */
 	public String getResourcePath() {
-		return resourcePath;
+		return this.resourcePath;
 	}
 }

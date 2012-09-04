@@ -1,5 +1,16 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.ui.rcp.search.metadata.view;
 
@@ -29,9 +40,9 @@ public class MetadataSearchViewWidgetFactory extends WidgetFactory {
 
     public static final String OBSERVE_VALUE_METADATANAME = MetadataSearchViewModel.PROPERTY_METADATA_NAME;
 
-    public static final String LABEL_METADATADESCRIPTION = "metadata.description";
+    public static final String LABEL_METADATAKEY = "metadata.identificationKey";
 
-    public static final String OBSERVE_VALUE_METADATADESCRIPTION = MetadataSearchViewModel.PROPERTY_METADATA_DESCRIPTION;
+    public static final String OBSERVE_VALUE_METADATAKEY = MetadataSearchViewModel.PROPERTY_METADATA_IDENTIFICATIONKEY;
 
     /**
      * Constructs a new MetadataSearchViewWidgetFactory instance.
@@ -65,34 +76,32 @@ public class MetadataSearchViewWidgetFactory extends WidgetFactory {
         Text result = nabuccoFormToolKit.createTextInput(parent);
         DataBindingContext bindingContext = new DataBindingContext();
         IObservableValue uiElement = SWTObservables.observeText(result, SWT.Modify);
-        IObservableValue modelElement = BeansObservables.observeValue(model,
-                OBSERVE_VALUE_METADATANAME);
+        IObservableValue modelElement = BeansObservables.observeValue(model, OBSERVE_VALUE_METADATANAME);
         bindingContext.bindValue(uiElement, modelElement, null, null);
         return result;
     }
 
     /**
-     * CreateLabelMetadataDescription.
+     * CreateLabelMetadataKey.
      *
      * @param parent the Composite.
      * @return the Label.
      */
-    public Label createLabelMetadataDescription(Composite parent) {
-        return nabuccoFormToolKit.createRealLabel(parent, LABEL_METADATADESCRIPTION);
+    public Label createLabelMetadataKey(Composite parent) {
+        return nabuccoFormToolKit.createRealLabel(parent, LABEL_METADATAKEY);
     }
 
     /**
-     * CreateInputFieldMetadataDescription.
+     * CreateInputFieldMetadataKey.
      *
      * @param parent the Composite.
      * @return the Text.
      */
-    public Text createInputFieldMetadataDescription(Composite parent) {
+    public Text createInputFieldMetadataKey(Composite parent) {
         Text result = nabuccoFormToolKit.createTextInput(parent);
         DataBindingContext bindingContext = new DataBindingContext();
         IObservableValue uiElement = SWTObservables.observeText(result, SWT.Modify);
-        IObservableValue modelElement = BeansObservables.observeValue(model,
-                OBSERVE_VALUE_METADATADESCRIPTION);
+        IObservableValue modelElement = BeansObservables.observeValue(model, OBSERVE_VALUE_METADATAKEY);
         bindingContext.bindValue(uiElement, modelElement, null, null);
         return result;
     }

@@ -16,30 +16,26 @@
 */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
-import org.nabucco.framework.base.facade.datatype.Name;
-import org.nabucco.testautomation.facade.datatype.base.Text;
-import org.nabucco.testautomation.facade.datatype.base.BooleanValue;
-import org.nabucco.testautomation.facade.datatype.property.base.PropertyReference;
+import org.nabucco.framework.base.facade.datatype.Flag;
+import org.nabucco.framework.support.scripting.facade.datatype.Script;
+import org.nabucco.testautomation.property.facade.datatype.base.Text;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptComponent;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.TestScriptElementType;
 
 @Author			Steffen Schmidt
 @Company		PRODYNA AG
 @Date			2010-04-07
-@Description	A log message
+@Description	An assertion
 public Datatype Assertion extends TestScriptComponent {
-
-	private Basetype PropertyReference[0..1] propertyRef;
 
 	private Basetype Text[0..1] message;
 	
-	private Basetype BooleanValue[0..1] fail;
+	private Basetype Flag[0..1] fail;
 	
-	private Basetype Name[0..1] className;
+	private Datatype Script[0..1] assertionScript;
 	
 	@Redefined
 	@Default ASSERTION
 	protected Enumeration TestScriptElementType[1] type;
-	
 	
 }

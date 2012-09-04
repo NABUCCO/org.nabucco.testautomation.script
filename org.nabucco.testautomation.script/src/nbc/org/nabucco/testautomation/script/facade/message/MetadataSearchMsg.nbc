@@ -16,10 +16,10 @@
 */
 package org.nabucco.testautomation.script.facade.message;
 
-import org.nabucco.framework.base.facade.datatype.Owner;
-import org.nabucco.framework.base.facade.datatype.Identifier;
-import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Identifier;
+import org.nabucco.framework.base.facade.datatype.Key;
+import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 
 @Author			Steffen Schmidt
@@ -29,11 +29,11 @@ import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 @Description	Message for searching Metadata
 public Message MetadataSearchMsg {
 
-	private Basetype Owner[0..1] owner;
-
 	private Basetype Identifier[1] identifier;
 
 	private Basetype Name[1] name;
+	
+	private Basetype Key[0..1] metadataKey;
 	
 	private Basetype Description[1] description;
 	

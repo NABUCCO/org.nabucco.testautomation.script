@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.folder.model;
 
 import java.util.HashMap;
@@ -38,13 +38,21 @@ import org.nabucco.framework.plugin.base.layout.ImageProvider;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
 import org.nabucco.testautomation.script.facade.datatype.dictionary.base.Folder;
 import org.nabucco.testautomation.script.ui.rcp.multipage.folder.masterdetail.FolderMaintenanceMasterDetailLabelProvider;
-import org.nabucco.testautomation.script.ui.rcp.multipage.maintainance.model.ScriptMaintainanceMultiplePageEditViewModelHandlerImpl;
+import org.nabucco.testautomation.script.ui.rcp.multipage.maintenance.model.ScriptMaintenanceMultiplePageEditViewModelHandlerImpl;
 
-
+/**
+ * DataModelManager
+ * 
+ * @author Markus Jorroch, PRODYNA AG
+ */
 public class DataModelManager {
 
     private static final String NEW_ELEMENT = ".NewElement";
+    
 	private static final String REMOVE = ".Remove";
+	
+	@SuppressWarnings("unchecked")
+    private static final Class<? extends Datatype>[] allowedChildren = new Class[] { Folder.class, TestScript.class };
 
     public static boolean hasPossibleChildren(Datatype datatype) {
         if (datatype instanceof Folder) {
@@ -120,7 +128,7 @@ public class DataModelManager {
             	
             	// Remove
             	Image image = ImageProvider.createImage("icons/delete.png");
-            	new RemoveDatatypeMenuItem(result, treeNode, modelHandler, treeViewer, ScriptMaintainanceMultiplePageEditViewModelHandlerImpl.ID + REMOVE, null, image);
+            	new RemoveDatatypeMenuItem(result, treeNode, modelHandler, treeViewer, ScriptMaintenanceMultiplePageEditViewModelHandlerImpl.ID + REMOVE, null, image);
             }
         }
         return result;
@@ -155,8 +163,24 @@ public class DataModelManager {
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Datatype>[] getPossibleChildrenTypes(Folder datatype) {
-        return new Class[] { Folder.class};
+        return new Class[] { Folder.class };
     }
-
+    
+    public static boolean canBeChildOf(Datatype child, Datatype parent) {
+        Class<? extends Datatype>[] datatypes = null;
+        if(parent instanceof TestScript) {
+            return false;
+        } else if(parent instanceof Folder) {
+            datatypes = allowedChildren;
+        }
+        
+        for(Class<? extends Datatype> datatype: datatypes) {
+            if(datatype.isAssignableFrom(child.getClass())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
 }

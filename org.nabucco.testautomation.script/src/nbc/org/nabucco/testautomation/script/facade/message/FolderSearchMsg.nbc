@@ -16,7 +16,6 @@
 */
 package org.nabucco.testautomation.script.facade.message;
 
-import org.nabucco.framework.base.facade.datatype.Owner;
 import org.nabucco.framework.base.facade.datatype.Flag;
 
 @Author			Steffen Schmidt
@@ -26,8 +25,6 @@ import org.nabucco.framework.base.facade.datatype.Flag;
 @Description	Message for searching a Folder
 public Message FolderSearchMsg {
 
-	private Basetype Owner[0..1] owner;
-	
 	private Basetype Flag[0..1] root;
 
 }

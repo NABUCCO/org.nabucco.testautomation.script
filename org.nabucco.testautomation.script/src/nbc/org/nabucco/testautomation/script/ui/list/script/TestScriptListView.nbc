@@ -42,9 +42,4 @@ public ListView TestScriptListView {
 	@ColumnLabelDefault 	"TestScript Description"
 	private Column testScriptDescription;
 	
-	@MappedField 			testScript.owner
-	@ColumnLabelId			testScript.owner 
-	@ColumnLabelDefault 	"Owner"
-	private Column owner;
-	
 }

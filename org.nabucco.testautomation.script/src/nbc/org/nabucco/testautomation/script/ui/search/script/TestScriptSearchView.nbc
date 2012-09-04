@@ -33,9 +33,9 @@ public SearchView TestScriptSearchView {
 	@FieldLabelDefault 	"Name"
 	private LabeledInputField testScriptName;
 	
-	@MappedField 		testScript.description
-	@FieldLabelId		testScript.description
-	@FieldLabelDefault 	"Description"
-	private LabeledInputField testScriptDescription;
+	@MappedField 		testScript.identificationKey
+	@FieldLabelId		testScript.identificationKey
+	@FieldLabelDefault 	"Test Script Key"
+	private LabeledInputField testScriptKey;
 	
 }

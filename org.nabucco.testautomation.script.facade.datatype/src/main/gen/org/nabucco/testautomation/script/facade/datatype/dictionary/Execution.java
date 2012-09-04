@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoPropertyContainer;
@@ -23,6 +35,8 @@ public class Execution extends TestScriptComposite implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
+    private static final TestScriptElementType TYPE_DEFAULT = TestScriptElementType.EXECUTION;
+
     /** Constructs a new Execution instance. */
     public Execution() {
         super();
@@ -31,7 +45,7 @@ public class Execution extends TestScriptComposite implements Datatype {
 
     /** InitDefaults. */
     private void initDefaults() {
-        type = TestScriptElementType.EXECUTION;
+        type = TYPE_DEFAULT;
     }
 
     /**
@@ -51,8 +65,7 @@ public class Execution extends TestScriptComposite implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class)
-                .getPropertyMap());
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class).getPropertyMap());
         return new NabuccoPropertyContainer(propertyMap);
     }
 
@@ -62,8 +75,8 @@ public class Execution extends TestScriptComposite implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
         return properties;
     }
 

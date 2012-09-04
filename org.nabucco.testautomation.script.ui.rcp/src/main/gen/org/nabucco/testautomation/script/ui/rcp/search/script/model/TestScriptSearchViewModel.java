@@ -1,10 +1,21 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.ui.rcp.search.script.model;
 
 import org.nabucco.framework.base.facade.datatype.DatatypeState;
-import org.nabucco.framework.base.facade.datatype.Description;
+import org.nabucco.framework.base.facade.datatype.Key;
 import org.nabucco.framework.base.facade.datatype.Name;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchParameter;
 import org.nabucco.framework.plugin.base.component.search.model.NabuccoComponentSearchViewModel;
@@ -16,8 +27,8 @@ import org.nabucco.testautomation.script.facade.datatype.dictionary.TestScript;
  * @version 1.0
  * @author Steffen Schmidt, PRODYNA AG, 2010-04-13
  */
-public class TestScriptSearchViewModel extends NabuccoComponentSearchViewModel<TestScript>
-        implements NabuccoComponentSearchParameter {
+public class TestScriptSearchViewModel extends NabuccoComponentSearchViewModel<TestScript> implements
+        NabuccoComponentSearchParameter {
 
     public static final String ID = "org.nabucco.testautomation.script.ui.search.script.TestScriptSearchViewModel";
 
@@ -25,7 +36,7 @@ public class TestScriptSearchViewModel extends NabuccoComponentSearchViewModel<T
 
     public static final String PROPERTY_TESTSCRIPT_NAME = "testScriptName";
 
-    public static final String PROPERTY_TESTSCRIPT_DESCRIPTION = "testScriptDescription";
+    public static final String PROPERTY_TESTSCRIPT_IDENTIFICATIONKEY = "testScriptIdentificationKey";
 
     public static String TITLE = (ID + "Title");
 
@@ -72,8 +83,7 @@ public class TestScriptSearchViewModel extends NabuccoComponentSearchViewModel<T
         String oldVal = testScript.getName().getValue();
         testScript.getName().setValue(newName);
         this.updateProperty(PROPERTY_TESTSCRIPT_NAME, oldVal, newName);
-        if (((!oldVal.equals(newName)) && testScript.getDatatypeState().equals(
-                DatatypeState.PERSISTENT))) {
+        if (((!oldVal.equals(newName)) && testScript.getDatatypeState().equals(DatatypeState.PERSISTENT))) {
             testScript.setDatatypeState(DatatypeState.MODIFIED);
         }
     }
@@ -84,43 +94,41 @@ public class TestScriptSearchViewModel extends NabuccoComponentSearchViewModel<T
      * @return the String.
      */
     public String getTestScriptName() {
-        if ((((testScript == null) || (testScript.getName() == null)) || (testScript.getName()
-                .getValue() == null))) {
+        if ((((testScript == null) || (testScript.getName() == null)) || (testScript.getName().getValue() == null))) {
             return "";
         }
         return testScript.getName().getValue();
     }
 
     /**
-     * Setter for the TestScriptDescription.
+     * Setter for the TestScriptIdentificationKey.
      *
-     * @param newDescription the String.
+     * @param newIdentificationKey the String.
      */
-    public void setTestScriptDescription(String newDescription) {
-        if (((testScript != null) && (testScript.getDescription() == null))) {
-            Description description = new Description();
-            testScript.setDescription(description);
+    public void setTestScriptIdentificationKey(String newIdentificationKey) {
+        if (((testScript != null) && (testScript.getIdentificationKey() == null))) {
+            Key identificationKey = new Key();
+            testScript.setIdentificationKey(identificationKey);
         }
-        String oldVal = testScript.getDescription().getValue();
-        testScript.getDescription().setValue(newDescription);
-        this.updateProperty(PROPERTY_TESTSCRIPT_DESCRIPTION, oldVal, newDescription);
-        if (((!oldVal.equals(newDescription)) && testScript.getDatatypeState().equals(
-                DatatypeState.PERSISTENT))) {
+        String oldVal = testScript.getIdentificationKey().getValue();
+        testScript.getIdentificationKey().setValue(newIdentificationKey);
+        this.updateProperty(PROPERTY_TESTSCRIPT_IDENTIFICATIONKEY, oldVal, newIdentificationKey);
+        if (((!oldVal.equals(newIdentificationKey)) && testScript.getDatatypeState().equals(DatatypeState.PERSISTENT))) {
             testScript.setDatatypeState(DatatypeState.MODIFIED);
         }
     }
 
     /**
-     * Getter for the TestScriptDescription.
+     * Getter for the TestScriptIdentificationKey.
      *
      * @return the String.
      */
-    public String getTestScriptDescription() {
-        if ((((testScript == null) || (testScript.getDescription() == null)) || (testScript
-                .getDescription().getValue() == null))) {
+    public String getTestScriptIdentificationKey() {
+        if ((((testScript == null) || (testScript.getIdentificationKey() == null)) || (testScript
+                .getIdentificationKey().getValue() == null))) {
             return "";
         }
-        return testScript.getDescription().getValue();
+        return testScript.getIdentificationKey().getValue();
     }
 
     @Override

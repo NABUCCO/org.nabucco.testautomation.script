@@ -1,11 +1,23 @@
 /*
- * NABUCCO Generator, Copyright (c) 2010, PRODYNA AG, Germany. All rights reserved.
+ * Copyright 2012 PRODYNA AG
+ * 
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package org.nabucco.testautomation.script.facade.datatype.dictionary;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.Description;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
@@ -27,7 +39,9 @@ public class TestScript extends TestScriptComposite implements Datatype {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;m0,1;", "m0,1;" };
+    private static final TestScriptElementType TYPE_DEFAULT = TestScriptElementType.SCRIPT;
+
+    private static final String[] PROPERTY_CONSTRAINTS = { "l0,255;u0,n;m0,1;", "m0,1;" };
 
     public static final String DESCRIPTION = "description";
 
@@ -45,7 +59,7 @@ public class TestScript extends TestScriptComposite implements Datatype {
 
     /** InitDefaults. */
     private void initDefaults() {
-        type = TestScriptElementType.SCRIPT;
+        type = TYPE_DEFAULT;
     }
 
     /**
@@ -71,10 +85,9 @@ public class TestScript extends TestScriptComposite implements Datatype {
      */
     protected static NabuccoPropertyContainer createPropertyContainer() {
         Map<String, NabuccoPropertyDescriptor> propertyMap = new HashMap<String, NabuccoPropertyDescriptor>();
-        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class)
-                .getPropertyMap());
-        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION,
-                Description.class, 8, PROPERTY_CONSTRAINTS[0], false));
+        propertyMap.putAll(PropertyCache.getInstance().retrieve(TestScriptComposite.class).getPropertyMap());
+        propertyMap.put(DESCRIPTION, PropertyDescriptorSupport.createBasetype(DESCRIPTION, Description.class, 8,
+                PROPERTY_CONSTRAINTS[0], false));
         propertyMap.put(FOLDER, PropertyDescriptorSupport.createDatatype(FOLDER, Folder.class, 9,
                 PROPERTY_CONSTRAINTS[1], false, PropertyAssociationType.AGGREGATION));
         return new NabuccoPropertyContainer(propertyMap);
@@ -86,12 +99,10 @@ public class TestScript extends TestScriptComposite implements Datatype {
     }
 
     @Override
-    public List<NabuccoProperty> getProperties() {
-        List<NabuccoProperty> properties = super.getProperties();
-        properties.add(super.createProperty(TestScript.getPropertyDescriptor(DESCRIPTION),
-                this.description, null));
-        properties.add(super.createProperty(TestScript.getPropertyDescriptor(FOLDER), this.folder,
-                null));
+    public Set<NabuccoProperty> getProperties() {
+        Set<NabuccoProperty> properties = super.getProperties();
+        properties.add(super.createProperty(TestScript.getPropertyDescriptor(DESCRIPTION), this.description, null));
+        properties.add(super.createProperty(TestScript.getPropertyDescriptor(FOLDER), this.getFolder(), null));
         return properties;
     }
 

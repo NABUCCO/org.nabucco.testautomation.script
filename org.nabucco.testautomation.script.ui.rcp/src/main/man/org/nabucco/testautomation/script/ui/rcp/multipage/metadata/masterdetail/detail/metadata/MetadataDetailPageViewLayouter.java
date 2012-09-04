@@ -1,19 +1,19 @@
 /*
-* Copyright 2010 PRODYNA AG
-*
-* Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.opensource.org/licenses/eclipse-1.0.php or
-* http://www.nabucco-source.org/nabucco-license.html
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2012 PRODYNA AG
+ *
+ * Licensed under the Eclipse Public License (EPL), Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.opensource.org/licenses/eclipse-1.0.php or
+ * http://www.nabucco.org/License.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.detail.metadata;
 
 import java.util.List;
@@ -24,24 +24,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.nabucco.framework.base.facade.datatype.Datatype;
 import org.nabucco.framework.base.facade.datatype.property.NabuccoProperty;
+import org.nabucco.framework.base.facade.exception.client.ClientException;
 import org.nabucco.framework.plugin.base.Activator;
 import org.nabucco.framework.plugin.base.component.multipage.masterdetail.detail.widget.BaseTypeWidgetFactory;
 import org.nabucco.framework.plugin.base.model.ViewModel;
 import org.nabucco.framework.plugin.base.view.NabuccoFormToolkit;
 import org.nabucco.framework.plugin.base.view.NabuccoMessageManager;
+import org.nabucco.testautomation.property.ui.rcp.multipage.detail.PropertyDetailPageViewLayouter;
 import org.nabucco.testautomation.script.facade.datatype.code.SubEngineCode;
 import org.nabucco.testautomation.script.facade.datatype.metadata.Metadata;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.masterdetail.widgetcreators.metadata.subengine.WidgetCreatorForSubEngineComboPair;
 import org.nabucco.testautomation.script.ui.rcp.multipage.metadata.model.MetadataElementFactory;
-
-import org.nabucco.testautomation.ui.rcp.multipage.detail.TestautomationDetailPageViewLayouter;
 
 /**
  * MetadataDetailPageViewLayouter
  * 
  * @author Markus Jorroch, PRODYNA AG
  */
-public class MetadataDetailPageViewLayouter extends TestautomationDetailPageViewLayouter {
+public class MetadataDetailPageViewLayouter extends PropertyDetailPageViewLayouter {
 
 	private static final String PROPERTY_SUB_ENGINE = "subEngine";
 
@@ -140,7 +140,9 @@ public class MetadataDetailPageViewLayouter extends TestautomationDetailPageView
 
 		} catch (SecurityException e) {
 			Activator.getDefault().logError(e);
-		}
+		} catch (ClientException e) {
+            Activator.getDefault().logError(e);
+        }
 		return null;
 
 	}
